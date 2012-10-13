@@ -1,5 +1,12 @@
 package edu.grinnell.kdic;
 
+import java.net.URI;
+import java.util.List;
+import net.moraleboost.streamscraper.Stream;
+import net.moraleboost.streamscraper.Scraper;
+import net.moraleboost.streamscraper.scraper.IceCastScraper;
+
+
 import java.io.IOException;
 
 import android.app.Activity;
