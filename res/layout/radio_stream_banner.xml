@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation= "horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum = "100" >
+    
+    <ImageView
+        android:id="@+id/curPlayingImage"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:padding="4dp"
+        android:contentDescription="Boop."
+        android:src="@drawable/ic_launcher"
+        android:layout_weight= "25" />
+
+    <TextView
+        android:id="@+id/streamInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="45"
+        android:padding="4dp"
+        android:text="@string/streamInfo" />
+
+    <Button
+        android:id="@+id/playButton"
+        android:layout_width="0dp"
+        android:layout_height="80dp"
+        android:padding="4dp"
+        android:text="@string/kdic"
+        android:layout_weight= "30" />
+
+
+
+</LinearLayout>
