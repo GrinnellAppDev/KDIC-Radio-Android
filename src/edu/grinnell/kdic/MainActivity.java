@@ -25,7 +25,7 @@ public class MainActivity extends Activity {
     private ImageView curPlayingImage;
     private Button playButton;
     
-    boolean streamStopped = true;
+    boolean isLoading = false;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,13 +45,14 @@ public class MainActivity extends Activity {
         kdicStream.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
+				isLoading = false;
 	            playButton.setText("Pause");
 			}
 		});
         
         //Starts Stream
         setupPlayer();
-        if (streamStopped == true){
+        if ((isLoading == false) || !(kdicStream.isPlaying())){
         	playPause();
         }
         
@@ -61,19 +62,17 @@ public class MainActivity extends Activity {
     public void playPause(){
     	
     	//If the stream is loading or playing, stop it. Else, start it.
-    	if((streamStopped == false) && kdicStream.isPlaying() ){
-        	stopPlaying();
-        	streamStopped = true;
-            playButton.setText("Play");
-    	}else if(streamStopped == true){
-    		streamStopped = false;
-    		playButton.setText("Starting..."); // WHY WON'T THIS APPEAR FOR MORE THAN A FRACTION OF A SECOND.
-        	startPlaying();
+    		if( (isLoading) || (kdicStream.isPlaying()) ){
+    			stopPlaying();
+    		} else {
+    			startPlaying();
+    		}
     	}
-    }
+    
     
     public boolean startPlaying(){
     	
+    	playButton.setText("Starting..."); // WHY WON'T THIS APPEAR FOR MORE THAN A FRACTION OF A SECOND.
     	//prepare and start stream
     	try {
     		kdicStream.prepare();
@@ -91,6 +90,7 @@ public class MainActivity extends Activity {
     public boolean stopPlaying(){
     	//STOP
     	kdicStream.stop();
+    	playButton.setText("Play");
     	return true;
     }
     
