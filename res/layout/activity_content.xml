@@ -6,7 +6,7 @@
     android:orientation= "vertical"
     android:weightSum = "100" >
     
-	<include layout="@layout/radio_stream_banner" android:id="@+id/radioBanner"/>
+	<include layout="@layout/fragment_stream_banner" android:id="@+id/radioBanner"/>
 
 	<TextView
 	    android:id="@+id/textView1"

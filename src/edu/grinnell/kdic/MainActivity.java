@@ -4,64 +4,68 @@ package edu.grinnell.kdic;
 
 import java.io.IOException;
 import android.app.Activity;
+import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import android.net.Uri;
+//import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.TextView;
+//import android.widget.ImageView;
+//import android.widget.TextView;
 
 
 
 public class MainActivity extends Activity {
 
 	private static final String STREAMURL = "http://kdic.grinnell.edu:8001/kdic128"; //KDIC stream URL
-	private static final String METAURL = "http://kdic.grinnell.edu:8001/"; //metadata URL
-	private static final String PICURL = "http://kdic.grinnell.edu/wp-content/uploads/radio-300x199.jpg"; //an arbitrary picture, for testing metadata
+	//private static final String METAURL = "http://kdic.grinnell.edu:8001/"; //metadata URL
+	//private static final String PICURL = "http://kdic.grinnell.edu/wp-content/uploads/radio-300x199.jpg"; //an arbitrary picture, for testing metadata
     
-    private MediaPlayer kdicStream = new MediaPlayer();
-    private ImageView curPlayingImage;
-    private Button playButton;
+    private MediaPlayer kdicStream = new MediaPlayer(); //KDIC stream
+    //private ImageView metadataImage; //Metadata image. Duhh.
+    private Button playButton; //playPause button
     
-    boolean isLoading = false;
+    boolean isLoading = false; //true if stream is loading but not playing
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         
-        //playPause button junk, setting text and creating listener
+        //Initial playPause settings
         playButton = (Button) findViewById(R.id.playButton);
         playButton.setText("Pause");
+        playButton.setBackgroundColor(Color.RED);
+        
+        
+        //playPause listener, stops/starts stream
         playButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 playPause();
             }
         });
-        
-        //stream listener, solely for changing the button text from 'loading' to 'pause' after it finishes loading.
+       
+        //stream prepared listener, changes button state to 'playing'
         kdicStream.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener() {
-			@Override
-			public void onPrepared(MediaPlayer mp) {
-				isLoading = false;
-	            playButton.setText("Pause");
-			}
+        	public void onPrepared(MediaPlayer mp) {
+        		isLoading = false;
+                playButton.setText("Pause");
+                playButton.setBackgroundColor(Color.RED);
+        	}
 		});
         
         //Starts Stream
         setupPlayer();
-        if ((isLoading == false) || !(kdicStream.isPlaying())){
-        	playPause();
+        if (!(kdicStream.isPlaying())){
+        	startPlaying();
         }
-        
         
     }
     
+    
+	//If the stream is not stopped, stop. Else, start.
     public void playPause(){
-    	
-    	//If the stream is loading or playing, stop it. Else, start it.
     		if( (isLoading) || (kdicStream.isPlaying()) ){
     			stopPlaying();
     		} else {
@@ -69,11 +73,12 @@ public class MainActivity extends Activity {
     		}
     	}
     
-    
-    public boolean startPlaying(){
-    	
+    //Changes playPause to 'loading' state, prepares stream, starts stream
+    public void startPlaying(){
+    	isLoading = true;
     	playButton.setText("Starting..."); // WHY WON'T THIS APPEAR FOR MORE THAN A FRACTION OF A SECOND.
-    	//prepare and start stream
+        playButton.setBackgroundColor(Color.YELLOW);
+    	
     	try {
     		kdicStream.prepare();
 		} catch (IllegalStateException e) {
@@ -83,20 +88,17 @@ public class MainActivity extends Activity {
 		} // might take long! (for buffering, etc)
         
        kdicStream.start();
-        
-        return true;
     }
     
-    public boolean stopPlaying(){
-    	//STOP
+    //Stops stream, changes playPause to 'stopped' state.
+    public void stopPlaying(){
     	kdicStream.stop();
     	playButton.setText("Play");
-    	return true;
+        playButton.setBackgroundColor(Color.GREEN);
     }
     
- 
+    //Sets stream's type and URL
     public void setupPlayer(){
-    	//Setup stream type and URL
         kdicStream.setAudioStreamType(AudioManager.STREAM_MUSIC);
         try {
 			kdicStream.setDataSource(STREAMURL);
@@ -109,7 +111,6 @@ public class MainActivity extends Activity {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-        
     }
     
 }
