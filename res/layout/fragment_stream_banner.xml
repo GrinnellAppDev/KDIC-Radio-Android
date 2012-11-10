@@ -29,7 +29,7 @@
         android:padding="4dp"
         android:text="@string/kdic"
         android:layout_weight= "30"
-        android:background="@drawable/custom_button"  />
+        android:background="@drawable/blackmage"  />
 
 
 

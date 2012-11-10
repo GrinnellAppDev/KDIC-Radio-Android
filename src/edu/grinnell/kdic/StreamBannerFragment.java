@@ -52,15 +52,6 @@ public class StreamBannerFragment extends Fragment {
             }
         });
         
-        //stream prepared listener, changes button state to 'playing'
-        kdicStream.setOnPreparedListener(new android.media.MediaPlayer.OnPreparedListener() {
-        	public void onPrepared(MediaPlayer mp) {
-        		isLoading = false;
-                playButton.setText("Pause");
-                playButton.setBackgroundColor(Color.RED);
-        	}
-		});
-        
         //Starts Stream
         setupPlayer();
         if (!(kdicStream.isPlaying())){
@@ -70,7 +61,9 @@ public class StreamBannerFragment extends Fragment {
     
   //If the stream is not stopped, stop. Else, start.
     public void playPause(){
-    		if( (isLoading) || (kdicStream.isPlaying()) ){
+    		if(isLoading){
+    			// do nothing
+    		} else if ((kdicStream.isPlaying())) {
     			stopPlaying();
     		} else {
     			startPlaying();
@@ -92,6 +85,10 @@ public class StreamBannerFragment extends Fragment {
 		} // might take long! (for buffering, etc)
         
        kdicStream.start();
+       
+       isLoading = false;
+       playButton.setText("Pause"); // WHY WON'T THIS APPEAR FOR MORE THAN A FRACTION OF A SECOND.
+       playButton.setBackgroundColor(Color.RED);
     }
     
     //Stops stream, changes playPause to 'stopped' state.
