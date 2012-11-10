@@ -54,9 +54,21 @@ public class StreamBannerFragment extends Fragment {
         
         //Starts Stream
         setupPlayer();
+        
+        kdicStream.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+			@Override
+			public void onPrepared(MediaPlayer mp) {
+			       kdicStream.start();
+			       isLoading = false;
+			       playButton.setText("Pause"); // WHY WON'T THIS APPEAR FOR MORE THAN A FRACTION OF A SECOND.
+			       playButton.setBackgroundColor(Color.RED);
+			}
+        });
+        
         if (!(kdicStream.isPlaying())){
         	startPlaying();
         }
+        
     }
     
   //If the stream is not stopped, stop. Else, start.
@@ -77,18 +89,11 @@ public class StreamBannerFragment extends Fragment {
         playButton.setBackgroundColor(Color.YELLOW);
     	
     	try {
-    		kdicStream.prepare();
+    		kdicStream.prepareAsync();
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} // might take long! (for buffering, etc)
-        
-       kdicStream.start();
-       
-       isLoading = false;
-       playButton.setText("Pause"); // WHY WON'T THIS APPEAR FOR MORE THAN A FRACTION OF A SECOND.
-       playButton.setBackgroundColor(Color.RED);
+		}
+    	
     }
     
     //Stops stream, changes playPause to 'stopped' state.
@@ -112,6 +117,10 @@ public class StreamBannerFragment extends Fragment {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+        
+        
+        
+        
     }
         
 }
