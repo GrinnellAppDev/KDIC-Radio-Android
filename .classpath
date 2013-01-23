@@ -2,11 +2,6 @@
 <classpath>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 	<classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
-	<classpathentry kind="lib" path="libs/jericho-html-3.2.jar" sourcepath="/Users/MacAir/Downloads/jericho-html-3.2/src/java/net">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/Users/MacAir/Downloads/jericho-html-3.2/docs/javadoc/"/>
-		</attributes>
-	</classpathentry>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="output" path="bin/classes"/>

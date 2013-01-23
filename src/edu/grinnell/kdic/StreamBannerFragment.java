@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 
-import android.graphics.Color;
-import android.graphics.drawable.Drawable;
+import com.larvalabs.svgandroid.SVG;
+import com.larvalabs.svgandroid.SVGParser;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -13,8 +13,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebView;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -24,13 +23,12 @@ public class StreamBannerFragment extends Fragment {
 	private String IMAGEURL = "http://kdic.grinnell.edu/wp-content/uploads/EDM-150x150.gif";
 	
 	private MediaPlayer kdicStream = new MediaPlayer(); //KDIC stream
-    private Button playButton; //playPause button
+    private ImageButton playButton; //playPause button
     private ImageView metadataImage; //Metadata image. Duhh.
     private TextView metadataText; //Double duhh.
     private final ImageDownloader mDownload = new ImageDownloader();
     
     boolean isLoading = false; //true if stream is loading but not playing
-    
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,42 +41,39 @@ public class StreamBannerFragment extends Fragment {
 	@Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-    	
     	return inflater.inflate(R.layout.fragment_stream_banner, container, false);
     }
     
     @Override
     public void onViewCreated(View view, Bundle ofJoy){
-    	//Initial playPause settings
-        playButton = (Button) view.findViewById(R.id.playButton);
-        playButton.setText("Pause");
-        playButton.setBackgroundColor(Color.RED);
-        
+    	
+    	//Initializing widget variables. 
+        playButton = (ImageButton) view.findViewById(R.id.playButton);
         metadataImage = (ImageView) view.findViewById(R.id.curPlayingImage);
         metadataText = (TextView) view.findViewById(R.id.curPlayingText);
         
-        //playPause listener, stops/starts stream
+        //playPause listener. Stops/starts stream
         playButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 playPause();
             }
         });
         
-        //Starts Stream
-        setupPlayer();
-        
+        // onPrepared listener. Starts stream and changes playButton image when the stream has finished setting up.
         kdicStream.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
 			@Override
 			public void onPrepared(MediaPlayer mp) {
 			       kdicStream.start();
 			       isLoading = false;
-			       playButton.setText("Pause"); // WHY WON'T THIS APPEAR FOR MORE THAN A FRACTION OF A SECOND.
-			       playButton.setBackgroundColor(Color.RED);
+			       playButton.setImageResource(R.drawable.pause);
 			}
         });
 
+        // Set metadata image to hardcoded URL
         mDownload.download(IMAGEURL, metadataImage);
         
+        //Starts Stream
+        setupPlayer();
         if (!(kdicStream.isPlaying())){
         	startPlaying();
         }
@@ -99,22 +94,19 @@ public class StreamBannerFragment extends Fragment {
     //Changes playPause to 'loading' state, prepares stream, starts stream
     public void startPlaying(){
     	isLoading = true;
-    	playButton.setText("Starting..."); 
-        playButton.setBackgroundColor(Color.YELLOW);
+	    playButton.setImageResource(R.drawable.loading);
     	
     	try {
     		kdicStream.prepareAsync();
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		}
-    	
     }
     
     //Stops stream, changes playPause to 'stopped' state.
     public void stopPlaying(){
     	kdicStream.stop();
-    	playButton.setText("Play");
-        playButton.setBackgroundColor(Color.GREEN);
+	       playButton.setImageResource(R.drawable.pause);
     }
     
     //Sets stream's type and URL
@@ -132,13 +124,6 @@ public class StreamBannerFragment extends Fragment {
 			e.printStackTrace();
 		}
         
-        
-        
-        
     }
     
-    public void setMetadataImageURL(String imgurl){
-        metadataText.setText("Image has been changed");
-    }
-        
 }
