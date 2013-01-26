@@ -9,7 +9,6 @@
     <string name="stop_text">Pause</string>
     <string name="kdic">KDIC</string>
     <string name="streamInfo">It\'s KDIC!\nPlayin\' Yo\' Tunes.</string>
-    	
-    
+    <string name="title_activity_test">TestActivity</string>
 
 </resources>
