@@ -1,8 +1,6 @@
 package edu.grinnell.kdic;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -11,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -21,7 +20,7 @@ public class StreamBannerFragment extends Fragment {
 	private String IMAGEURL = "http://kdic.grinnell.edu/wp-content/uploads/EDM-150x150.gif";
 	
 	private MediaPlayer kdicStream = new MediaPlayer(); //KDIC stream
-    private ImageButton playButton; //playPause button
+    private ImageView playButton; //playPause button
     private ImageView metadataImage; //Metadata image. Duhh.
     private TextView metadataText; //Double duhh.
     private final ImageDownloader mDownload = new ImageDownloader();
@@ -46,14 +45,14 @@ public class StreamBannerFragment extends Fragment {
     public void onViewCreated(View view, Bundle ofJoy){
     	
     	//Initializing widget variables. 
-        playButton = (ImageButton) view.findViewById(R.id.playButton);
-        metadataImage = (ImageView) view.findViewById(R.id.curPlayingImage);
-        metadataText = (TextView) view.findViewById(R.id.curPlayingText);
+        playButton = (ImageView) view.findViewById(R.id.playButton);
+      // metadataImage = (ImageView) view.findViewById(R.id.curPlayingImage);
+      //  metadataText = (TextView) view.findViewById(R.id.curPlayingText);
         
         //playPause listener. Stops/starts stream
         playButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                playPause();
+                playPause(playButton);
             }
         });
         
@@ -63,12 +62,13 @@ public class StreamBannerFragment extends Fragment {
 			public void onPrepared(MediaPlayer mp) {
 			       kdicStream.start();
 			       isLoading = false;
-			       playButton.setImageResource(R.drawable.pause);
+			       playButton.setImageResource(R.drawable.record);
+			     //  playButton.setImageResource(R.drawable.pause);
 			}
         });
 
         // Set metadata image to hardcoded URL
-        mDownload.download(IMAGEURL, metadataImage);
+      //  mDownload.download(IMAGEURL, metadataImage);
         
         //Starts Stream
         setupPlayer();
@@ -79,32 +79,41 @@ public class StreamBannerFragment extends Fragment {
     }
     
   //If the stream is not stopped, stop. Else, start.
-    public void playPause(){
+    public void playPause(View V){
     		if(isLoading){
     			// do nothing
     		} else if ((kdicStream.isPlaying())) {
-    			stopPlaying();
+    			kdicStream.pause();
+    			playButton.clearAnimation();
+    			
     		} else {
-    			startPlaying();
+    			kdicStream.start();
+    			playButton.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+        				R.anim.loading));
     		}
     	}
 
     //Changes playPause to 'loading' state, prepares stream, starts stream
     public void startPlaying(){
     	isLoading = true;
-	    playButton.setImageResource(R.drawable.loading);
-    	
+	    playButton.setImageResource(R.drawable.record);
+	    playButton.startAnimation(AnimationUtils.loadAnimation(getActivity(),
+				R.anim.loading));
+	    
     	try {
     		kdicStream.prepareAsync();
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		}
+    	
     }
     
     //Stops stream, changes playPause to 'stopped' state.
     public void stopPlaying(){
-    	kdicStream.stop();
-	       playButton.setImageResource(R.drawable.pause);
+    	//kdicStream.stop();
+    	kdicStream.pause();
+	      // playButton.setImageResource(R.drawable.pause);
+    	playButton.clearAnimation();
     }
     
     //Sets stream's type and URL

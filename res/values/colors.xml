@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <color name="gwhite">#FFFFFF</color>
+    <color name="ggrey">#272727</color>
+    <color name="gmedgrey">#404040</color>
+    <color name="glightgrey">#575757</color>
+    <color name="gllightgrey">#777177</color>
+    <color name="glllightgrey">#a0a0a0</color>
+    <color name="gcream">#F5FFFA</color>
+    <color name="gdcream">#f0eeef</color>
+    <color name="gdarkred">#a70012</color>
+    <color name="gmdarkred">#a72727</color>
+    <color name="gred">#ba0727</color>
+    <color name="gmlightred">#c71727</color>
+    <color name="glightred">#c75757</color>
+    <color name="gllightred">#d77777</color>
+    <color name="black_overlay">#66000000</color>
+
+</resources>
