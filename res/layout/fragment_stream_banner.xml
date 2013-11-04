@@ -1,34 +1,56 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/gred" >
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gred"
+    android:orientation="vertical" >
 
     <ImageView
-        android:id="@+id/playButton"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/diskImage"
+        android:layout_width="450dp"
+        android:layout_height="450dp"
+        android:layout_gravity="center"
+        android:onClick="playPause"
         android:padding="4dp"
-        android:scaleType="centerInside" 
-        android:onClick = "playPause"
-        />
- <!--    
-    <ImageView
-        android:id="@+id/curPlayingImage"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:padding="4dp"
-        android:src="@drawable/ic_launcher" 
-        android:layout_below="@id/playButton"/>
+        android:scaleType="centerInside"
+        android:src="@drawable/record" />
 
-    <TextView
-        android:id="@+id/curPlayingText"
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:padding="4dp"
-        android:text="@string/streamInfo" 
-        android:layout_below="@id/playButton"/>
-        --> 
-       
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/gred"
+        android:orientation="horizontal"
+        android:paddingBottom="40dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp" >
 
-</RelativeLayout>
+        <Button
+            android:id="@+id/playButton"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center"
+            android:onClick="playPause"
+            android:paddingLeft="40dp" />
+
+        <Button
+            android:id="@+id/pauseButton"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_gravity="center"
+            android:onClick="playPause" />
+
+        <Button
+            android:id="@+id/stopButton"
+            android:layout_width="75dp"
+            android:layout_height="75dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center"
+            android:onClick="stopPlaying" />
+    </RelativeLayout>
+
+</LinearLayout>
