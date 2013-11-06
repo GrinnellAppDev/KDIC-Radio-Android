@@ -7,50 +7,15 @@
 
     <ImageView
         android:id="@+id/diskImage"
-        android:layout_width="450dp"
-        android:layout_height="450dp"
+        android:layout_width="350dp"
+        android:layout_height="350dp"
         android:layout_gravity="center"
         android:onClick="playPause"
         android:padding="4dp"
+        android:layout_marginTop="50dp"
         android:scaleType="centerInside"
         android:src="@drawable/record" />
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/gred"
-        android:orientation="horizontal"
-        android:paddingBottom="40dp"
-        android:paddingLeft="40dp"
-        android:paddingRight="40dp" >
 
-        <Button
-            android:id="@+id/playButton"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentLeft="true"
-            android:layout_gravity="center"
-            android:onClick="playPause"
-            android:paddingLeft="40dp" />
-
-        <Button
-            android:id="@+id/pauseButton"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_gravity="center"
-            android:onClick="playPause" />
-
-        <Button
-            android:id="@+id/stopButton"
-            android:layout_width="75dp"
-            android:layout_height="75dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_gravity="center"
-            android:onClick="stopPlaying" />
-    </RelativeLayout>
 
 </LinearLayout>

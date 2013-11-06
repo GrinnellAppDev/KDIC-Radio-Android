@@ -5,17 +5,26 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="100" >
-    
-	<FrameLayout android:id="@+id/radio_banner_container"
-	    		android:layout_width="match_parent"
-	    		android:layout_height="match_parent" />
-<!--  
+
+    <ImageView
+        android:id="@+id/kdicBanner"
+        android:layout_width="450dp"
+        android:layout_height="80dp"
+        android:layout_gravity="center"
+        android:scaleType="centerInside"
+        android:src="@drawable/kdic" />
+
+    <FrameLayout
+        android:id="@+id/radio_banner_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+    <!--
 	<TextView
 	    android:id="@+id/textView1"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:text="Content!"
 	    android:textAppearance="?android:attr/textAppearanceLarge" />
-	    -->
-	
+    -->
+
 </LinearLayout>

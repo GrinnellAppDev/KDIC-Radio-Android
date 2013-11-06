@@ -54,23 +54,13 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onViewCreated(View view, Bundle ofJoy) {
 
+		
+		// add button to download stream
+		// http://stackoverflow.com/questions/5381969/android-how-to-record-mp3-radio-audio-stream/5384161#5384161
+		
 		// Initializing widget variables.
 		diskImage = (ImageView) view.findViewById(R.id.diskImage);
 		diskImage.setOnClickListener(this);
-
-		// Find buttons
-		playButton = (Button) view.findViewById(R.id.playButton);
-		pauseButton = (Button) view.findViewById(R.id.pauseButton);
-		stopButton = (Button) view.findViewById(R.id.stopButton);
-
-		// Initialize Buttons
-		playButton.setOnClickListener(this);
-		pauseButton.setOnClickListener(this);
-		stopButton.setOnClickListener(this);
-
-		playButton.setBackgroundResource(R.drawable.button_black_play);
-		pauseButton.setBackgroundResource(R.drawable.button_black_pause);
-		stopButton.setBackgroundResource(R.drawable.button_black_stop);
 
 		// onPrepared listener. Starts stream and changes diskImage image when
 		// the stream has finished setting up.
@@ -80,7 +70,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 				kdicStream.start();
 				mLoaded = true;
 				isLoading = false;
-				playButton.setBackgroundResource(R.drawable.button_blue_play);
+			//	playButton.setBackgroundResource(R.drawable.button_blue_play);
 				diskImage.startAnimation(AnimationUtils.loadAnimation(
 						getActivity(), R.anim.spin));
 			}
@@ -105,15 +95,10 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		} else if ((kdicStream.isPlaying())) {
 			kdicStream.pause();
 			diskImage.clearAnimation();
-			playButton.setBackgroundResource(R.drawable.button_black_play);
-			pauseButton.setBackgroundResource(R.drawable.button_blue_pause);
 		} else {
 			kdicStream.start();
 			diskImage.startAnimation(AnimationUtils.loadAnimation(
 					getActivity(), R.anim.spin));
-			stopButton.setBackgroundResource(R.drawable.button_black_stop);
-			playButton.setBackgroundResource(R.drawable.button_blue_play);
-			pauseButton.setBackgroundResource(R.drawable.button_black_pause);
 		}
 	}
 
@@ -121,8 +106,6 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	public void startPlaying() {
 		if (!kdicStream.isPlaying()) {
 			isLoading = true;
-			playButton.setBackgroundResource(R.drawable.button_blue_play);
-			stopButton.setBackgroundResource(R.drawable.button_black_stop);
 
 			try {
 				kdicStream.prepareAsync();
@@ -138,9 +121,6 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 			mLoaded = false;
 
 			kdicStream.stop();
-			stopButton.setBackgroundResource(R.drawable.button_blue_stop);
-			playButton.setBackgroundResource(R.drawable.button_black_play);
-			pauseButton.setBackgroundResource(R.drawable.button_black_pause);
 			diskImage.clearAnimation();
 		}
 	}
@@ -163,15 +143,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onClick(View arg0) {
-		if (arg0 == playButton)
-			playPause(playButton);
-		else if (arg0 == pauseButton)
-			playPause(pauseButton);
-		else if (arg0 == stopButton)
-			stopPlaying(stopButton);
-		else if (arg0 == diskImage) {
 			playPause(diskImage);
-		}
 	}
 
 	//Make sure the stream stops when the fragment is destroyed
