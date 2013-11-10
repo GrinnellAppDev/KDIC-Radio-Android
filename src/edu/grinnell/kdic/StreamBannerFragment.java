@@ -2,10 +2,10 @@ package edu.grinnell.kdic;
 
 import java.io.IOException;
 
+import android.app.Fragment;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,10 +54,9 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onViewCreated(View view, Bundle ofJoy) {
 
-		
 		// add button to download stream
 		// http://stackoverflow.com/questions/5381969/android-how-to-record-mp3-radio-audio-stream/5384161#5384161
-		
+
 		// Initializing widget variables.
 		diskImage = (ImageView) view.findViewById(R.id.diskImage);
 		diskImage.setOnClickListener(this);
@@ -70,7 +69,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 				kdicStream.start();
 				mLoaded = true;
 				isLoading = false;
-			//	playButton.setBackgroundResource(R.drawable.button_blue_play);
+				// playButton.setBackgroundResource(R.drawable.button_blue_play);
 				diskImage.startAnimation(AnimationUtils.loadAnimation(
 						getActivity(), R.anim.spin));
 			}
@@ -143,10 +142,12 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 
 	@Override
 	public void onClick(View arg0) {
+		if (arg0 == diskImage)
 			playPause(diskImage);
+
 	}
 
-	//Make sure the stream stops when the fragment is destroyed
+	// Make sure the stream stops when the fragment is destroyed
 	@Override
 	public void onDestroy() {
 		super.onDestroy();

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">KDIC</string>
@@ -10,5 +11,7 @@
     <string name="kdic">KDIC</string>
     <string name="streamInfo">It\'s KDIC!\nPlayin\' Yo\' Tunes.</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_schedule_fragment">ScheduleFragment</string>
+    <string name="action_settings">Settings</string>
 
 </resources>
