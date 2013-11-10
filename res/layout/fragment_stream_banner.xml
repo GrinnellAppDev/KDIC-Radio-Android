@@ -23,20 +23,11 @@
             android:layout_width="350dp"
             android:layout_height="350dp"
             android:layout_gravity="center"
-            android:layout_marginBottom="10dp"
+            android:layout_marginBottom="9dp"
             android:onClick="playPause"
             android:padding="4dp"
             android:scaleType="centerInside"
-            android:src="@drawable/record" />
-
-        <Button
-            android:id="@+id/schedule"
-            android:layout_width="65dp"
-            android:layout_height="65dp"
-            android:layout_gravity="center_horizontal|bottom"
-            android:layout_marginBottom="18dp"
-            android:background="@drawable/list_black"
-            android:onClick="showSchedule" />
+            android:background="@drawable/medium_kington" />
     </FrameLayout>
 
 </LinearLayout>

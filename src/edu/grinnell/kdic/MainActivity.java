@@ -21,6 +21,7 @@ public class MainActivity extends FragmentActivity {
 	View schedule;
 	public static String[] url = new String[] { "http://tcdb.grinnell.edu/apps/glicious/KDIC/schedule.json" };
 	public boolean scheduleInitialized = false;
+	protected int diskImage = 0;
 
 	@SuppressLint("NewApi")
 	@Override
@@ -51,6 +52,8 @@ public class MainActivity extends FragmentActivity {
 		if (scheduleShowing) {
 			// schedule.isEnabled();
 			schedule.setVisibility(View.INVISIBLE);
+			findViewById(R.id.schedule).setBackgroundResource(
+					R.drawable.list_white);
 			scheduleShowing = false;
 		} else
 			super.onBackPressed();
@@ -86,5 +89,30 @@ public class MainActivity extends FragmentActivity {
 			schedule.setVisibility(View.GONE);
 			view.setBackgroundResource(R.drawable.list_black);
 		}
+	}
+
+	public void swapDisk(View view) {
+		// switch the disk image
+		View diskView = findViewById(R.id.diskImage);
+
+		if (diskImage == 0) {
+			// swap to disk 1
+			diskView.setBackgroundResource(R.drawable.medium_chronic);
+			diskImage = 1;
+		} else if (diskImage == 1) {
+			// swap to disk 2
+			diskView.setBackgroundResource(R.drawable.medium_kington);
+			diskImage = 2;
+		} else if (diskImage == 2) {
+			diskView.setBackgroundResource(R.drawable.medium_kdicdisk);
+			diskImage = 3;
+		} else if (diskImage == 3) {
+			diskView.setBackgroundResource(R.drawable.medium_kdictext);
+			diskImage = 4;
+		} else if (diskImage == 4) {
+			diskView.setBackgroundResource(R.drawable.medium_tribe);
+			diskImage = 0;
+		}
+
 	}
 }

@@ -15,7 +15,7 @@
         android:shadowDy="10"
         android:shadowRadius="20"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/gred"
+        android:textColor="@color/gdarkred"
         android:textSize="32sp"
         android:textStyle="bold"
         android:typeface="sans" />
@@ -31,7 +31,8 @@
         android:shadowDy="-5"
         android:shadowRadius="18"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/gred"
-        android:textSize="20sp" />
+        android:textColor="@color/gllightgrey"
+        android:textSize="20sp"
+        android:textStyle="italic" />
 
 </LinearLayout>

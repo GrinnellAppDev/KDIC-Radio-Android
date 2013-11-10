@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:scaleType="fitXY"
     android:weightSum="100" >
 
     <LinearLayout
@@ -28,8 +29,28 @@
     <FrameLayout
         android:id="@+id/schedule_container"
         android:layout_width="match_parent"
-        android:layout_height="325dp"
+        android:layout_height="match_parent"
         android:layout_gravity="top"
         android:layout_marginTop="80dp" />
+
+    <Button
+        android:id="@+id/schedule"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/list_black"
+        android:onClick="showSchedule" />
+    
+    <Button
+        android:id="@+id/disks"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|left"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/disk_button"
+        android:onClick="swapDisk" />
 
 </FrameLayout>
