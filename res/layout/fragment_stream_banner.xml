@@ -31,12 +31,12 @@
 
         <Button
             android:id="@+id/schedule"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="showSchedule"
-            android:layout_gravity="center_horizontal"
-            android:text="schedule" />
-
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_marginBottom="18dp"
+            android:background="@drawable/list_black"
+            android:onClick="showSchedule" />
     </FrameLayout>
 
 </LinearLayout>

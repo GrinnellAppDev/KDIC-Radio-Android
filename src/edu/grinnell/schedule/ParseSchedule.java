@@ -61,13 +61,13 @@ public class ParseSchedule extends
 			e.printStackTrace();
 		}
 
-		addShowInfo(monday, "monday");
-		addShowInfo(tuesday, "tuesday");
-		addShowInfo(wednesday, "wednesday");
-		addShowInfo(thursday, "thursday");
-		addShowInfo(friday, "friday");
-		addShowInfo(saturday, "saturday");
-		addShowInfo(sunday, "sunday");
+		addShowInfo(monday, "Monday");
+		addShowInfo(tuesday, "Tuesday");
+		addShowInfo(wednesday, "Wednesday");
+		addShowInfo(thursday, "Thursday");
+		addShowInfo(friday, "Friday");
+		addShowInfo(saturday, "Saturday");
+		addShowInfo(sunday, "Sunday");
 
 		return Schedule;
 	}

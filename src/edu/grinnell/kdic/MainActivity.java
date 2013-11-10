@@ -39,8 +39,6 @@ public class MainActivity extends FragmentActivity {
 		parser.execute(url);
 		mSchedule = parser.Schedule;
 
-		// Log.i("ScheduleTest", mSchedule.get(0).getDay());
-
 		getFragmentManager()
 				.beginTransaction()
 				.replace(R.id.radio_banner_container,
@@ -78,12 +76,15 @@ public class MainActivity extends FragmentActivity {
 			scheduleInitialized = true;
 			scheduleShowing = true;
 			schedule.setVisibility(View.VISIBLE);
+			view.setBackgroundResource(R.drawable.list_white);
 		} else if (scheduleShowing == false) {
 			scheduleShowing = true;
 			schedule.setVisibility(View.VISIBLE);
+			view.setBackgroundResource(R.drawable.list_white);
 		} else {
 			scheduleShowing = false;
 			schedule.setVisibility(View.GONE);
+			view.setBackgroundResource(R.drawable.list_black);
 		}
 	}
 }
