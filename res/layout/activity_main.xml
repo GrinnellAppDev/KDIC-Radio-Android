@@ -41,8 +41,9 @@
         android:layout_marginRight="3dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/list_black"
-        android:onClick="showSchedule" />
-    
+        android:onClick="showSchedule"
+        android:scaleType="centerInside" />
+
     <Button
         android:id="@+id/disks"
         android:layout_width="50dp"
@@ -51,6 +52,7 @@
         android:layout_marginLeft="3dp"
         android:layout_marginTop="12dp"
         android:background="@drawable/disk_button"
-        android:onClick="swapDisk" />
+        android:onClick="swapDisk"
+        android:scaleType="centerInside" />
 
 </FrameLayout>

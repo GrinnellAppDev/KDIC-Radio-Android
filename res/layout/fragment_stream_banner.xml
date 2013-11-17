@@ -27,7 +27,7 @@
             android:onClick="playPause"
             android:padding="4dp"
             android:scaleType="centerInside"
-            android:background="@drawable/medium_kington" />
+            android:background="@drawable/medium_kdicdisk" />
     </FrameLayout>
 
 </LinearLayout>

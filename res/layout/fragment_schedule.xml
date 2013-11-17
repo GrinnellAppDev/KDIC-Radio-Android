@@ -15,7 +15,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawSelectorOnTop="false"
-        android:fastScrollAlwaysVisible="false" >
+        android:fastScrollAlwaysVisible="false"
+        android:listSelector="@android:color/transparent"
+         >
 
     </ListView>
 

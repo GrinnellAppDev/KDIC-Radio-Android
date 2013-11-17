@@ -3,9 +3,13 @@ package edu.grinnell.kdic;
 import java.io.IOException;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.net.wifi.WifiManager;
+import android.net.wifi.WifiManager.WifiLock;
 import android.os.Bundle;
+import android.os.PowerManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,11 +25,12 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	private String IMAGEURL = "http://kdic.grinnell.edu/wp-content/uploads/EDM-150x150.gif";
 
 	private MediaPlayer kdicStream = new MediaPlayer(); // KDIC stream
+	private WifiLock wifiLock; //keep the wifi from turning off
+
 	private ImageView diskImage; // playPause button
 	private Button playButton;
 	private Button pauseButton;
 	private Button stopButton;
-
 	private ImageView metadataImage; // Metadata image. Duhh.
 	private TextView metadataText; // Double duhh.
 	private final ImageDownloader mDownload = new ImageDownloader();
@@ -44,6 +49,8 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
+		
+
 		// Starts Stream
 		setupPlayer();
 
@@ -60,6 +67,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		// Initializing widget variables.
 		diskImage = (ImageView) view.findViewById(R.id.diskImage);
 		diskImage.setOnClickListener(this);
+		
 
 		// onPrepared listener. Starts stream and changes diskImage image when
 		// the stream has finished setting up.
@@ -127,6 +135,11 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	// Sets stream's type and URL
 	public void setupPlayer() {
 		kdicStream.setAudioStreamType(AudioManager.STREAM_MUSIC);
+		kdicStream.setWakeMode(getActivity().getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
+		wifiLock = ((WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE))
+			    .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+		wifiLock.acquire();
+
 		try {
 			kdicStream.setDataSource(STREAMURL);
 		} catch (IllegalArgumentException e) {
@@ -152,5 +165,8 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	public void onDestroy() {
 		super.onDestroy();
 		kdicStream.stop();
+		kdicStream.release();
+		wifiLock.release();
+		kdicStream = null;
 	}
 }
