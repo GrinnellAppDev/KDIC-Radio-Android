@@ -45,8 +45,8 @@ public class ScheduleListAdapter extends ArrayAdapter<Show> {
 		final Show a = mData.get(position);
 		holder.name.setText(a.getTitle());
 
-		holder.time.setText(a.getDay() + "  " + a.getStartTime() + " - "
-				+ a.getEndTime());
+		holder.time.setText(a.getDay() + "  " + convertTime(a.getStartTime())
+				+ " - " + convertTime(a.getEndTime()));
 
 		return convertView;
 	}
@@ -60,6 +60,20 @@ public class ScheduleListAdapter extends ArrayAdapter<Show> {
 				dayshows.add(a_show);
 		}
 		return dayshows;
+	}
+
+	//convert 24 hour time to a 12 hour value
+	public String convertTime(String time) {
+		int hour = Integer.parseInt(time);
+		if (hour > 12) {
+			if (hour == 24)
+				return "12am";
+			if (hour > 24)
+				return (hour - 24) + "am";
+			else
+				return (hour - 12) + "pm";
+		} else
+			return hour + "am";
 	}
 
 }

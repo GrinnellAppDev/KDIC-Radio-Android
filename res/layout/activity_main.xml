@@ -1,29 +1,37 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mainLayout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/gblack"
     android:orientation="vertical"
     android:scaleType="fitXY"
     android:weightSum="100" >
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:orientation="vertical" >
 
-        <ImageView
-            android:id="@+id/kdicBanner"
-            android:layout_width="450dp"
+        <RelativeLayout
+            android:layout_width="fill_parent"
             android:layout_height="80dp"
-            android:layout_gravity="center"
-            android:scaleType="centerInside"
-            android:src="@drawable/kdic" />
+            android:background="@color/gblack"
+            android:layout_gravity="center_horizontal" >
+
+            <ImageView
+                android:id="@+id/kdicBanner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:scaleType="centerInside"
+                android:src="@drawable/kdic_wide" />
+        </RelativeLayout>
 
         <FrameLayout
             android:id="@+id/radio_banner_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
     </LinearLayout>
 
     <FrameLayout

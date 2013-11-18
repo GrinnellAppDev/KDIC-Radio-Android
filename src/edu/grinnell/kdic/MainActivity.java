@@ -10,6 +10,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnLongClickListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.ImageView;
 import edu.grinnell.schedule.ParseSchedule;
 import edu.grinnell.schedule.Show;
 
@@ -28,11 +31,17 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_NO_TITLE);
+       getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
+		
 		setContentView(R.layout.activity_main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+		
 
-		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO)
-			getActionBar().hide();
+		//if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO)
+		//	getActionBar().hide();
 
 		// open the inputStream to the file
 		// scheduleJSON = getAssets().open("schedule.json");
@@ -94,30 +103,30 @@ public class MainActivity extends FragmentActivity {
 
 	public void swapDisk(View view) {
 		// switch the disk image
-		final View diskView = findViewById(R.id.diskImage);
+		final ImageView diskView = (ImageView) findViewById(R.id.diskImage);
 		
 		diskView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
 				if (diskImage == 0)
-					diskView.setBackgroundResource(R.drawable.medium_kington);
+					diskView.setImageResource(R.drawable.medium_kington);
 				return true;
 			}
 		});
 		
 		if (diskImage == 0) {
 			// swap to disk 1
-			diskView.setBackgroundResource(R.drawable.medium_kdicdisk);
+			diskView.setImageResource(R.drawable.medium_kdicdisk);
 			diskImage = 1;
 		} else if (diskImage == 1) {
 			// swap to disk 2
-			diskView.setBackgroundResource(R.drawable.medium_kdictext);
+			diskView.setImageResource(R.drawable.medium_kdictext);
 			diskImage = 2;
 		} else if (diskImage == 2) {
-			diskView.setBackgroundResource(R.drawable.medium_tribe);
+			diskView.setImageResource(R.drawable.medium_tribe);
 			diskImage = 3;
 		} else if (diskImage == 3) {
-			diskView.setBackgroundResource(R.drawable.medium_chronic);
+			diskView.setImageResource(R.drawable.medium_chronic);
 			diskImage = 0;
 		}
 
