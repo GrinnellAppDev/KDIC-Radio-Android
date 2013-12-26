@@ -28,8 +28,6 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 
 	private ImageView diskImage; // playPause button
 
-	private final ImageDownloader mDownload = new ImageDownloader();
-
 	boolean isLoading = false; // true if stream is loading but not playing
 	private Boolean mLoaded = false;
 
@@ -43,9 +41,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-
 		
-
 		// Starts Stream
 		setupPlayer();
 
@@ -60,7 +56,6 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		diskImage = (ImageView) view.findViewById(R.id.diskImage);
 		diskImage.setOnClickListener(this);
 		
-
 		// onPrepared listener. Starts stream and changes diskImage image when
 		// the stream has finished setting up.
 		kdicStream.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -142,6 +137,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		}
 	}
 
+	//toggle play/pause when disk is tapped
 	@Override
 	public void onClick(View arg0) {
 		if (arg0 == diskImage)
