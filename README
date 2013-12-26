@@ -4,9 +4,10 @@
 #
 #### #### #### #### #### #### #### #### #### #### #### #### #### #### ###
 +-----------------------------------------------------------------------+
-Authors:  	Spencer Liberto
+Authors:  	Patrick Triest
+		Spencer Liberto
 		Travis Law
-		Patrick Triest	
+			
 		
 Date:     Tuesday 6 November 2012
 
@@ -37,9 +38,6 @@ stream to display. On top of streaming KDIC, the app also brings the user
 content from the KDIC website (http://kdic.grinnell.edu), such as the
 program schedule, program description, community events, reviews, and so
 much more.
-
-Grinnell Menu is currently in ALPHA.  This means the application is
-in development and not yet fully functional.  
 
 Source for Grinnell-Menu can be obtained at the following location:
 	https://github.com/GrinnellAppDev/KDIC-Radio-Android
