@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">KDIC</string>
-    <string name="title_activity_main">KDIC Radio Stream</string>
+    <string name="title_activity_main">KDIC</string>
     <string name="hello_world">KDIC</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_playstop">Start/Stop</string>

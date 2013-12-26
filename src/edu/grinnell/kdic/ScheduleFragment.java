@@ -30,31 +30,7 @@ public class ScheduleFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		// String[] values = new String[] { "show1" , "Show2" , "Show3" ,
-		// "Show4" , "Show5" , "Show6" , "Show7"};
-		// ArrayAdapter<String> adapter = new
-		// ArrayAdapter<String>(getActivity(),
-		// android.R.layout.simple_list_item_1, values);
-		// setListAdapter(adapter);
-
-		/*
-		 * Show show1 = new Show("tha joice boxx", "11", "12", "monday"); Show
-		 * show2 = new Show("bubble butts", "8", "9", "tuesday"); Show show3 =
-		 * new Show("youve probably never heard of it", "7", "6", "wednesday");
-		 * 
-		 * ArrayList<Show> mData = new ArrayList<Show>(); mData.add(show1);
-		 * mData.add(show2); mData.add(show3); ScheduleDay monday = new
-		 * ScheduleDay("Monday", mData);
-		 * 
-		 * ArrayList<ScheduleDay> schedule = new ArrayList<ScheduleDay>();
-		 * schedule.add(monday);
-		 */
-
-		// MainActivity activity = (MainActivity) getActivity();
-		// schedule = activity.mSchedule;
-
-		// ArrayList<Show> schedule = getActivity().mSchedule;
-
+		
 		mAdapter = new ScheduleListAdapter((MainActivity) getActivity(),
 				R.layout.show_row, mSchedule);
 

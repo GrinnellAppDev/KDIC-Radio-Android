@@ -22,17 +22,12 @@ import android.widget.TextView;
 public class StreamBannerFragment extends Fragment implements OnClickListener {
 
 	private String STREAMURL = "http://kdic.grinnell.edu:8001/kdic128";
-	private String IMAGEURL = "http://kdic.grinnell.edu/wp-content/uploads/EDM-150x150.gif";
 
 	private MediaPlayer kdicStream = new MediaPlayer(); // KDIC stream
 	private WifiLock wifiLock; //keep the wifi from turning off
 
 	private ImageView diskImage; // playPause button
-	private Button playButton;
-	private Button pauseButton;
-	private Button stopButton;
-	private ImageView metadataImage; // Metadata image. Duhh.
-	private TextView metadataText; // Double duhh.
+
 	private final ImageDownloader mDownload = new ImageDownloader();
 
 	boolean isLoading = false; // true if stream is loading but not playing
@@ -61,9 +56,6 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onViewCreated(View view, Bundle ofJoy) {
 
-		// add button to download stream
-		// http://stackoverflow.com/questions/5381969/android-how-to-record-mp3-radio-audio-stream/5384161#5384161
-
 		// Initializing widget variables.
 		diskImage = (ImageView) view.findViewById(R.id.diskImage);
 		diskImage.setOnClickListener(this);
@@ -82,9 +74,6 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 						getActivity(), R.anim.spin));
 			}
 		});
-
-		// Set metadata image to hardcoded URL
-		// mDownload.download(IMAGEURL, metadataImage);
 
 		if (!(kdicStream.isPlaying())) {
 			startPlaying();

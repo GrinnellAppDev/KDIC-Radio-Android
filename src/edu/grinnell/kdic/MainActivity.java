@@ -2,7 +2,6 @@ package edu.grinnell.kdic;
 
 import java.util.ArrayList;
 
-import android.annotation.SuppressLint;
 import android.app.ListFragment;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -10,8 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.View.OnLongClickListener;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import edu.grinnell.schedule.ParseSchedule;
 import edu.grinnell.schedule.Show;
@@ -27,26 +24,26 @@ public class MainActivity extends FragmentActivity {
 	public boolean scheduleInitialized = false;
 	public int diskImage = 1;
 
-	@SuppressLint("NewApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
-		requestWindowFeature(Window.FEATURE_NO_TITLE);
-       getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
-		
+
+		// requestWindowFeature(Window.FEATURE_NO_TITLE);
+		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 		setContentView(R.layout.activity_main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-		
 
-		//if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO)
-		//	getActionBar().hide();
+		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO)
+			getActionBar().hide();
 
 		// open the inputStream to the file
 		// scheduleJSON = getAssets().open("schedule.json");
 
 		// mSchedule = parser.parseShows();
+		
+		/* Parse the shows from the KDIC website */
 		parser.execute(url);
 		mSchedule = parser.Schedule;
 
@@ -59,6 +56,7 @@ public class MainActivity extends FragmentActivity {
 
 	@Override
 	public void onBackPressed() {
+		/* If the schedule is showing, hide it */
 		if (scheduleShowing) {
 			// schedule.isEnabled();
 			schedule.setVisibility(View.INVISIBLE);
@@ -66,6 +64,7 @@ public class MainActivity extends FragmentActivity {
 					R.drawable.list_black);
 			scheduleShowing = false;
 		} else
+			/* If not, hide the whole app */
 			super.onBackPressed();
 
 	}
@@ -74,8 +73,9 @@ public class MainActivity extends FragmentActivity {
 	public void onConfigurationChanged(Configuration newConfig) {
 	}
 
+	/* The show schedule is a fragment that is displayed over the main interface */
 	public void showSchedule(View view) {
-
+		//Initialize the schedule the first time
 		if (!scheduleInitialized) {
 			schedule = findViewById(R.id.schedule_container);
 			schedule.setVisibility(View.INVISIBLE);
@@ -90,6 +90,7 @@ public class MainActivity extends FragmentActivity {
 			scheduleShowing = true;
 			schedule.setVisibility(View.VISIBLE);
 			view.setBackgroundResource(R.drawable.list_white);
+		//Just change the visibility of the schedule on future taps
 		} else if (scheduleShowing == false) {
 			scheduleShowing = true;
 			schedule.setVisibility(View.VISIBLE);
@@ -104,7 +105,8 @@ public class MainActivity extends FragmentActivity {
 	public void swapDisk(View view) {
 		// switch the disk image
 		final ImageView diskView = (ImageView) findViewById(R.id.diskImage);
-		
+
+		//easter egg shhhh
 		diskView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
@@ -113,7 +115,8 @@ public class MainActivity extends FragmentActivity {
 				return true;
 			}
 		});
-		
+
+		//rotate through disk images
 		if (diskImage == 0) {
 			// swap to disk 1
 			diskView.setImageResource(R.drawable.medium_kdicdisk);
