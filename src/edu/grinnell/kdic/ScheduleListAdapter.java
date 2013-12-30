@@ -1,6 +1,7 @@
 package edu.grinnell.kdic;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.ListIterator;
 
 import android.view.LayoutInflater;
@@ -45,7 +46,34 @@ public class ScheduleListAdapter extends ArrayAdapter<Show> {
 		final Show a = mData.get(position);
 		holder.name.setText(a.getTitle());
 
-		holder.time.setText(a.getDay() + "  " + convertTime(a.getStartTime())
+		String day;
+		switch(a.getDay()){
+		case Calendar.MONDAY:
+			day = "Monday";
+			break;
+		case Calendar.TUESDAY:
+			day = "Tuesday";
+			break;
+		case Calendar.WEDNESDAY:
+			day = "Wednesday";
+			break;
+		case Calendar.THURSDAY:
+			day = "Thursday";
+			break;
+		case Calendar.FRIDAY:
+			day = "Friday";
+			break;
+		case Calendar.SATURDAY:
+			day = "Saturday";
+			break;
+		case Calendar.SUNDAY:
+			day = "Sunday";
+			break;
+		default:
+			day = "Partyday";
+		}
+		
+		holder.time.setText(day + "  " + convertTime(a.getStartTime())
 				+ " - " + convertTime(a.getEndTime()));
 
 		return convertView;
