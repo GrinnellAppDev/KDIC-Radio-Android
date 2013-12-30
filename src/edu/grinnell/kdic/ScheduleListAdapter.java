@@ -2,7 +2,6 @@ package edu.grinnell.kdic;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.ListIterator;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,7 @@ import edu.grinnell.schedule.Show;
 public class ScheduleListAdapter extends ArrayAdapter<Show> {
 	MainActivity mActivity;
 	private ArrayList<Show> mData;
-	
+
 	public ScheduleListAdapter(MainActivity a, int layoutId,
 			ArrayList<Show> data) {
 		super(a, layoutId, data);
@@ -46,8 +45,20 @@ public class ScheduleListAdapter extends ArrayAdapter<Show> {
 		final Show a = mData.get(position);
 		holder.name.setText(a.getTitle());
 
+		int showday = a.getDay();
+
+		/*
+		 * In the JSON file a show that is from 12am-1am on Tuesday is stored as
+		 * 24-25 on Monday, so this must be corrected when presenting the
+		 * schedule to the user
+		 */
+		if (a.getStartTime() >= 24)
+			showday++;
+		if (showday == 8)
+			showday = 1;
+
 		String day;
-		switch(a.getDay()){
+		switch (showday) {
 		case Calendar.MONDAY:
 			day = "Monday";
 			break;
@@ -72,14 +83,14 @@ public class ScheduleListAdapter extends ArrayAdapter<Show> {
 		default:
 			day = "Partyday";
 		}
-		
-		holder.time.setText(day + "  " + convertTime(a.getStartTime())
-				+ " - " + convertTime(a.getEndTime()));
+
+		holder.time.setText(day + "  " + convertTime(a.getStartTime()) + " - "
+				+ convertTime(a.getEndTime()) + "  CST");
 
 		return convertView;
 	}
 
-	//convert 24 hour time to a 12 hour value
+	// convert 24 hour time to a 12 hour value
 	public String convertTime(int hour) {
 		if (hour > 12) {
 			if (hour == 24)

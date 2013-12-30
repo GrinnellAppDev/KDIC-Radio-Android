@@ -16,10 +16,15 @@ import edu.grinnell.schedule.Show;
 public class ScheduleFragment extends ListFragment {
 	ScheduleListAdapter mAdapter;
 
+	// These variables will be used to sort the list by the current date
+	Calendar cal;
+	// day stored as int, in accordance wirh android Calendar class
+	protected int today;
+	protected int current_time;
+	double current_time_val;
+
 	private static final String SCHEDULE_KEY = "schedule_key";
 	public static ArrayList<Show> mSchedule;
-
-	// ArrayList<ScheduleDay> schedule = new ArrayList<ScheduleDay>();
 
 	public static ScheduleFragment newInstance(ArrayList<Show> mSchedule) {
 		ScheduleFragment fragment = new ScheduleFragment();
@@ -33,10 +38,10 @@ public class ScheduleFragment extends ListFragment {
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		
+
 		mAdapter = new ScheduleListAdapter((MainActivity) getActivity(),
 				R.layout.show_row, mSchedule);
-
+		
 		setListAdapter(mAdapter);
 	}
 
@@ -53,22 +58,53 @@ public class ScheduleFragment extends ListFragment {
 		mSchedule = (ArrayList<Show>) getArguments().getSerializable(
 				SCHEDULE_KEY);
 		
+		mSchedule = sortShows(mSchedule);
+		
 		return inflater.inflate(R.layout.fragment_schedule, container, false);
 	}
-/*	
-	public ArrayList<Show> sortShows(ArrayList<Show> shows){
-		Calendar c = Calendar.getInstance();
-		//day stored as int, starting with SUN = 1, end with SAT = 7
-		int day = c.get(Calendar.DAY_OF_WEEK);
-		int time = c.get(Calendar.HOUR_OF_DAY);
-		
+
+	/*
+	 * Sort the shows such that they are ordered by how soon they will air
+	 */
+	public ArrayList<Show> sortShows(ArrayList<Show> shows) {
+		// set the calendar variables to the current time
+		cal = Calendar.getInstance();
+		today = cal.get(Calendar.DAY_OF_WEEK);
+		current_time = cal.get(Calendar.HOUR_OF_DAY);
+
+		/*
+		 * For purposes of comparision, the time will be converted to a simple
+		 * numerical format. The built-in Date and Calendar class formats are
+		 * not used because these are weekly shows, and have no static date/year
+		 * values.
+		 */
+		current_time_val = today + (.01 * current_time);
+
 		Collections.sort(shows, new Comparator<Show>() {
-			public int compare(Show show1, Show show2){
-				
+			public int compare(Show show1, Show show2) {
+
+				double show1_time_val = show1.getDay()
+						+ (.01 * show1.getStartTime());
+
+				double show2_time_val = show2.getDay()
+						+ (.01 * show2.getStartTime());
+
+				return timeCompare(show1_time_val) > timeCompare(show2_time_val) ? -1
+						: 1;
 			}
 		});
-		
+
 		return shows;
 	}
-*/
+
+	/*
+	 * Will return 7 - how many days until the show airs, with a fraction for
+	 * the time of day
+	 */
+	public double timeCompare(double show_time_val) {
+		if (current_time_val <= show_time_val)
+			return 7 - show_time_val;
+		else
+			return show_time_val - 7;
+	}
 }
