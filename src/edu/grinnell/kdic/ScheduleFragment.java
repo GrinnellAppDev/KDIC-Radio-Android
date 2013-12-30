@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 import android.app.ListFragment;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -41,14 +42,13 @@ public class ScheduleFragment extends ListFragment {
 
 		mAdapter = new ScheduleListAdapter((MainActivity) getActivity(),
 				R.layout.show_row, mSchedule);
-		
+
 		setListAdapter(mAdapter);
 	}
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		// do something with the data
-
+		//Add a full show page for each item once we have more data
 	}
 
 	@Override
@@ -57,9 +57,9 @@ public class ScheduleFragment extends ListFragment {
 
 		mSchedule = (ArrayList<Show>) getArguments().getSerializable(
 				SCHEDULE_KEY);
-		
+
 		mSchedule = sortShows(mSchedule);
-		
+
 		return inflater.inflate(R.layout.fragment_schedule, container, false);
 	}
 
@@ -91,9 +91,7 @@ public class ScheduleFragment extends ListFragment {
 
 				return timeCompare(show1_time_val) > timeCompare(show2_time_val) ? -1
 						: 1;
-			}
-		});
-
+			}});
 		return shows;
 	}
 

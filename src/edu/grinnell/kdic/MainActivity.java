@@ -22,6 +22,8 @@ public class MainActivity extends FragmentActivity {
 	public ArrayList<Show> mSchedule = new ArrayList<Show>();
 	// InputStream scheduleJSON;
 	ParseSchedule parser = new ParseSchedule();
+	ListFragment schedule_frag;
+
 	protected Boolean scheduleShowing = false;
 	public Boolean scheduleParsed = false;
 	View schedule;
@@ -79,11 +81,6 @@ public class MainActivity extends FragmentActivity {
 			super.onBackPressed();
 
 	}
-
-	@Override
-	public void onPause(){
-		super.onPause();
-	}
 	
 	/* The show schedule is a fragment that is displayed over the main interface */
 	public void showSchedule(View view) {
@@ -98,9 +95,9 @@ public class MainActivity extends FragmentActivity {
 		if (!scheduleInitialized) {
 			schedule = findViewById(R.id.schedule_container);
 			schedule.setVisibility(View.INVISIBLE);
-			ListFragment schedule_frag = ScheduleFragment
+			schedule_frag = ScheduleFragment
 					.newInstance(mSchedule);
-
+			
 			getFragmentManager().beginTransaction()
 					.replace(R.id.schedule_container, schedule_frag)
 					.addToBackStack("schedule").commit();
