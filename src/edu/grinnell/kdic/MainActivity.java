@@ -22,9 +22,10 @@ public class MainActivity extends FragmentActivity {
 	public ArrayList<Show> mSchedule = new ArrayList<Show>();
 	// InputStream scheduleJSON;
 	ParseSchedule parser = new ParseSchedule();
-	Boolean scheduleShowing = false;
+	protected Boolean scheduleShowing = false;
+	public Boolean scheduleParsed = false;
 	View schedule;
-	public static String[] url = new String[] { "http://tcdb.grinnell.edu/apps/glicious/KDIC/schedule.json" };
+	public static String[] JSON_url = new String[] { "http://tcdb.grinnell.edu/apps/glicious/KDIC/schedule.json" };
 	public boolean scheduleInitialized = false;
 	public int diskImage = 1;
 
@@ -51,8 +52,8 @@ public class MainActivity extends FragmentActivity {
 					Toast.LENGTH_LONG).show();
 		}
 		else {
-		/* Parse the shows from the KDIC website */
-		parser.execute(url);
+		/* Parse the shows from the KDIC JSON file */
+		parser.execute(JSON_url);
 		mSchedule = parser.Schedule;
 		}
 
@@ -80,11 +81,19 @@ public class MainActivity extends FragmentActivity {
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {
+	public void onPause(){
+		super.onPause();
 	}
-
+	
 	/* The show schedule is a fragment that is displayed over the main interface */
 	public void showSchedule(View view) {
+		
+		if (parser.parsed == false){
+			Toast.makeText(this, "Schedule Download not Complete",
+					Toast.LENGTH_LONG).show();
+			return;
+		}
+		
 		// Initialize the schedule the first time
 		if (!scheduleInitialized) {
 			schedule = findViewById(R.id.schedule_container);
@@ -159,7 +168,6 @@ public class MainActivity extends FragmentActivity {
 		if (connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTED
 				|| connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTED) {
 			// MESSAGE TO SCREEN FOR TESTING (IF REQ)
-			// Toast.makeText(this, connectionType + ” connected”,
 			// Toast.LENGTH_SHORT).show();
 			return true;
 		} else if (connec.getNetworkInfo(0).getState() == NetworkInfo.State.DISCONNECTED

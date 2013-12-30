@@ -25,13 +25,17 @@ public class Show {
 	}
 
 	public int getStartTime() {
+		if (starttime < 5)
+			return starttime + 24;
 		return starttime;
 	}
 
 	public int getEndTime() {
+		if (endtime < 5)
+			return endtime + 24;
 		return endtime;
 	}
-	
+
 	public int getDay() {
 		return day;
 	}

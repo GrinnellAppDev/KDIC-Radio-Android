@@ -15,9 +15,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.Toast;
 
 public class StreamBannerFragment extends Fragment implements OnClickListener {
 
@@ -73,14 +72,14 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		if (!(kdicStream.isPlaying())) {
 			startPlaying();
 		}
+
 	}
 
 	// If the stream is not stopped, stop. Else, start.
 	public void playPause(View V) {
 		if (isLoading) {
-			// do nothing
-			// give toast message
-
+			Toast.makeText(getActivity(), "Loading Stream ...",
+					Toast.LENGTH_LONG).show();
 		} else if (!mLoaded) {
 			startPlaying();
 		} else if ((kdicStream.isPlaying())) {
