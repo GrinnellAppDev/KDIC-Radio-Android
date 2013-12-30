@@ -13,7 +13,7 @@ import edu.grinnell.schedule.Show;
 public class ScheduleListAdapter extends ArrayAdapter<Show> {
 	MainActivity mActivity;
 	private ArrayList<Show> mData;
-
+	
 	public ScheduleListAdapter(MainActivity a, int layoutId,
 			ArrayList<Show> data) {
 		super(a, layoutId, data);
@@ -51,20 +51,8 @@ public class ScheduleListAdapter extends ArrayAdapter<Show> {
 		return convertView;
 	}
 
-	protected ArrayList<Show> getDay(String day) {
-		ArrayList<Show> dayshows = new ArrayList<Show>();
-		ListIterator<Show> showitr = mData.listIterator();
-		while (showitr.hasNext()) {
-			Show a_show = showitr.next();
-			if (a_show.getDay() == day)
-				dayshows.add(a_show);
-		}
-		return dayshows;
-	}
-
 	//convert 24 hour time to a 12 hour value
-	public String convertTime(String time) {
-		int hour = Integer.parseInt(time);
+	public String convertTime(int hour) {
 		if (hour > 12) {
 			if (hour == 24)
 				return "12am";

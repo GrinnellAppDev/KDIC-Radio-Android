@@ -56,6 +56,7 @@ public class MainActivity extends FragmentActivity {
 		mSchedule = parser.Schedule;
 		}
 
+		// Interface is still usable without network, but will not play or display shows
 		getFragmentManager()
 				.beginTransaction()
 				.replace(R.id.radio_banner_container,

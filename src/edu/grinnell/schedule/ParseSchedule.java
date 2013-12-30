@@ -1,6 +1,7 @@
 package edu.grinnell.schedule;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,13 +62,13 @@ public class ParseSchedule extends
 			e.printStackTrace();
 		}
 
-		addShowInfo(monday, "Monday");
-		addShowInfo(tuesday, "Tuesday");
-		addShowInfo(wednesday, "Wednesday");
-		addShowInfo(thursday, "Thursday");
-		addShowInfo(friday, "Friday");
-		addShowInfo(saturday, "Saturday");
-		addShowInfo(sunday, "Sunday");
+		addShowInfo(monday, Calendar.MONDAY);
+		addShowInfo(tuesday, Calendar.TUESDAY);
+		addShowInfo(wednesday, Calendar.WEDNESDAY);
+		addShowInfo(thursday, Calendar.THURSDAY);
+		addShowInfo(friday, Calendar.FRIDAY);
+		addShowInfo(saturday, Calendar.SATURDAY);
+		addShowInfo(sunday, Calendar.SUNDAY);
 
 		return Schedule;
 	}
@@ -77,7 +78,7 @@ public class ParseSchedule extends
 		parsed = true;
 	}
 
-	public void addShowInfo(JSONArray shows, String day) {
+	public void addShowInfo(JSONArray shows, int day) {
 
 		// looping through All Contacts
 		for (int i = 0; i < shows.length(); i++) {
@@ -87,15 +88,12 @@ public class ParseSchedule extends
 
 				// Storing each json item in variable
 				String name = c.getString(TAG_NAME);
-				String start = c.getString(TAG_START);
-				String end = c.getString(TAG_END);
+				int start = Integer.parseInt(c.getString(TAG_START));
+				int end = Integer.parseInt(c.getString(TAG_END));
 				Show newShow = new Show(name, start, end, day);
-				
-				Log.i("day", name);
-				
+								
 				Schedule.add(newShow);
 			} catch (JSONException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}

@@ -1,6 +1,9 @@
 package edu.grinnell.kdic;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 
 import android.app.ListFragment;
 import android.os.Bundle;
@@ -49,7 +52,23 @@ public class ScheduleFragment extends ListFragment {
 
 		mSchedule = (ArrayList<Show>) getArguments().getSerializable(
 				SCHEDULE_KEY);
-
+		
 		return inflater.inflate(R.layout.fragment_schedule, container, false);
 	}
+/*	
+	public ArrayList<Show> sortShows(ArrayList<Show> shows){
+		Calendar c = Calendar.getInstance();
+		//day stored as int, starting with SUN = 1, end with SAT = 7
+		int day = c.get(Calendar.DAY_OF_WEEK);
+		int time = c.get(Calendar.HOUR_OF_DAY);
+		
+		Collections.sort(shows, new Comparator<Show>() {
+			public int compare(Show show1, Show show2){
+				
+			}
+		});
+		
+		return shows;
+	}
+*/
 }
