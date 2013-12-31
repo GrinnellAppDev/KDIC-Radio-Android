@@ -26,10 +26,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
         <activity
             android:name="edu.grinnell.kdic.ScheduleFragment"
             android:label="@string/title_activity_schedule_fragment" >
         </activity>
+
+        <service
+            android:name="RadioStreamServicd"
+            android:label="RadioStreamService" >
+        </service>
     </application>
 
 </manifest>
