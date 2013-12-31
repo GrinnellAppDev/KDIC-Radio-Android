@@ -55,14 +55,19 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 
 	// If the stream is not paused, pause. Else, start.
 	public void playPause(View V) {
+		//Show a toast if the stream is still loading
 		if (!mService.isLoaded()) {
 			Toast.makeText(getActivity(), "Loading Stream ...",
 					Toast.LENGTH_LONG).show();
-		} else if (mService.isLoaded()) {
-			mService.playStream();
+		//pause the stream and stop the animation if it is playing
 		} else if ((mService.isPlaying())) {
 			mService.pauseStream();
 			diskImage.clearAnimation();
+		//otherwise playe the stream
+		} else {
+			mService.playStream();
+			diskImage.startAnimation(AnimationUtils.loadAnimation(
+					getActivity(), R.anim.spin));
 		}
 	}
 
@@ -83,9 +88,8 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		mService.releaseStream();
 		if (mBound) {
-			getActivity().unbindService(mConnection);
+			getActivity().getApplicationContext().unbindService(mConnection);
 			mBound = false;
 		}
 	}
