@@ -37,22 +37,26 @@ public class RadioStreamService extends Service implements
 
 	@Override
 	public void onPrepared(MediaPlayer arg0) {
-
+		
 		wifiLock = ((WifiManager) getApplicationContext().getSystemService(
 				Context.WIFI_SERVICE)).createWifiLock(
 				WifiManager.WIFI_MODE_FULL, "mylock");
 		wifiLock.acquire();
 	}
 
+	
 	public int onStartCommand(Intent intent, int flags, int startId) {
+		/*
 		if (intent.getAction().equals(ACTION_PLAY)) {
 			prepareStream();
 			kdicStream.setOnPreparedListener(this);
 			kdicStream.prepareAsync(); // prepare async to not block main thread
 		}
+		*/
 
 		return Service.START_NOT_STICKY;
 	}
+	
 
 	public void prepareStream() {
 		kdicStream.setAudioStreamType(AudioManager.STREAM_MUSIC);
@@ -71,20 +75,20 @@ public class RadioStreamService extends Service implements
 	}
 
 	public void pauseStream() {
-
+		kdicStream.pause();
 	}
 
 	public void playStream() {
-
+		kdicStream.start();
 	}
 	
 	public void stopStream(){
-		
+		kdicStream.stop();	
 	}
 
 	
 	public boolean isPlaying(){
-		return stream_playing;
+		return kdicStream.isPlaying();
 	}
 	
 	public void startStream() {

@@ -33,8 +33,9 @@
         </activity>
 
         <service
-            android:name="RadioStreamServicd"
-            android:label="RadioStreamService" >
+            android:name="edu.grinnell.kdic.RadioStreamService"
+            android:label="RadioStreamService"
+            android:enabled="true" >
         </service>
     </application>
 

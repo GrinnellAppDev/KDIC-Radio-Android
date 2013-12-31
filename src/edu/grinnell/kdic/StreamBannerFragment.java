@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,17 +31,26 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
+		
+		// Bind to RadioStreamService
+		Intent intent = new Intent(getActivity(), RadioStreamService.class);
+		boolean troubleshot = getActivity().getApplicationContext().bindService(intent, mConnection,
+				Context.BIND_AUTO_CREATE);
+
+		if (troubleshot = true)
+			Log.e("fhrbgw", "bound");
+		else
+			Log.e("fhrbgw", "not bound!");
+		
+		if (mService == null){
+			Log.e("fhrbgw", "but not really");
+
+		}
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// Starts Stream
-
-		// Bind to LocalService
-		Intent intent = new Intent(getActivity(), RadioStreamService.class);
-		getActivity()
-				.bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
 
 		return inflater.inflate(R.layout.fragment_stream_banner, container,
 				false);
@@ -68,9 +78,14 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		diskImage.startAnimation(AnimationUtils.loadAnimation(getActivity(),
 				R.anim.spin));
 
-		if (!(mService.isPlaying())) {
+		if (mBound = true && mService != null) {
+			mService.prepareStream();
 			mService.startStream();
 		}
+
+		/*
+		 * if (!(mService.isPlaying())) { mService.startStream(); }
+		 */
 
 	}
 
@@ -113,6 +128,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		mService.releaseStream();
 		if (mBound) {
 			getActivity().unbindService(mConnection);
 			mBound = false;
@@ -124,8 +140,9 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder service) {
-			// We've bound to LocalService, cast the IBinder and get
-			// LocalService instance
+
+			Log.e("service conn", "HERE!!");
+			
 			StreamBinder binder = (StreamBinder) service;
 			mService = binder.getService();
 			mBound = true;
