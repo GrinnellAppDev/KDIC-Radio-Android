@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -71,11 +70,6 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		}
 	}
 
-	public void stopPlaying(View v) {
-		mService.stopStream();
-		diskImage.clearAnimation();
-	}
-
 	// toggle play/pause when disk is tapped
 	@Override
 	public void onClick(View arg0) {
@@ -89,12 +83,13 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	public void onDestroy() {
 		super.onDestroy();
 		if (mBound) {
+			//unbind the RadioStreamService before ending
 			getActivity().getApplicationContext().unbindService(mConnection);
 			mBound = false;
 		}
 	}
 
-	/** Defines callbacks for service binding, passed to bindService() */
+	/* Defines callbacks for service binding, passed to bindService() */
 	private ServiceConnection mConnection = new ServiceConnection() {
 
 		@Override

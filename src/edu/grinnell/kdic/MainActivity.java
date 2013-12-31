@@ -45,21 +45,21 @@ public class MainActivity extends FragmentActivity {
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO)
 			getActionBar().hide();
 
-		ConnectivityManager cm = (ConnectivityManager)
-				this.getSystemService(Context.CONNECTIVITY_SERVICE);
-		//check connections before downloading..
+		ConnectivityManager cm = (ConnectivityManager) this
+				.getSystemService(Context.CONNECTIVITY_SERVICE);
+		// check connections before downloading..
 
 		if (!networkEnabled(cm)) {
-			Toast.makeText(this, "No Network Connection",
-					Toast.LENGTH_LONG).show();
-		}
-		else {
-		/* Parse the shows from the KDIC JSON file */
-		parser.execute(JSON_url);
-		mSchedule = parser.Schedule;
+			Toast.makeText(this, "No Network Connection", Toast.LENGTH_LONG)
+					.show();
+		} else {
+			/* Parse the shows from the KDIC JSON file */
+			parser.execute(JSON_url);
+			mSchedule = parser.Schedule;
 		}
 
-		// Interface is still usable without network, but will not play or display shows
+		// Interface is still usable without network, but will not play or
+		// display shows
 		getFragmentManager()
 				.beginTransaction()
 				.replace(R.id.radio_banner_container,
@@ -81,23 +81,22 @@ public class MainActivity extends FragmentActivity {
 			super.onBackPressed();
 
 	}
-	
+
 	/* The show schedule is a fragment that is displayed over the main interface */
 	public void showSchedule(View view) {
-		
-		if (parser.parsed == false){
+
+		if (parser.parsed == false) {
 			Toast.makeText(this, "Schedule Download not Complete",
 					Toast.LENGTH_LONG).show();
 			return;
 		}
-		
+
 		// Initialize the schedule the first time
 		if (!scheduleInitialized) {
 			schedule = findViewById(R.id.schedule_container);
 			schedule.setVisibility(View.INVISIBLE);
-			schedule_frag = ScheduleFragment
-					.newInstance(mSchedule);
-			
+			schedule_frag = ScheduleFragment.newInstance(mSchedule);
+
 			getFragmentManager().beginTransaction()
 					.replace(R.id.schedule_container, schedule_frag)
 					.addToBackStack("schedule").commit();

@@ -4,11 +4,15 @@
 #
 #### #### #### #### #### #### #### #### #### #### #### #### #### #### ###
 +-----------------------------------------------------------------------+
-Authors:  	Patrick Triest
-		Spencer Liberto
-		Travis Law
-			
+Authors: 
+
+Release Build:
+	Patrick Triest
 		
+Test Build:
+	Spencer Liberto
+	Travis Law
+				
 Date:     Tuesday 6 November 2012
 
 +-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --+
@@ -32,12 +36,7 @@ License:
 KDIC Streaming App
 
 The KDIC Streaming App is a convenient way for anyone to tune into their
-favorite radio station, KDIC, based out of Grinnell College, IA. The app
-allows you to pause and play the station, and pulls metadata from the
-stream to display. On top of streaming KDIC, the app also brings the user
-content from the KDIC website (http://kdic.grinnell.edu), such as the
-program schedule, program description, community events, reviews, and so
-much more.
+favorite radio station, KDIC, based out of Grinnell College, IA.
 
 Source for Grinnell-Menu can be obtained at the following location:
 	https://github.com/GrinnellAppDev/KDIC-Radio-Android
