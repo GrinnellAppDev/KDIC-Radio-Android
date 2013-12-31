@@ -89,20 +89,18 @@ public class ScheduleFragment extends ListFragment {
 				double show2_time_val = show2.getDay()
 						+ (.01 * show2.getStartTime());
 
-				return timeCompare(show1_time_val) > timeCompare(show2_time_val) ? -1
-						: 1;
+				return timeCompare(show1_time_val) > timeCompare(show2_time_val) ? 1
+						: -1;
 			}});
 		return shows;
 	}
 
-	/*
-	 * Will return 7 - how many days until the show airs, with a fraction for
-	 * the time of day
-	 */
+	//Returns a value representing how soon the show will air in reference to the current time
+	//The sooner the show will air, the lower the value
 	public double timeCompare(double show_time_val) {
 		if (current_time_val <= show_time_val)
-			return 7 - show_time_val;
+			return show_time_val - current_time_val;
 		else
-			return show_time_val - 7;
+			return 7 - (current_time_val - show_time_val);
 	}
 }

@@ -23,7 +23,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	private String STREAMURL = "http://kdic.grinnell.edu:8001/kdic128";
 
 	private MediaPlayer kdicStream = new MediaPlayer(); // KDIC stream
-	private WifiLock wifiLock; //keep the wifi from turning off
+	private WifiLock wifiLock; // keep the wifi from turning off
 
 	private ImageView diskImage; // playPause button
 
@@ -34,16 +34,13 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
-
 	}
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
 		// Starts Stream
 		setupPlayer();
-
 		return inflater.inflate(R.layout.fragment_stream_banner, container,
 				false);
 	}
@@ -54,7 +51,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		// Initializing widget variables.
 		diskImage = (ImageView) view.findViewById(R.id.diskImage);
 		diskImage.setOnClickListener(this);
-		
+
 		// onPrepared listener. Starts stream and changes diskImage image when
 		// the stream has finished setting up.
 		kdicStream.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
@@ -75,7 +72,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 
 	}
 
-	// If the stream is not stopped, stop. Else, start.
+	// If the stream is not paused, pause. Else, start.
 	public void playPause(View V) {
 		if (isLoading) {
 			Toast.makeText(getActivity(), "Loading Stream ...",
@@ -118,9 +115,12 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	// Sets stream's type and URL
 	public void setupPlayer() {
 		kdicStream.setAudioStreamType(AudioManager.STREAM_MUSIC);
-		kdicStream.setWakeMode(getActivity().getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
-		wifiLock = ((WifiManager) getActivity().getSystemService(Context.WIFI_SERVICE))
-			    .createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
+		// Lock the wifi to ensure the stream does not stop
+		kdicStream.setWakeMode(getActivity().getApplicationContext(),
+				PowerManager.PARTIAL_WAKE_LOCK);
+		wifiLock = ((WifiManager) getActivity().getSystemService(
+				Context.WIFI_SERVICE)).createWifiLock(
+				WifiManager.WIFI_MODE_FULL, "mylock");
 		wifiLock.acquire();
 
 		try {
@@ -136,7 +136,7 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		}
 	}
 
-	//toggle play/pause when disk is tapped
+	// toggle play/pause when disk is tapped
 	@Override
 	public void onClick(View arg0) {
 		if (arg0 == diskImage)
@@ -148,9 +148,11 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		kdicStream.stop();
-		kdicStream.release();
+		if (kdicStream != null) {
+			kdicStream.stop();
+			kdicStream.release();
+			kdicStream = null;
+		}
 		wifiLock.release();
-		kdicStream = null;
 	}
 }
