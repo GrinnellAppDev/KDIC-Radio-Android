@@ -11,16 +11,23 @@ import android.net.wifi.WifiManager;
 import android.net.wifi.WifiManager.WifiLock;
 import android.os.Binder;
 import android.os.IBinder;
+import android.util.Log;
 
 public class RadioStreamService extends Service implements
 		MediaPlayer.OnPreparedListener {
 
-	private static final String ACTION_PLAY = "PLAY_STREAM";
 	MediaPlayer kdicStream = null;
-	private static final String STREAMURL = "http://kdic.grinnell.edu:8001/kdic128";
-	private WifiLock wifiLock; // keep the wifi from turning off
 	private final IBinder mBinder = new StreamBinder();
-	protected boolean stream_playing;
+
+	
+	public static final String TAG = "Radio Stream Service";
+	private static final String STREAMURL = "http://kdic.grinnell.edu:8001/kdic128";
+	public static final String ACTION_PLAY = "PLAY_STREAM";
+	
+	private WifiLock wifiLock; // keep the wifi from turning off
+	protected boolean stream_playing = false;
+	protected boolean stream_loaded = false;
+
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -35,32 +42,29 @@ public class RadioStreamService extends Service implements
 		}
 	}
 
+	public void onCreate(){
+		prepareStream();
+	}
+	
 	@Override
 	public void onPrepared(MediaPlayer arg0) {
 		
+		Log.e("TAG", "steam prepared");
+				
 		wifiLock = ((WifiManager) getApplicationContext().getSystemService(
 				Context.WIFI_SERVICE)).createWifiLock(
 				WifiManager.WIFI_MODE_FULL, "mylock");
 		wifiLock.acquire();
+		
+		stream_loaded = true;
 	}
-
-	
-	public int onStartCommand(Intent intent, int flags, int startId) {
-		/*
-		if (intent.getAction().equals(ACTION_PLAY)) {
-			prepareStream();
-			kdicStream.setOnPreparedListener(this);
-			kdicStream.prepareAsync(); // prepare async to not block main thread
-		}
-		*/
-
-		return Service.START_NOT_STICKY;
-	}
-	
 
 	public void prepareStream() {
+		Log.e(TAG, "prepare stream");
+		kdicStream = new MediaPlayer();
+		kdicStream.setOnPreparedListener(this);
 		kdicStream.setAudioStreamType(AudioManager.STREAM_MUSIC);
-
+		
 		try {
 			kdicStream.setDataSource(STREAMURL);
 		} catch (IllegalArgumentException e) {
@@ -72,6 +76,8 @@ public class RadioStreamService extends Service implements
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
+		kdicStream.prepareAsync(); // prepare async to not block main thread
 	}
 
 	public void pauseStream() {
@@ -91,14 +97,8 @@ public class RadioStreamService extends Service implements
 		return kdicStream.isPlaying();
 	}
 	
-	public void startStream() {
-		if (!kdicStream.isPlaying()) {
-			try {
-				kdicStream.prepareAsync();
-			} catch (IllegalStateException e) {
-				e.printStackTrace();
-			}
-		}
+	public boolean isLoaded(){
+		return stream_loaded;
 	}
 
 	public void releaseStream() {

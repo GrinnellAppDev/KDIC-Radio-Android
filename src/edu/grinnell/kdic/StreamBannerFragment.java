@@ -20,9 +20,6 @@ import edu.grinnell.kdic.RadioStreamService.StreamBinder;
 public class StreamBannerFragment extends Fragment implements OnClickListener {
 
 	private ImageView diskImage; // playPause button
-
-	boolean isLoading = false; // true if stream is loading but not playing
-	private Boolean mLoaded = false;
 	boolean mBound = false;
 
 	RadioStreamService mService;
@@ -31,21 +28,12 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setRetainInstance(true);
-		
+
 		// Bind to RadioStreamService
-		Intent intent = new Intent(getActivity(), RadioStreamService.class);
-		boolean troubleshot = getActivity().getApplicationContext().bindService(intent, mConnection,
+		Intent intent = new Intent(getActivity(), RadioStreamService.class)
+				.setAction(RadioStreamService.ACTION_PLAY);
+		getActivity().getApplicationContext().bindService(intent, mConnection,
 				Context.BIND_AUTO_CREATE);
-
-		if (troubleshot = true)
-			Log.e("fhrbgw", "bound");
-		else
-			Log.e("fhrbgw", "not bound!");
-		
-		if (mService == null){
-			Log.e("fhrbgw", "but not really");
-
-		}
 	}
 
 	@Override
@@ -63,57 +51,24 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		diskImage = (ImageView) view.findViewById(R.id.diskImage);
 		diskImage.setOnClickListener(this);
 
-		// onPrepared listener. Starts stream and changes diskImage image when
-		// the stream has finished setting up.
-		/*
-		 * mService.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-		 * 
-		 * @Override public void onPrepared(MediaPlayer mp) {
-		 * kdicStream.start(); mLoaded = true; isLoading = false; //
-		 * playButton.setBackgroundResource(R.drawable.button_blue_play);
-		 * diskImage.startAnimation(AnimationUtils.loadAnimation( getActivity(),
-		 * R.anim.spin)); } });
-		 */
-
-		diskImage.startAnimation(AnimationUtils.loadAnimation(getActivity(),
-				R.anim.spin));
-
-		if (mBound = true && mService != null) {
-			mService.prepareStream();
-			mService.startStream();
-		}
-
-		/*
-		 * if (!(mService.isPlaying())) { mService.startStream(); }
-		 */
-
 	}
 
 	// If the stream is not paused, pause. Else, start.
 	public void playPause(View V) {
-		if (isLoading) {
+		if (!mService.isLoaded()) {
 			Toast.makeText(getActivity(), "Loading Stream ...",
 					Toast.LENGTH_LONG).show();
-		} else if (!mLoaded) {
-			mService.startStream();
+		} else if (mService.isLoaded()) {
+			mService.playStream();
 		} else if ((mService.isPlaying())) {
 			mService.pauseStream();
 			diskImage.clearAnimation();
-		} else {
-			mService.startStream();
-			diskImage.startAnimation(AnimationUtils.loadAnimation(
-					getActivity(), R.anim.spin));
 		}
 	}
 
-	// Stops stream, changes playPause to 'stopped' state.
 	public void stopPlaying(View v) {
-		if (mLoaded = true && isLoading == false) {
-			mLoaded = false;
-
-			mService.stopStream();
-			diskImage.clearAnimation();
-		}
+		mService.stopStream();
+		diskImage.clearAnimation();
 	}
 
 	// toggle play/pause when disk is tapped
@@ -141,8 +96,6 @@ public class StreamBannerFragment extends Fragment implements OnClickListener {
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder service) {
 
-			Log.e("service conn", "HERE!!");
-			
 			StreamBinder binder = (StreamBinder) service;
 			mService = binder.getService();
 			mBound = true;
