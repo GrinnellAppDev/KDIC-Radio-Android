@@ -181,7 +181,7 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		FlurryAgent.onStartSession(this, "YOUR_API_KEY");
+		FlurryAgent.onStartSession(this, "2MDN7YJTCCZ4ZPYD8KQK");
 	}
 
 	@Override
