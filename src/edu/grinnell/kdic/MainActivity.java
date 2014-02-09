@@ -1,12 +1,10 @@
 package edu.grinnell.kdic;
 
-import com.crashlytics.android.Crashlytics;
 import java.util.ArrayList;
 
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
-import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -15,6 +13,10 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import com.crashlytics.android.Crashlytics;
+import com.flurry.android.FlurryAgent;
+
 import edu.grinnell.schedule.ParseSchedule;
 import edu.grinnell.schedule.Show;
 
@@ -174,5 +176,17 @@ public class MainActivity extends FragmentActivity {
 		}
 
 		return false;
+	}
+
+	@Override
+	protected void onStart() {
+		super.onStart();
+		FlurryAgent.onStartSession(this, "YOUR_API_KEY");
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		FlurryAgent.onEndSession(this);
 	}
 }
