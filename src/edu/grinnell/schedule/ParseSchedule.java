@@ -47,9 +47,9 @@ public class ParseSchedule extends
 	protected ArrayList<Show> doInBackground(String... urls) {
 		url = urls[0];
 		// getting JSON string from URL
-		JSONObject json = jParser.getJSONFromUrl(url);
 
 		try {
+			JSONObject json = jParser.getJSONFromUrl(url);
 			// Getting Array of Contacts
 			monday = json.getJSONArray(TAG_MONDAY);
 			tuesday = json.getJSONArray(TAG_TUESDAY);
@@ -60,6 +60,11 @@ public class ParseSchedule extends
 			sunday = json.getJSONArray(TAG_SUNDAY);
 		} catch (JSONException e) {
 			e.printStackTrace();
+			return Schedule;
+		}
+		catch (NullPointerException e) {
+			e.printStackTrace();
+			return Schedule;
 		}
 
 		addShowInfo(monday, Calendar.MONDAY);
