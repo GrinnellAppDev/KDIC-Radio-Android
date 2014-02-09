@@ -1,5 +1,6 @@
 package edu.grinnell.kdic;
 
+import com.crashlytics.android.Crashlytics;
 import java.util.ArrayList;
 
 import android.app.ListFragment;
@@ -39,6 +40,7 @@ public class MainActivity extends FragmentActivity {
 		// getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
 		// WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+		Crashlytics.start(this);
 		setContentView(R.layout.activity_main);
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
