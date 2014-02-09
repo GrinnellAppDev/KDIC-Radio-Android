@@ -2,6 +2,7 @@ package edu.grinnell.kdic;
 
 import java.util.ArrayList;
 
+import android.annotation.SuppressLint;
 import android.app.ListFragment;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -47,7 +48,7 @@ public class MainActivity extends FragmentActivity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO)
-			getActionBar().hide();
+				getActionBar().hide();
 
 		ConnectivityManager cm = (ConnectivityManager) this
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
