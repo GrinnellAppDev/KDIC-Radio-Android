@@ -49,10 +49,14 @@ public class RadioStreamService extends Service implements
 	public void onPrepared(MediaPlayer arg0) {
 
 		Log.i("TAG", "steam prepared");
-		
-		kdicStream.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
-		/* Aquire a wifi lock to protect against unexpected stopage of the stream */
+		kdicStream.setWakeMode(getApplicationContext(),
+				PowerManager.PARTIAL_WAKE_LOCK);
+
+		/*
+		 * Aquire a wifi lock to protect against unexpected stopage of the
+		 * stream
+		 */
 		wifiLock = ((WifiManager) getApplicationContext().getSystemService(
 				Context.WIFI_SERVICE)).createWifiLock(
 				WifiManager.WIFI_MODE_FULL, "mylock");
@@ -109,8 +113,14 @@ public class RadioStreamService extends Service implements
 			kdicStream.release();
 			kdicStream = null;
 		}
-		wifiLock.release();
-		Log.i(TAG, "wifilock released");
+		
+		try {
+			wifiLock.release();
+			Log.i(TAG, "wifiLock released");
+		}
+		catch (Exception e){
+			Log.e(TAG, "Problem releasing wifiLock: " + e.toString());
+		}
 	}
 
 	@Override
