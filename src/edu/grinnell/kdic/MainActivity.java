@@ -48,7 +48,7 @@ public class MainActivity extends FragmentActivity {
 		setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
 		if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.FROYO)
-				getActionBar().hide();
+			getActionBar().hide();
 
 		ConnectivityManager cm = (ConnectivityManager) this
 				.getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -166,17 +166,18 @@ public class MainActivity extends FragmentActivity {
 			return false;
 		}
 
-		if (connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTED
-				|| connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTED) {
-			// MESSAGE TO SCREEN FOR TESTING (IF REQ)
-			// Toast.LENGTH_SHORT).show();
-			return true;
-		} else if (connec.getNetworkInfo(0).getState() == NetworkInfo.State.DISCONNECTED
-				|| connec.getNetworkInfo(1).getState() == NetworkInfo.State.DISCONNECTED) {
+		try {
+			if (connec.getNetworkInfo(1) != null
+					&& connec.getNetworkInfo(1).getState() == NetworkInfo.State.CONNECTED)
+				return true;
+			else if (connec.getNetworkInfo(0) != null
+					&& connec.getNetworkInfo(0).getState() == NetworkInfo.State.CONNECTED)
+				return true;
+			else
+				return false;
+		} catch (NullPointerException exception) {
 			return false;
 		}
-
-		return false;
 	}
 
 	@Override
