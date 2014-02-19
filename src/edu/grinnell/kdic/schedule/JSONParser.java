@@ -1,4 +1,4 @@
-package edu.grinnell.schedule;
+package edu.grinnell.kdic.schedule;
 
 import java.io.BufferedReader;
 import java.io.IOException;

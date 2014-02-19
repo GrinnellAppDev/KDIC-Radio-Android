@@ -14,8 +14,7 @@ import android.os.IBinder;
 import android.os.PowerManager;
 import android.util.Log;
 
-public class RadioStreamService extends Service implements
-		MediaPlayer.OnPreparedListener {
+public class RadioStreamService extends Service implements MediaPlayer.OnPreparedListener {
 
 	MediaPlayer kdicStream = null;
 	private final IBinder mBinder = new StreamBinder();
@@ -50,16 +49,14 @@ public class RadioStreamService extends Service implements
 
 		Log.i("TAG", "steam prepared");
 
-		kdicStream.setWakeMode(getApplicationContext(),
-				PowerManager.PARTIAL_WAKE_LOCK);
+		kdicStream.setWakeMode(getApplicationContext(), PowerManager.PARTIAL_WAKE_LOCK);
 
 		/*
 		 * Aquire a wifi lock to protect against unexpected stopage of the
 		 * stream
 		 */
-		wifiLock = ((WifiManager) getApplicationContext().getSystemService(
-				Context.WIFI_SERVICE)).createWifiLock(
-				WifiManager.WIFI_MODE_FULL, "mylock");
+		wifiLock = ((WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE))
+				.createWifiLock(WifiManager.WIFI_MODE_FULL, "mylock");
 		wifiLock.acquire();
 
 		stream_loaded = true;
@@ -113,12 +110,11 @@ public class RadioStreamService extends Service implements
 			kdicStream.release();
 			kdicStream = null;
 		}
-		
+
 		try {
 			wifiLock.release();
 			Log.i(TAG, "wifiLock released");
-		}
-		catch (Exception e){
+		} catch (Exception e) {
 			Log.e(TAG, "Problem releasing wifiLock: " + e.toString());
 		}
 	}

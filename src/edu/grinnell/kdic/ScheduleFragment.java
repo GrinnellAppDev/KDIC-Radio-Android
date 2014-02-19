@@ -12,7 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import edu.grinnell.schedule.Show;
+import edu.grinnell.kdic.schedule.Show;
 
 public class ScheduleFragment extends ListFragment {
 	ScheduleListAdapter mAdapter;

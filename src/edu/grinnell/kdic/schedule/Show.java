@@ -1,4 +1,4 @@
-package edu.grinnell.schedule;
+package edu.grinnell.kdic.schedule;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import edu.grinnell.schedule.Show;
+import edu.grinnell.kdic.schedule.Show;
 
 public class ScheduleListAdapter extends ArrayAdapter<Show> {
 	MainActivity mActivity;

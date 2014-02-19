@@ -18,8 +18,8 @@ import android.widget.Toast;
 import com.crashlytics.android.Crashlytics;
 import com.flurry.android.FlurryAgent;
 
-import edu.grinnell.schedule.ParseSchedule;
-import edu.grinnell.schedule.Show;
+import edu.grinnell.kdic.schedule.ParseSchedule;
+import edu.grinnell.kdic.schedule.Show;
 
 public class MainActivity extends FragmentActivity {
 
