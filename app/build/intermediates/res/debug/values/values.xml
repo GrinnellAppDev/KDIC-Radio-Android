@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/Users/patrick/Development/AndroidStudio/kdicstream/app/src/main/res/values/colors.xml -->
+    <eat-comment/>
+    <color name="black_overlay">#66000000</color>
+    <color name="gblack">#000000</color>
+    <color name="gcream">#F5FFFA</color>
+    <color name="gdarkred">#a70012</color>
+    <color name="gdcream">#f0eeef</color>
+    <color name="ggrey">#272727</color>
+    <color name="glightgrey">#575757</color>
+    <color name="glightred">#c75757</color>
+    <color name="gllightgrey">#777177</color>
+    <color name="gllightred">#d77777</color>
+    <color name="glllightgrey">#a0a0a0</color>
+    <color name="gmdarkred">#a72727</color>
+    <color name="gmedgrey">#404040</color>
+    <color name="gmlightred">#c71727</color>
+    <color name="gred">#ba0727</color>
+    <color name="gwhite">#FFFFFF</color>
+    <!-- From: file:/Users/patrick/Development/AndroidStudio/kdicstream/app/src/main/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- From: file:/Users/patrick/Development/AndroidStudio/kdicstream/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="action_settings">Settings</string>
+    <string name="app_name">KDIC</string>
+    <!-- From: file:/Users/patrick/Development/AndroidStudio/kdicstream/app/src/main/res/values/com_crashlytics_export_strings.xml -->
+    <eat-comment/>
+    <string name="com.crashlytics.android.build_id">eee4e491-392b-4bac-8ef3-f1626af9be6d</string>
+    <!-- From: file:/Users/patrick/Development/AndroidStudio/kdicstream/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="hello_world">KDIC</string>
+    <string name="kdic">KDIC</string>
+    <string name="menu_playstop">Start/Stop</string>
+    <string name="menu_settings">Settings</string>
+    <string name="start_text">Play</string>
+    <string name="stop_text">Pause</string>
+    <string name="streamInfo">It\'s KDIC!\nPlayin\' Yo\' Tunes.</string>
+    <string name="title_activity_main">KDIC</string>
+    <string name="title_activity_schedule_fragment">ScheduleFragment</string>
+    <string name="title_activity_test">TestActivity</string>
+    <!-- From: file:/Users/patrick/Development/AndroidStudio/kdicstream/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AppTheme" parent="android:Theme.Light"/>
+</resources>

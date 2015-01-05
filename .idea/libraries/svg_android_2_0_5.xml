@@ -1,0 +1,11 @@
+<component name="libraryTable">
+  <library name="svg-android-2.0.5">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.japgolly.android/svg-android/2.0.5/4574705df930e6440c31bcd199bb7bbe01d15bf6/svg-android-2.0.5.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.japgolly.android/svg-android/2.0.5/977eaaa16da9290781af97cee64d2958a769db77/svg-android-2.0.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

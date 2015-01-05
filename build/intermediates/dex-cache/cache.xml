@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<pre-dex-items>
+
+    <item
+        dex="/Users/patrick/Development/AndroidStudio/kdicstream/app/build/intermediates/pre-dexed/debug/FlurryAnalytics_3.3.3-8de5b9fd6520e62fdf90c983dbdf04d5d89831c0.jar"
+        jar="/Users/patrick/Development/AndroidStudio/kdicstream/app/libs/FlurryAnalytics_3.3.3.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="f3c937c225909cb7d0413640bb422781738e3a93"/>
+    <item
+        dex="/Users/patrick/Development/AndroidStudio/kdicstream/app/build/intermediates/pre-dexed/debug/svg-android-2.0.5-5f37047a09c21b1f04f2d665878545f321842864.jar"
+        jar="/Users/patrick/.gradle/caches/modules-2/files-2.1/com.github.japgolly.android/svg-android/2.0.5/4574705df930e6440c31bcd199bb7bbe01d15bf6/svg-android-2.0.5.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="4574705df930e6440c31bcd199bb7bbe01d15bf6"/>
+    <item
+        dex="/Users/patrick/Development/AndroidStudio/kdicstream/app/build/intermediates/pre-dexed/debug/jericho-html-3.2-593c4b56178ed24923b96284541528006dc9c7a1.jar"
+        jar="/Users/patrick/Development/AndroidStudio/kdicstream/app/libs/jericho-html-3.2.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="e754c5b5c3c31e8406c17342c2bbd0d79a895f24"/>
+    <item
+        dex="/Users/patrick/Development/AndroidStudio/kdicstream/app/build/intermediates/pre-dexed/debug/crashlytics-4037e47e6cbdf95bd8b50e242aa93b3b808b0df3.jar"
+        jar="/Users/patrick/Development/AndroidStudio/kdicstream/app/libs/crashlytics.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="0e821eafa1bf489a26bdb71f95078c26785b37a1"/>
+    <item
+        dex="/Users/patrick/Development/AndroidStudio/kdicstream/app/build/intermediates/pre-dexed/debug/support-v4-18.0.0-18de2202cd9ca8d0fd56270d2b82cbcd102a93df.jar"
+        jar="/Users/patrick/Development/Libraries/Android-SDK/extras/android/m2repository/com/android/support/support-v4/18.0.0/support-v4-18.0.0.jar"
+        jumboMode="false"
+        revision="21.1.1"
+        sha1="44ec51e9d395a47aab135e5e1b556c0007442156"/>
+
+</pre-dex-items>
