@@ -1,13 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 18
+    compileSdkVersion 21
     buildToolsVersion "21.1.1"
 
     defaultConfig {
         applicationId "edu.grinnell.kdic"
         minSdkVersion 11
-        targetSdkVersion 18
+        targetSdkVersion 21
+
+        versionCode=7
+        versionName="1.4"
     }
 
     buildTypes {
@@ -19,7 +22,7 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:18.0.0'
+    compile 'com.android.support:support-v4:21.0.3'
     compile 'com.github.japgolly.android:svg-android:2.0.5'
     compile files('libs/FlurryAnalytics_3.3.3.jar')
     compile files('libs/crashlytics.jar')
