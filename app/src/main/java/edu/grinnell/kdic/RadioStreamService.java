@@ -20,7 +20,7 @@ public class RadioStreamService extends Service implements MediaPlayer.OnPrepare
 	private final IBinder mBinder = new StreamBinder();
 
 	public static final String TAG = "Radio Stream Service";
-	private static final String STREAMURL = "http://132.161.21.31:8001/raspi"; //"http://kdic.grinnell.edu:8001/kdic128";
+	private static final String STREAMURL = "http://132.161.21.31:8000/stream";
 	public static final String ACTION_PLAY = "PLAY_STREAM";
 
 	private WifiLock wifiLock; // keep the wifi from turning off
