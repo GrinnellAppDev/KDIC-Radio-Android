@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/gred"
+    android:orientation="vertical" >
+
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" >
+
+        <ImageView
+            android:id="@+id/background"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_gravity="center"
+            android:contentDescription="texture"
+            android:scaleType="centerCrop"
+            android:src="@drawable/red_spiral" >
+        </ImageView>
+
+        <ImageView
+            android:id="@+id/diskImage"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:adjustViewBounds="true"
+            android:src="@drawable/medium_kdicdisk"
+            android:onClick="playPause"
+            android:padding="4dp"
+            android:scaleType="centerInside" >
+        </ImageView>
+    </FrameLayout>
+
+</LinearLayout><!-- From: file:/home/prabir/appdev/KDIC-Radio-Android/app/src/main/res/layout/fragment_stream_banner.xml -->

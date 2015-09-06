@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.1"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
 
     defaultConfig {
         applicationId "edu.grinnell.kdic"
@@ -22,9 +23,10 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:support-v4:21.0.3'
-    compile 'com.github.japgolly.android:svg-android:2.0.5'
+    compile 'com.android.support:support-v4:23.0.1'
+    compile 'com.android.support:appcompat-v7:22.2.0'
     compile files('libs/FlurryAnalytics_3.3.3.jar')
     compile files('libs/crashlytics.jar')
     compile files('libs/jericho-html-3.2.jar')
+    compile files('libs/svg-android-2.0.5.jar')
 }

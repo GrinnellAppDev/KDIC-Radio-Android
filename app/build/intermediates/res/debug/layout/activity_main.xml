@@ -1,0 +1,66 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="@color/gblack"
+    android:orientation="vertical"
+    android:scaleType="fitXY"
+    android:weightSum="100" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical" >
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="80dp"
+            android:background="@color/gblack"
+            android:layout_gravity="center_horizontal" >
+
+            <ImageView
+                android:id="@+id/kdicBanner"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:scaleType="centerInside"
+                android:src="@drawable/kdic_wide" />
+        </RelativeLayout>
+
+        <FrameLayout
+            android:id="@+id/radio_banner_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/schedule_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="top"
+        android:layout_marginTop="80dp" />
+
+    <Button
+        android:id="@+id/schedule"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|right"
+        android:layout_marginRight="3dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/list_black"
+        android:onClick="showSchedule"
+        android:scaleType="centerInside" />
+
+    <Button
+        android:id="@+id/disks"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="top|left"
+        android:layout_marginLeft="3dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/disk_button"
+        android:onClick="swapDisk"
+        android:scaleType="centerInside" />
+
+</FrameLayout><!-- From: file:/home/prabir/appdev/KDIC-Radio-Android/app/src/main/res/layout/activity_main.xml -->
