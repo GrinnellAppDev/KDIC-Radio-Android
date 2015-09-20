@@ -122,11 +122,12 @@ public class MainActivity extends FragmentActivity {
 		}
 	}
 
+	// Method to rotate the disc images
 	public void swapDisk(View view) {
-		// switch the disk image
+
 		final ImageView diskView = (ImageView) findViewById(R.id.diskImage);
 
-		// easter egg shhhh
+		// easter egg to change Dr. Dre to Dr. K on long click
 		diskView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
