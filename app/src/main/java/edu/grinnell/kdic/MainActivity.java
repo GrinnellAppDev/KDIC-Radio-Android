@@ -127,7 +127,6 @@ public class MainActivity extends FragmentActivity {
 
 		final ImageView diskView = (ImageView) findViewById(R.id.diskImage);
 
-		// easter egg to change Dr. Dre to Dr. K on long click
 		diskView.setOnLongClickListener(new OnLongClickListener() {
 			@Override
 			public boolean onLongClick(View v) {
