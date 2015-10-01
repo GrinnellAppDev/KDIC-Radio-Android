@@ -10,8 +10,8 @@ android {
         minSdkVersion 11
         targetSdkVersion 21
 
-        versionCode=9
-        versionName="1.4.1"
+        versionCode=10
+        versionName="1.5"
     }
 
     buildTypes {
@@ -24,9 +24,5 @@ android {
 
 dependencies {
     compile 'com.android.support:support-v4:23.0.1'
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    compile files('libs/FlurryAnalytics_3.3.3.jar')
-    compile files('libs/crashlytics.jar')
-    compile files('libs/jericho-html-3.2.jar')
-    compile files('libs/svg-android-2.0.5.jar')
+    compile 'com.android.support:appcompat-v7:23.0.1'
 }
