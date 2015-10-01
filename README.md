@@ -1,4 +1,4 @@
-# Grinnell College Radio KDIC Android Application
+# KDIC Android
 
 *__UPDATED:__ 30 September, 2015*
 
