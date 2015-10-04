@@ -32,6 +32,33 @@ Homebrewed by [Grinnell AppDev](http://appdev.grinnell.edu/)!
 - Spencer Liberto
 - Travis Law
 
+## Organization
+
+### Directory Structure
+
+Generated with `tree -d -I build|androidTest`.
+```
+.
+├── app
+│   ├── libs
+│   └── src
+│       └── main
+│           ├── java
+│           │   └── edu
+│           │       └── grinnell
+│           │           └── kdic
+│           └── res
+│               ├── drawable
+│               ├── layout
+│               ├── menu
+│               ├── values
+│               └── values-w820dp
+└── gradle
+    └── wrapper
+```
+- `KDIC-android.php` is the PHP script used to parse the HTML table schedule data to JSON, and is hosted [here]().
+
+
 ## License
 ```
 This program is free software: you can redistribute it and/or modify
