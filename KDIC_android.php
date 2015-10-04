@@ -60,7 +60,7 @@ $json_data->days = $days;
 $json_data->times = $times;
 $json_data->data = $table_data;
 
-// diplay the json encoded data 
+// display the json encoded data 
 echo json_encode($json_data);
 
 ?>
