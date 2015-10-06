@@ -10,8 +10,18 @@
         <!--   theme UI controls like checkboxes and text fields -->
         <item name="colorAccent">@color/accent</item>
         <!--   window background color-->
-        <item name="android:windowBackground">@color/background_white</item>
+        <item name="android:windowBackground">@color/white</item>
+        <!--   ripple/selector color-->
+        <item name="colorControlHighlight">@color/ripple_color</item>
+    </style>
 
+    <style name="music_button_style">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
     </style>
 
 </resources>
