@@ -1,7 +1,7 @@
 <?php
 /**
 Created by Prabir Pradhan [pradhanp].
-Last edited on October 4, 2015.
+Last edited on October 5, 2015.
 
 Description: A PHP script to parse the schedule for KDIC shows, represented in
              the website as an HTML table, into JSON to be pulled by the Android app.
@@ -16,7 +16,7 @@ $SCHEDULE_URL = 'http://kdic.grinnell.edu/?page_id=118';
 // parse html
 $html_data = file_get_contents($SCHEDULE_URL);
 $dom = new domDocument;
-$dom->loadHTML($html_data);
+@$dom->loadHTML($html_data);
 $dom->preserveWhiteSpace = false;
 
 // the schedule table is the first (and only) element with tag <table> in the web page
