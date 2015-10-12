@@ -13,6 +13,8 @@
         <item name="android:windowBackground">@color/white</item>
         <!--   ripple/selector color-->
         <item name="colorControlHighlight">@color/ripple_color</item>
+        <!--   remove shadow from below action bar - pre lollipop-->
+        <item name="android:windowContentOverlay">@null</item>
     </style>
 
     <style name="music_button_style">

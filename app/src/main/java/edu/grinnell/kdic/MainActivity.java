@@ -1,5 +1,6 @@
 package edu.grinnell.kdic;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
@@ -11,6 +12,11 @@ public class MainActivity extends AppCompatActivity implements OnScheduleParsed 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        // hide actionbar shadow on lollipop
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setElevation(0);
+        }
 
         GetSchedule getSchedule = new GetSchedule(MainActivity.this, MainActivity.this);
         getSchedule.execute();

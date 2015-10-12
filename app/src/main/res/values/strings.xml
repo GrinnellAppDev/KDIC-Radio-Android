@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">KDIC</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="station_name">KDIC 88.5</string>
     <string name="action_settings">Settings</string>
 </resources>

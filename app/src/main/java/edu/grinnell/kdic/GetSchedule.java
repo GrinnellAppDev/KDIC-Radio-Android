@@ -14,7 +14,7 @@ import java.io.IOException;
 
 /**
  * Created by [pradhanp] on 10/11/15.
- * Gets the schedule from network
+ * Gets the schedule from network location through JSON
  */
 public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
     private Context context;
