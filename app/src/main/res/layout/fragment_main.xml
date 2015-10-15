@@ -11,23 +11,22 @@
         android:layout_height="88dp"
         android:layout_alignParentBottom="true"
         android:background="@color/accent_dark"
-        android:elevation="16dp"
         android:gravity="center"
         android:orientation="horizontal"
         android:weightSum="3">
 
         <ImageButton
-            android:id="@+id/iv_fast_rewind"
+            android:id="@+id/ib_fast_rewind"
             style="@style/music_button_style"
             android:src="@drawable/ic_fast_rewind_white_24dp" />
 
         <ImageButton
-            android:id="@+id/iv_play_pause"
+            android:id="@+id/ib_play_pause"
             style="@style/music_button_style"
             android:src="@drawable/ic_play_arrow_white_24dp" />
 
         <ImageButton
-            android:id="@+id/iv_fast_forward"
+            android:id="@+id/ib_fast_forward"
             style="@style/music_button_style"
             android:src="@drawable/ic_fast_forward_white_24dp" />
     </LinearLayout>
@@ -49,7 +48,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="6dp"
+            android:ellipsize="end"
             android:fontFamily="sans-serif-thin"
+            android:maxLines="2"
             android:text="I SING THE\nBODY ELECTRIC"
             android:textAllCaps="true"
             android:textColor="@color/white"

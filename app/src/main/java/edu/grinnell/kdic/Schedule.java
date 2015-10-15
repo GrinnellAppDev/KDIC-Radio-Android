@@ -10,16 +10,18 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+
 public class Schedule {
     private Context context;
-    private SchedueDbHelper dbHelper;
+    private ScheduleDbHelper dbHelper;
     private SQLiteDatabase db;
 
     public static final String TEXT_TYPE = " TEXT";
     public static final String COMMA_SEP = ",";
     public static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + Entry.TABLE_NAME + " (" +
-                    Entry._ID + " INTEGER PRIMARY KEY," +
+                    Entry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Entry.COLUMN_DAY + TEXT_TYPE + COMMA_SEP +
                     Entry.COLUMN_TIME + TEXT_TYPE + COMMA_SEP +
                     Entry.COLUMN_SHOW_TITLE + TEXT_TYPE +
@@ -30,8 +32,12 @@ public class Schedule {
 
     public Schedule(Context context) {
         this.context = context;
-        dbHelper = new SchedueDbHelper(context);
+        dbHelper = new ScheduleDbHelper(context);
         db = dbHelper.getWritableDatabase();
+    }
+
+    public void close() {
+        dbHelper.close();
     }
 
     /* Inner class that defines the table contents */
@@ -45,25 +51,71 @@ public class Schedule {
 
     // CRUD Operations
 
+    /**
+     * Gets show name given a day and time if exists.
+     *
+     * @param day
+     * @param time
+     * @return String showName or null if it is not found.
+     */
     public String getShowName(String day, String time) {
         // which columns to see for query
         String[] projection = {Entry.COLUMN_SHOW_TITLE};
-        String selection = Entry.COLUMN_DAY + "='?' AND " + Entry.COLUMN_TIME + "='?'";
-        String[] selectionArgs = {day, time};
+        String selection = Entry.COLUMN_DAY + "='" + day + "' AND " +
+                Entry.COLUMN_TIME + "='" + time + "'";
 
         Cursor c = db.query(
                 Entry.TABLE_NAME,  // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
-                selectionArgs,                            // The values for the WHERE clause
+                null,                            // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
                 null                                      // The sort order
         );
-        c.moveToFirst();
-        String title = c.getString(c.getColumnIndex(Entry.COLUMN_SHOW_TITLE));
+        String title = null;
+        if (!c.isAfterLast()) { // check if anything was found
+            c.moveToFirst();
+            title = c.getString(c.getColumnIndex(Entry.COLUMN_SHOW_TITLE));
+        }
         c.close();
         return title;
+    }
+
+    /**
+     * Gets all show names for a day.
+     *
+     * @param day
+     * @return HashMap of String time -> String showName.
+     */
+    public HashMap<String, String> getShowName(String day) {
+        HashMap<String, String> map = new HashMap<>();
+
+        // which columns to see for query
+        String[] projection = {Entry.COLUMN_TIME, Entry.COLUMN_SHOW_TITLE};
+        String selection = Entry.COLUMN_DAY + "='" + day + "'";
+
+        Cursor c = db.query(
+                Entry.TABLE_NAME,  // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                null,                                     // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                Entry._ID + " DESC"                                 // The sort order
+        );
+
+        c.moveToFirst();
+
+        while (!c.isAfterLast()) {
+            String title = c.getString(c.getColumnIndex(Entry.COLUMN_SHOW_TITLE));
+            String time = c.getString(c.getColumnIndex(Entry.COLUMN_TIME));
+            map.put(time, title);
+            c.moveToNext();
+        }
+
+        c.close();
+        return map;
     }
 
     public void updateSchedule(String json) throws JSONException {
