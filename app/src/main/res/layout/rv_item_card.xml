@@ -7,6 +7,8 @@
     android:layout_marginBottom="12dp"
     android:layout_marginLeft="24dp"
     android:layout_marginRight="24dp"
+    android:clickable="true"
+    android:foreground="?attr/selectableItemBackground"
     app:cardBackgroundColor="@color/material_deep_teal_500">
 
     <RelativeLayout
@@ -18,7 +20,6 @@
             android:id="@+id/tv_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:text="I Sing the Body Electric"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -29,9 +30,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/tv_title"
-            android:layout_marginTop="8dp"
             android:text="Monday 8am - 9pm"
             android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/iv_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:src="@drawable/ic_favorite_border_white_24dp"
+            android:padding="8dp"/>
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

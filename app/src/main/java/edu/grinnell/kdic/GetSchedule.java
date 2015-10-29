@@ -3,6 +3,7 @@ package edu.grinnell.kdic;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -61,8 +62,10 @@ public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
         if (success) {
             listener.onScheduleParsed();
             Log.i(TAG, "Schedule successfully parsed.");
+            Toast.makeText(context, "Schedule updated", Toast.LENGTH_LONG).show();
         } else {
             // failure messege
+            Toast.makeText(context, "Failed to Update Schedule", Toast.LENGTH_LONG).show();
         }
         super.onPostExecute(success);
     }

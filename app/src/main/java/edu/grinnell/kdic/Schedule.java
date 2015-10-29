@@ -10,28 +10,28 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 
 public class Schedule {
-    private Context context;
     private ScheduleDbHelper dbHelper;
     private SQLiteDatabase db;
 
     public static final String TEXT_TYPE = " TEXT";
+    public static final String TINYINT_TYPE = " TINYINT";
     public static final String COMMA_SEP = ",";
     public static final String SQL_CREATE_ENTRIES =
             "CREATE TABLE " + Entry.TABLE_NAME + " (" +
                     Entry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Entry.COLUMN_DAY + TEXT_TYPE + COMMA_SEP +
                     Entry.COLUMN_TIME + TEXT_TYPE + COMMA_SEP +
-                    Entry.COLUMN_SHOW_TITLE + TEXT_TYPE +
+                    Entry.COLUMN_SHOW_TITLE + TEXT_TYPE + COMMA_SEP +
+                    Entry.COLUMN_FAVORITE + TINYINT_TYPE + " DEFAULT 0" +
                     " )";
 
     public static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + Entry.TABLE_NAME;
 
     public Schedule(Context context) {
-        this.context = context;
         dbHelper = new ScheduleDbHelper(context);
         db = dbHelper.getWritableDatabase();
     }
@@ -43,10 +43,10 @@ public class Schedule {
     /* Inner class that defines the table contents */
     public static abstract class Entry implements BaseColumns {
         public static final String TABLE_NAME = "schedule";
-        public static final String COLUMN_ENTRY_ID = "id";
         public static final String COLUMN_DAY = "day";
         public static final String COLUMN_TIME = "time";
         public static final String COLUMN_SHOW_TITLE = "show_title";
+        public static final String COLUMN_FAVORITE = "favorite";
     }
 
     // CRUD Operations
@@ -58,7 +58,7 @@ public class Schedule {
      * @param time
      * @return String showName or null if it is not found.
      */
-    public String getShowName(String day, String time) {
+    public Show getShow(String day, String time) {
         // which columns to see for query
         String[] projection = {Entry.COLUMN_SHOW_TITLE};
         String selection = Entry.COLUMN_DAY + "='" + day + "' AND " +
@@ -68,18 +68,19 @@ public class Schedule {
                 Entry.TABLE_NAME,  // The table to query
                 projection,                               // The columns to return
                 selection,                                // The columns for the WHERE clause
-                null,                            // The values for the WHERE clause
+                null,                                     // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
                 null                                      // The sort order
         );
-        String title = null;
+        Show show = null;
         if (!c.isAfterLast()) { // check if anything was found
             c.moveToFirst();
-            title = c.getString(c.getColumnIndex(Entry.COLUMN_SHOW_TITLE));
+            String title = c.getString(c.getColumnIndex(Entry.COLUMN_SHOW_TITLE));
+            show = new Show(title, time);
         }
         c.close();
-        return title;
+        return show;
     }
 
     /**
@@ -88,8 +89,8 @@ public class Schedule {
      * @param day
      * @return HashMap of String time -> String showName.
      */
-    public HashMap<String, String> getShowName(String day) {
-        HashMap<String, String> map = new HashMap<>();
+    public ArrayList<Show> getShow(String day) {
+        ArrayList<Show> ret = new ArrayList<>();
 
         // which columns to see for query
         String[] projection = {Entry.COLUMN_TIME, Entry.COLUMN_SHOW_TITLE};
@@ -102,7 +103,7 @@ public class Schedule {
                 null,                                     // The values for the WHERE clause
                 null,                                     // don't group the rows
                 null,                                     // don't filter by row groups
-                Entry._ID + " DESC"                                 // The sort order
+                Entry._ID                                 // The sort order
         );
 
         c.moveToFirst();
@@ -110,12 +111,12 @@ public class Schedule {
         while (!c.isAfterLast()) {
             String title = c.getString(c.getColumnIndex(Entry.COLUMN_SHOW_TITLE));
             String time = c.getString(c.getColumnIndex(Entry.COLUMN_TIME));
-            map.put(time, title);
+            ret.add(new Show(title, time));
             c.moveToNext();
         }
 
         c.close();
-        return map;
+        return ret;
     }
 
     public void updateSchedule(String json) throws JSONException {
@@ -144,5 +145,31 @@ public class Schedule {
                 db.insert(Entry.TABLE_NAME, null, values);
             }
         }
+    }
+
+    public void setFavorite(String title) {
+        String sql = "UPDATE " + Entry.TABLE_NAME + " SET " + Entry.COLUMN_FAVORITE +
+                "=1 WHERE " + Entry.COLUMN_SHOW_TITLE + "='" + title + "'";
+        db.execSQL(sql);
+    }
+
+    public void removeFavorite(String title) {
+        String sql = "UPDATE " + Entry.TABLE_NAME + " SET " + Entry.COLUMN_FAVORITE +
+                "=0 WHERE " + Entry.COLUMN_SHOW_TITLE + "='" + title + "'";
+        db.execSQL(sql);
+    }
+
+    public boolean isFavorite(String title) {
+        String sql = "SELECT " + Entry.COLUMN_FAVORITE + " FROM " + Entry.TABLE_NAME +
+                " WHERE " + Entry.COLUMN_SHOW_TITLE +
+                "='" + title + "'";
+        Cursor cu = db.rawQuery(sql, null);
+
+        if (!cu.isAfterLast()) {
+            cu.moveToFirst();
+            return 1 == cu.getInt(cu.getColumnIndex(Entry.COLUMN_FAVORITE));
+        }
+        cu.close();
+        return false;
     }
 }

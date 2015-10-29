@@ -1,5 +1,6 @@
 package edu.grinnell.kdic;
 
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -18,8 +19,12 @@ public class MainActivity extends AppCompatActivity implements OnScheduleParsed 
             getSupportActionBar().setElevation(0);
         }
 
-        GetSchedule getSchedule = new GetSchedule(MainActivity.this, MainActivity.this);
-        getSchedule.execute();
+        SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFS, 0);
+        if (sharedPreferences.getBoolean(Constants.FIRST_RUN, true)) {
+            GetSchedule getSchedule = new GetSchedule(MainActivity.this, MainActivity.this);
+            getSchedule.execute();
+            sharedPreferences.edit().putBoolean(Constants.FIRST_RUN, false).apply();
+        }
     }
 
 
@@ -38,7 +43,9 @@ public class MainActivity extends AppCompatActivity implements OnScheduleParsed 
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.update_schedule) {
+            GetSchedule getSchedule = new GetSchedule(MainActivity.this, MainActivity.this);
+            getSchedule.execute();
             return true;
         }
 
