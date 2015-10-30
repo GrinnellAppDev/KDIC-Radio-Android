@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,8 +25,7 @@ public class Schedule {
                     Entry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     Entry.COLUMN_DAY + TEXT_TYPE + COMMA_SEP +
                     Entry.COLUMN_TIME + TEXT_TYPE + COMMA_SEP +
-                    Entry.COLUMN_SHOW_TITLE + TEXT_TYPE + COMMA_SEP +
-                    Entry.COLUMN_FAVORITE + TINYINT_TYPE + " DEFAULT 0" +
+                    Entry.COLUMN_SHOW_TITLE + TEXT_TYPE +
                     " )";
 
     public static final String SQL_DELETE_ENTRIES =
@@ -46,7 +46,6 @@ public class Schedule {
         public static final String COLUMN_DAY = "day";
         public static final String COLUMN_TIME = "time";
         public static final String COLUMN_SHOW_TITLE = "show_title";
-        public static final String COLUMN_FAVORITE = "favorite";
     }
 
     // CRUD Operations
@@ -93,7 +92,7 @@ public class Schedule {
         ArrayList<Show> ret = new ArrayList<>();
 
         // which columns to see for query
-        String[] projection = {Entry.COLUMN_TIME, Entry.COLUMN_SHOW_TITLE};
+        String[] projection = {Entry._ID, Entry.COLUMN_TIME, Entry.COLUMN_SHOW_TITLE};
         String selection = Entry.COLUMN_DAY + "='" + day + "'";
 
         Cursor c = db.query(
@@ -145,31 +144,5 @@ public class Schedule {
                 db.insert(Entry.TABLE_NAME, null, values);
             }
         }
-    }
-
-    public void setFavorite(String title) {
-        String sql = "UPDATE " + Entry.TABLE_NAME + " SET " + Entry.COLUMN_FAVORITE +
-                "=1 WHERE " + Entry.COLUMN_SHOW_TITLE + "='" + title + "'";
-        db.execSQL(sql);
-    }
-
-    public void removeFavorite(String title) {
-        String sql = "UPDATE " + Entry.TABLE_NAME + " SET " + Entry.COLUMN_FAVORITE +
-                "=0 WHERE " + Entry.COLUMN_SHOW_TITLE + "='" + title + "'";
-        db.execSQL(sql);
-    }
-
-    public boolean isFavorite(String title) {
-        String sql = "SELECT " + Entry.COLUMN_FAVORITE + " FROM " + Entry.TABLE_NAME +
-                " WHERE " + Entry.COLUMN_SHOW_TITLE +
-                "='" + title + "'";
-        Cursor cu = db.rawQuery(sql, null);
-
-        if (!cu.isAfterLast()) {
-            cu.moveToFirst();
-            return 1 == cu.getInt(cu.getColumnIndex(Entry.COLUMN_FAVORITE));
-        }
-        cu.close();
-        return false;
     }
 }

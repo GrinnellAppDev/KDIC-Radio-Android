@@ -21,6 +21,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     private static final String TAG = ScheduleRecyclerViewAdapter.class.getSimpleName();
     private Context mContext;
     private Schedule mSchedule;
+    private Favorites mFavorites;
 
     // define view types
     public static final int SECTION_HEADER = 0;
@@ -32,6 +33,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     public ScheduleRecyclerViewAdapter(Context context) {
         mContext = context;
         mSchedule = new Schedule(context);
+        mFavorites = new Favorites(context);
     }
 
     public void addContent(ArrayList<ScheduleRecyclerItem> content) {
@@ -65,7 +67,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         holder.subtitle.setText(item.getS2());
 
         if (item.getViewType() == CARD) {
-            if (mSchedule.isFavorite(item.getS1()))
+            if (mFavorites.isFavorite(item.getS1()))
                 holder.favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
             else
                 holder.favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
@@ -73,11 +75,11 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
             holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mSchedule.isFavorite(item.getS1())) {
-                        mSchedule.removeFavorite(item.getS1());
+                    if (mFavorites.isFavorite(item.getS1())) {
+                        mFavorites.removeFavorite(item.getS1());
                         Log.d(TAG, "Removed from Favorites");
                     } else {
-                        mSchedule.setFavorite(item.getS1());
+                        mFavorites.addFavorites(item.getS1());
                         Log.d(TAG, "Added to Favorites");
                     }
                     notifyDataSetChanged();
