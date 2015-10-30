@@ -1,5 +1,7 @@
 package edu.grinnell.kdic;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -20,18 +22,26 @@ import java.io.IOException;
 public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
     private Context context;
     public static final String TAG = GetSchedule.class.getSimpleName();
+    private ProgressDialog dialog;
 
-    private OnScheduleParsed listener;
 
-    public GetSchedule(Context context, OnScheduleParsed listener) {
+
+
+    public GetSchedule(Context context) {
         this.context = context;
-        this.listener = listener;
     }
 
     @Override
     protected void onPreExecute() {
         if (!NetworkState.isOnline(context)) {
             cancel(true);
+        } else {
+            dialog = new ProgressDialog(context);
+            dialog.setTitle("Fetching Schedule");
+            dialog.setMessage("Getting the schedule");
+            dialog.setIndeterminate(true);
+            dialog.setCancelable(false);
+            dialog.show();
         }
         super.onPreExecute();
     }
@@ -59,8 +69,8 @@ public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
+        dialog.dismiss();
         if (success) {
-            listener.onScheduleParsed();
             Log.i(TAG, "Schedule successfully parsed.");
             Toast.makeText(context, "Schedule updated", Toast.LENGTH_LONG).show();
         } else {
@@ -72,8 +82,9 @@ public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
+        dialog.dismiss();
         // No internet connection
-        // failure messege
+        Toast.makeText(context, "There was an error fetching data.", Toast.LENGTH_LONG).show();
         super.onCancelled();
     }
 }

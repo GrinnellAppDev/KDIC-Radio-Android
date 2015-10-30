@@ -3,49 +3,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
-    <LinearLayout
-        android:id="@+id/ll_player"
-        android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/accent_dark"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="1">
-
-        <ImageButton
-            android:id="@+id/ib_play_pause"
-            style="@style/music_button_style"
-            android:layout_weight=".2"
-            android:src="@drawable/ic_keyboard_arrow_up_white_24dp" />
-
-        <TextView
-            android:id="@+id/tv_show_name"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="8dp"
-            android:layout_weight=".6"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:singleLine="true"
-            android:text="I Sing the Body Electric"
-            android:textColor="@color/white"
-            android:textSize="16sp"/>
-
-        <ImageButton
-            android:id="@+id/ib_pull_player"
-            style="@style/music_button_style"
-            android:layout_weight=".2"
-            android:src="@drawable/ic_play_arrow_white_24dp" />
-
-    </LinearLayout>
-
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_schedule"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@id/ll_player">
+        android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

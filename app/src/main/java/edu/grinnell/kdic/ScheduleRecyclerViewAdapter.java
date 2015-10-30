@@ -1,6 +1,7 @@
 package edu.grinnell.kdic;
 
 import android.content.Context;
+import android.graphics.LinearGradient;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -67,7 +69,8 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
                 holder.favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
             else
                 holder.favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
-            holder.favorite.setOnClickListener(new View.OnClickListener() {
+            holder.ll_favorite.setClickable(true);
+            holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (mSchedule.isFavorite(item.getS1())) {
@@ -83,7 +86,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
             // holder.cardView.setCardBackgroundColor();
         } else if (item.getViewType() == DAY_SCHEDULE) {
             holder.subtitle.setVisibility(View.GONE);
-            holder.favorite.setVisibility(View.GONE);
+            holder.favorite.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp);
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -109,6 +112,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         TextView title;
         TextView subtitle;
         ImageView favorite;
+        LinearLayout ll_favorite;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -117,6 +121,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
             if (viewType == CARD || viewType == DAY_SCHEDULE) {
                 cardView = (CardView) itemView.findViewById(R.id.card_view_item);
                 favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
+                ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
             }
         }
     }

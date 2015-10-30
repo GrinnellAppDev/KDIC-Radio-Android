@@ -1,13 +1,15 @@
 package edu.grinnell.kdic;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.text.ParseException;
@@ -23,7 +25,6 @@ public class ScheduleFragment extends Fragment {
 
     private ScheduleRecyclerViewAdapter mAdapter;
     private ArrayList<ScheduleRecyclerItem> mContent;
-    private TextView showNameTextView;
 
     private Show showOnAir;
 
@@ -47,11 +48,13 @@ public class ScheduleFragment extends Fragment {
         mAdapter = new ScheduleRecyclerViewAdapter(getActivity());
         recyclerView.setAdapter(mAdapter);
 
-        // link textview
-        showNameTextView = (TextView) view.findViewById(R.id.tv_show_name);
-
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -60,8 +63,6 @@ public class ScheduleFragment extends Fragment {
 
         getContent();
         mAdapter.addContent(mContent);
-
-        showNameTextView.setText(showOnAir == null ? "Auto-Play" : showOnAir.getTitle());
     }
 
     private void getContent() {
@@ -113,10 +114,9 @@ public class ScheduleFragment extends Fragment {
         mContent.add(new ScheduleRecyclerItem(SECTION_HEADER, "Full Schedule", "All Shows for Days of the Week"));
 
         for (int i = 0; i < 7; i++) {
-            mContent.add(new ScheduleRecyclerItem(DAY_SCHEDULE, Constants.DAYS_OF_WEEK[i] + " >", ""));
+            mContent.add(new ScheduleRecyclerItem(DAY_SCHEDULE, Constants.DAYS_OF_WEEK[i], ""));
         }
 
         schedule.close();
     }
-
 }

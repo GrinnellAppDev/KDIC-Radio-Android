@@ -33,16 +33,23 @@
             android:text="Monday 8am - 9pm"
             android:textColor="@color/white" />
 
-        <ImageView
-            android:id="@+id/iv_favorite"
+        <LinearLayout
+            android:id="@+id/ll_favorite"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:background="?attr/selectableItemBackgroundBorderless"
-            android:clickable="true"
-            android:src="@drawable/ic_favorite_border_white_24dp"
-            android:padding="8dp"/>
+            android:clickable="true">
+
+            <ImageView
+                android:id="@+id/iv_favorite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:padding="8dp"
+                android:src="@drawable/ic_favorite_border_white_24dp" />
+        </LinearLayout>
     </RelativeLayout>
 
 </android.support.v7.widget.CardView>

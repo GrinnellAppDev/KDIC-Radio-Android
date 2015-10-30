@@ -1,7 +1,7 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!--Main Theme Colors-->
         <!--   primary branding color for the app -->
         <item name="colorPrimary">@color/primary</item>
@@ -19,7 +19,7 @@
 
     <style name="music_button_style">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
         <item name="android:scaleType">center</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>

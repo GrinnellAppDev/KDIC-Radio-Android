@@ -2,40 +2,21 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".MainActivityFragment">
-
-    <LinearLayout
-        android:id="@+id/ll_play"
+    <ImageView
         android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/accent_dark"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:weightSum="3">
-
-        <ImageButton
-            android:id="@+id/ib_fast_rewind"
-            style="@style/music_button_style"
-            android:src="@drawable/ic_fast_rewind_white_24dp" />
-
-        <ImageButton
-            android:id="@+id/ib_play_pause"
-            style="@style/music_button_style"
-            android:src="@drawable/ic_play_arrow_white_24dp" />
-
-        <ImageButton
-            android:id="@+id/ib_fast_forward"
-            style="@style/music_button_style"
-            android:src="@drawable/ic_fast_forward_white_24dp" />
-    </LinearLayout>
+        android:layout_height="match_parent"
+        android:src="@drawable/visualizer"
+        android:background="@color/white"
+        android:layout_marginBottom="132dp"
+        android:padding="48dp"/>
 
     <LinearLayout
         android:id="@+id/ll_track_info"
         android:layout_width="match_parent"
         android:layout_height="132dp"
-        android:layout_above="@id/ll_play"
+        android:layout_alignParentBottom="true"
         android:background="@color/accent"
         android:gravity="bottom"
         android:orientation="vertical"
