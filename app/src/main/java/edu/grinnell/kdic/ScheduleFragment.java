@@ -1,10 +1,10 @@
 package edu.grinnell.kdic;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,6 +15,7 @@ import android.widget.Toast;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 
 import static edu.grinnell.kdic.ScheduleRecyclerViewAdapter.CARD;
@@ -98,10 +99,13 @@ public class ScheduleFragment extends Fragment {
 
         try {
             Date todayTime = timeFormat.parse(timeFormat.format(today));
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.HOUR_OF_DAY, 2);
+            Date lastShowEndTime = timeFormat.parse(timeFormat.format(cal.getTime()));
             for (int i = 0; i < showsToday.size(); i++) {
                 Show show = showsToday.get(i);
                 Date d = timeFormat.parse(show.getTime());
-                if (d.after(todayTime)) {
+                if (d.after(todayTime) || d.before(lastShowEndTime)) {
                     mContent.add(show);
                 }
             }
