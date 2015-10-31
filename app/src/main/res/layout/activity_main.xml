@@ -19,7 +19,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/toolbar_main"
-        android:layout_marginBottom="88dp" />
+        android:layout_marginBottom="72dp" />
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/playback_toolbar"
@@ -28,7 +28,7 @@
         android:layout_alignParentBottom="true"
         android:background="@color/accent_dark"
         android:gravity="center"
-        android:minHeight="88dp"
+        android:minHeight="72dp"
         app:navigationIcon="@drawable/ic_keyboard_arrow_up_white_24dp"
         app:subtitle="Hello"
         app:subtitleTextColor="@color/material_grey_300"
@@ -40,7 +40,7 @@
             android:id="@+id/ib_play_pause"
             style="@style/music_button_style"
             android:layout_gravity="right"
-            android:padding="32dp"
+            android:padding="24dp"
             android:src="@drawable/ic_play_arrow_white_24dp" />
     </android.support.v7.widget.Toolbar>
 

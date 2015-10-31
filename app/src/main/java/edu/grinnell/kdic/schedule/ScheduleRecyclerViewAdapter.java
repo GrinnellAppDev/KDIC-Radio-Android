@@ -1,7 +1,6 @@
-package edu.grinnell.kdic;
+package edu.grinnell.kdic.schedule;
 
 import android.content.Context;
-import android.graphics.LinearGradient;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -11,9 +10,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
+
+import edu.grinnell.kdic.Favorites;
+import edu.grinnell.kdic.R;
 
 
 public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRecyclerViewAdapter.ViewHolder> {
@@ -88,6 +89,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
             // holder.cardView.setCardBackgroundColor();
         } else if (item.getViewType() == DAY_SCHEDULE) {
             holder.subtitle.setVisibility(View.GONE);
+            ViewGroup.LayoutParams lp = holder.title.getLayoutParams();
+            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+            holder.title.setLayoutParams(lp);
+
             holder.favorite.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp);
             holder.cardView.setOnClickListener(new View.OnClickListener() {
                 @Override

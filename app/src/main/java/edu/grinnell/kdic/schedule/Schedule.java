@@ -1,17 +1,19 @@
-package edu.grinnell.kdic;
+package edu.grinnell.kdic.schedule;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.provider.BaseColumns;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+
+import edu.grinnell.kdic.Constants;
+import edu.grinnell.kdic.Show;
 
 public class Schedule {
     private ScheduleDbHelper dbHelper;

@@ -1,10 +1,12 @@
-package edu.grinnell.kdic;
+package edu.grinnell.kdic.visualizer;
 
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import edu.grinnell.kdic.R;
 
 /**
  * A placeholder fragment containing a simple view.

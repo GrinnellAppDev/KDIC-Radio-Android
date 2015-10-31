@@ -8,6 +8,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import edu.grinnell.kdic.schedule.GetSchedule;
+import edu.grinnell.kdic.schedule.ScheduleFragment;
+import edu.grinnell.kdic.visualizer.VisualizeFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     boolean isVisualizeShown;
@@ -45,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment, scheduleFragment).commit();
+
         }
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFS, 0);
@@ -60,23 +65,30 @@ public class MainActivity extends AppCompatActivity {
         playbackToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (isVisualizeShown) {
-                    getSupportFragmentManager().popBackStack();
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment, scheduleFragment)
-                            .commit();
-                    playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-                } else {
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment, visualizeFragment)
-                            .addToBackStack(null)
-                            .commit();
-                    playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
-                }
-                isVisualizeShown = !isVisualizeShown;
+                toggleVisualizeFragment();
             }
         });
 
+    }
+
+    public void toggleVisualizeFragment() {
+        if (isVisualizeShown) {
+            // hide visualize fragment
+            getSupportFragmentManager().popBackStack();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment, scheduleFragment)
+                    .commit();
+            playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
+        } else {
+            // show visualize fragment
+            getSupportFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in,R.anim.slide_out_bottom)
+                    .replace(R.id.fragment, visualizeFragment)
+                    .addToBackStack(null)
+                    .commit();
+            playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
+        }
+        isVisualizeShown = !isVisualizeShown;
     }
 
 
@@ -106,10 +118,10 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        super.onBackPressed();
         if (isVisualizeShown) {
             playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
             isVisualizeShown = false;
         }
-        super.onBackPressed();
     }
 }

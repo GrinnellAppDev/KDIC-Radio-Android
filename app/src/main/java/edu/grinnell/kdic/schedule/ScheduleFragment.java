@@ -1,10 +1,9 @@
-package edu.grinnell.kdic;
+package edu.grinnell.kdic.schedule;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,9 +17,9 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import static edu.grinnell.kdic.ScheduleRecyclerViewAdapter.CARD;
-import static edu.grinnell.kdic.ScheduleRecyclerViewAdapter.DAY_SCHEDULE;
-import static edu.grinnell.kdic.ScheduleRecyclerViewAdapter.SECTION_HEADER;
+import edu.grinnell.kdic.Constants;
+import edu.grinnell.kdic.R;
+import edu.grinnell.kdic.Show;
 
 public class ScheduleFragment extends Fragment {
 
@@ -81,17 +80,17 @@ public class ScheduleFragment extends Fragment {
         String todayDayOfWeek = dayFormat.format(today);
 
         // add on air header
-        mContent.add(new ScheduleRecyclerItem(SECTION_HEADER, "On Air", "Listen Now"));
+        mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.SECTION_HEADER, "On Air", "Listen Now"));
 
         showOnAir = schedule.getShow(todayDayOfWeek, new SimpleDateFormat("h:00 a").format(today));
 
         if (showOnAir != null)
             mContent.add(showOnAir);
         else
-            mContent.add(new ScheduleRecyclerItem(CARD, "Auto-Play", "There's no show playing."));
+            mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.CARD, "Auto-Play", "There's no show playing."));
 
         // add later today header
-        mContent.add(new ScheduleRecyclerItem(SECTION_HEADER, "Later Today", "Shows On Air Tonight"));
+        mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.SECTION_HEADER, "Later Today", "Shows On Air Tonight"));
 
         // get today's shows
 
@@ -115,10 +114,10 @@ public class ScheduleFragment extends Fragment {
         }
 
         // add days header
-        mContent.add(new ScheduleRecyclerItem(SECTION_HEADER, "Full Schedule", "All Shows for Days of the Week"));
+        mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.SECTION_HEADER, "Full Schedule", "All Shows for Days of the Week"));
 
         for (int i = 0; i < 7; i++) {
-            mContent.add(new ScheduleRecyclerItem(DAY_SCHEDULE, Constants.DAYS_OF_WEEK[i], ""));
+            mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.DAY_SCHEDULE, Constants.DAYS_OF_WEEK[i], ""));
         }
 
         schedule.close();

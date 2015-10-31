@@ -1,4 +1,4 @@
-package edu.grinnell.kdic;
+package edu.grinnell.kdic.schedule;
 
 public class ScheduleRecyclerItem {
     private int viewType;

@@ -1,6 +1,5 @@
-package edu.grinnell.kdic;
+package edu.grinnell.kdic.schedule;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
@@ -14,6 +13,9 @@ import com.squareup.okhttp.Response;
 import org.json.JSONException;
 
 import java.io.IOException;
+
+import edu.grinnell.kdic.Constants;
+import edu.grinnell.kdic.NetworkState;
 
 /**
  * Created by [pradhanp] on 10/11/15.

@@ -1,6 +1,9 @@
 package edu.grinnell.kdic;
 
 
+import edu.grinnell.kdic.schedule.ScheduleRecyclerItem;
+import edu.grinnell.kdic.schedule.ScheduleRecyclerViewAdapter;
+
 public class Show extends ScheduleRecyclerItem {
 
     public Show(String title, String date) {

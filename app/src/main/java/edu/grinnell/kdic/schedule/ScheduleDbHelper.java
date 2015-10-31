@@ -1,4 +1,4 @@
-package edu.grinnell.kdic;
+package edu.grinnell.kdic.schedule;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
