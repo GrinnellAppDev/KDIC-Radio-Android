@@ -2,6 +2,7 @@ package edu.grinnell.kdic;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -50,6 +51,18 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment, scheduleFragment).commit();
 
+            getSupportFragmentManager().addOnBackStackChangedListener(
+                    new FragmentManager.OnBackStackChangedListener() {
+                        @Override
+                        public void onBackStackChanged() {
+
+                            //Enable Up button only  if there are entries in the back stack
+                            boolean canBack = getSupportFragmentManager().getBackStackEntryCount() > 0;
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(canBack);
+                        }
+                    }
+            );
+
         }
 
         SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFS, 0);
@@ -82,7 +95,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // show visualize fragment
             getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in,R.anim.slide_out_bottom)
+                    .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_bottom)
                     .replace(R.id.fragment, visualizeFragment)
                     .addToBackStack(null)
                     .commit();
@@ -91,6 +104,14 @@ public class MainActivity extends AppCompatActivity {
         isVisualizeShown = !isVisualizeShown;
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        if (isVisualizeShown)
+            toggleVisualizeFragment();
+        else
+            getSupportFragmentManager().popBackStack();
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

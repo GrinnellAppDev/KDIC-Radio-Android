@@ -9,10 +9,11 @@ public abstract class Constants {
 
 
     // for parsing JSON
-    public static final String DAYS = "days";
-    public static final String TIMES = "times";
-    public static final String DATA = "data";
+    public static final String JSON_DAYS = "days";
+    public static final String JSON_TIMES = "times";
+    public static final String JSON_DATA = "data";
 
+    public static final String DAY = "day";
     public static final String[] DAYS_OF_WEEK = {"Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday", "Sunday"};
 

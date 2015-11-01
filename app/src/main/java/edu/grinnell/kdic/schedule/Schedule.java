@@ -124,9 +124,9 @@ public class Schedule {
         db.execSQL(SQL_DELETE_ENTRIES); // delete old schedule if exists
         dbHelper.onCreate(db); // create new schedule table
         JSONObject jsonObject = new JSONObject(json);
-        JSONObject data = jsonObject.getJSONObject(Constants.DATA);
-        JSONArray times = jsonObject.getJSONArray(Constants.TIMES);
-        JSONArray days = jsonObject.getJSONArray(Constants.DAYS);
+        JSONObject data = jsonObject.getJSONObject(Constants.JSON_DATA);
+        JSONArray times = jsonObject.getJSONArray(Constants.JSON_TIMES);
+        JSONArray days = jsonObject.getJSONArray(Constants.JSON_DAYS);
 
         for (int i = 0; i < days.length(); i++) { // iterate through days
             String day = days.getString(i);

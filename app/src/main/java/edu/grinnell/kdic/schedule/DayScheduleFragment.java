@@ -9,14 +9,19 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
+import edu.grinnell.kdic.Constants;
 import edu.grinnell.kdic.R;
+import edu.grinnell.kdic.Show;
 
 public class DayScheduleFragment extends Fragment {
 
     private ScheduleRecyclerViewAdapter mAdapter;
     private ArrayList<ScheduleRecyclerItem> mContent;
+    private String mDay;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -38,8 +43,29 @@ public class DayScheduleFragment extends Fragment {
         mAdapter = new ScheduleRecyclerViewAdapter(getActivity());
         recyclerView.setAdapter(mAdapter);
 
+        mDay = getArguments().getString(Constants.DAY);
 
+        getContent();
+        mAdapter.addContent(mContent);
 
         return view;
+    }
+
+    private void getContent() {
+        mContent = new ArrayList<>();
+        Schedule schedule = new Schedule(getActivity());
+
+        // add day header
+        mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.SECTION_HEADER, mDay, "All Shows for the Day"));
+
+        // get today's shows
+
+        ArrayList<Show> showsToday = schedule.getShow(mDay);
+        for (int i = 0; i < showsToday.size(); i++) {
+            Show show = showsToday.get(i);
+            mContent.add(show);
+        }
+
+        schedule.close();
     }
 }

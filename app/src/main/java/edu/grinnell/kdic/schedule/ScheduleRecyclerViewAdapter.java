@@ -1,6 +1,7 @@
 package edu.grinnell.kdic.schedule;
 
-import android.content.Context;
+import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import edu.grinnell.kdic.Constants;
 import edu.grinnell.kdic.Favorites;
 import edu.grinnell.kdic.R;
 
@@ -20,7 +22,7 @@ import edu.grinnell.kdic.R;
 public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRecyclerViewAdapter.ViewHolder> {
 
     private static final String TAG = ScheduleRecyclerViewAdapter.class.getSimpleName();
-    private Context mContext;
+    private FragmentActivity mContext;
     private Schedule mSchedule;
     private Favorites mFavorites;
 
@@ -31,7 +33,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
 
     private ArrayList<ScheduleRecyclerItem> mContent;
 
-    public ScheduleRecyclerViewAdapter(Context context) {
+    public ScheduleRecyclerViewAdapter(FragmentActivity context) {
         mContext = context;
         mSchedule = new Schedule(context);
         mFavorites = new Favorites(context);
@@ -63,44 +65,61 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        final ScheduleRecyclerItem item = mContent.get(position);
+        ScheduleRecyclerItem item = mContent.get(position);
         holder.title.setText(item.getS1());
         holder.subtitle.setText(item.getS2());
 
         if (item.getViewType() == CARD) {
-            if (mFavorites.isFavorite(item.getS1()))
-                holder.favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
-            else
-                holder.favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
-            holder.ll_favorite.setClickable(true);
-            holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mFavorites.isFavorite(item.getS1())) {
-                        mFavorites.removeFavorite(item.getS1());
-                        Log.d(TAG, "Removed from Favorites");
-                    } else {
-                        mFavorites.addFavorites(item.getS1());
-                        Log.d(TAG, "Added to Favorites");
-                    }
-                    notifyDataSetChanged();
-                }
-            });
+            bindCard(holder, item);
             // holder.cardView.setCardBackgroundColor();
         } else if (item.getViewType() == DAY_SCHEDULE) {
-            holder.subtitle.setVisibility(View.GONE);
-            ViewGroup.LayoutParams lp = holder.title.getLayoutParams();
-            lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            holder.title.setLayoutParams(lp);
-
-            holder.favorite.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp);
-            holder.cardView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
+            bindDaySchedule(holder, item);
         }
+    }
+
+    public void bindCard(ViewHolder holder, final ScheduleRecyclerItem item) {
+        if (mFavorites.isFavorite(item.getS1()))
+            holder.favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
+        else
+            holder.favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+        holder.ll_favorite.setClickable(true);
+        holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mFavorites.isFavorite(item.getS1())) {
+                    mFavorites.removeFavorite(item.getS1());
+                    Log.d(TAG, "Removed from Favorites");
+                } else {
+                    mFavorites.addFavorites(item.getS1());
+                    Log.d(TAG, "Added to Favorites");
+                }
+                notifyDataSetChanged();
+            }
+        });
+
+    }
+
+    public void bindDaySchedule(final ViewHolder holder, final ScheduleRecyclerItem item) {
+        holder.subtitle.setVisibility(View.GONE);
+        ViewGroup.LayoutParams lp = holder.title.getLayoutParams();
+        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        holder.title.setLayoutParams(lp);
+
+        holder.favorite.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp);
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DayScheduleFragment fragment = new DayScheduleFragment();
+                Bundle args = new Bundle();
+                args.putString(Constants.DAY, item.getS1());
+                fragment.setArguments(args);
+                mContext.getSupportFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_right)
+                        .replace(R.id.fragment, fragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
     }
 
     @Override
