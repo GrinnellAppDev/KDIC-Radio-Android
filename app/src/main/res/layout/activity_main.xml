@@ -31,6 +31,7 @@
         android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
         android:minHeight="72dp"
+        android:titleTextAppearance="@style/ActionBarTitleAppearance"
         app:navigationIcon="@drawable/ic_keyboard_arrow_up_white_24dp"
         app:subtitle="Hello"
         app:subtitleTextColor="@color/material_grey_300"

@@ -68,8 +68,6 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         ScheduleRecyclerItem item = mContent.get(position);
-        holder.title.setText(item.getS1());
-        holder.subtitle.setText(item.getS2());
 
         switch (item.getViewType()) {
             case CARD:
@@ -82,6 +80,8 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     }
 
     public void bindCard(ViewHolder holder, final ScheduleRecyclerItem item) {
+        holder.title.setText(item.getS1());
+        holder.subtitle.setText(item.getS2());
         if (mFavorites.isFavorite(item.getS1()))
             holder.favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
         else
@@ -104,6 +104,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     }
 
     public void bindDaySchedule(final ViewHolder holder, final ScheduleRecyclerItem item) {
+        holder.title.setText(item.getS1());
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

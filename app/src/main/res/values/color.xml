@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary" >#C90C15</color>
-    <color name="primary_dark" >#A5080E</color>
-    <color name="primary_light" >#DD3231</color>
-    <color name="accent" >#666B7B</color>
-    <color name="accent_dark" >#373B49</color>
+    <color name="primary" >#D32F2F</color>
+    <color name="primary_dark" >#B71C1C</color>
+    <color name="primary_light" >#EF5350</color>
+    <color name="accent" >#5B6070</color>
+    <color name="accent_dark" >#303440</color>
     <color name="white" >#F8F8F8</color>
     <!--ripple color - 50% white-->
     <color name="ripple_color" >#32ffffff</color>

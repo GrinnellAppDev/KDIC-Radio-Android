@@ -58,7 +58,7 @@
         android:layout_marginRight="24dp"
         android:clickable="true"
         android:src="@drawable/ic_favorite_border_white_24dp"
-        app:backgroundTint="@color/primary_light"
+        app:backgroundTint="@color/primary"
         app:elevation="6dp"
         app:fabSize="normal"
         app:rippleColor="@color/ripple_color" />
