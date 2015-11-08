@@ -2,12 +2,15 @@ package edu.grinnell.kdic;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+
+import java.util.List;
 
 import edu.grinnell.kdic.schedule.GetSchedule;
 import edu.grinnell.kdic.schedule.ScheduleFragment;
@@ -75,22 +78,23 @@ public class MainActivity extends AppCompatActivity {
         visualizeFragment = new VisualizeFragment();
 
         playbackToolbar = (Toolbar) findViewById(R.id.playback_toolbar);
-        playbackToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 toggleVisualizeFragment();
+
             }
-        });
+        };
+        playbackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
+        playbackToolbar.setOnClickListener(onToggleVisualizeFragment);
 
     }
 
     public void toggleVisualizeFragment() {
         if (isVisualizeShown) {
             // hide visualize fragment
+
             getSupportFragmentManager().popBackStack();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment, scheduleFragment)
-                    .commit();
             playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
         } else {
             // show visualize fragment

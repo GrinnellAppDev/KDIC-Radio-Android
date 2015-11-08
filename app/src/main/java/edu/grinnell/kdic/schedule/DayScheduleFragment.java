@@ -3,6 +3,8 @@ package edu.grinnell.kdic.schedule;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ public class DayScheduleFragment extends Fragment {
     private ScheduleRecyclerViewAdapter mAdapter;
     private ArrayList<ScheduleRecyclerItem> mContent;
     private String mDay;
+    private String oldTitle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -48,6 +51,12 @@ public class DayScheduleFragment extends Fragment {
         getContent();
         mAdapter.addContent(mContent);
 
+        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
+        oldTitle = actionBar.getTitle().toString();
+        actionBar.setTitle("Daily Schedule");
+
+
+
         return view;
     }
 
@@ -67,5 +76,12 @@ public class DayScheduleFragment extends Fragment {
         }
 
         schedule.close();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(oldTitle);
     }
 }

@@ -53,8 +53,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
                 v = inflater.inflate(R.layout.rv_item_header, parent, false);
                 break;
             case CARD:
-            case DAY_SCHEDULE:
                 v = inflater.inflate(R.layout.rv_item_card, parent, false);
+                break;
+            case DAY_SCHEDULE:
+                v = inflater.inflate(R.layout.rv_item_day_card, parent, false);
                 break;
             default:
                 throw new IllegalArgumentException();
@@ -69,11 +71,13 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         holder.title.setText(item.getS1());
         holder.subtitle.setText(item.getS2());
 
-        if (item.getViewType() == CARD) {
-            bindCard(holder, item);
-            // holder.cardView.setCardBackgroundColor();
-        } else if (item.getViewType() == DAY_SCHEDULE) {
-            bindDaySchedule(holder, item);
+        switch (item.getViewType()) {
+            case CARD:
+                bindCard(holder, item);
+                break;
+            case DAY_SCHEDULE:
+                bindDaySchedule(holder, item);
+                break;
         }
     }
 
@@ -100,12 +104,6 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     }
 
     public void bindDaySchedule(final ViewHolder holder, final ScheduleRecyclerItem item) {
-        holder.subtitle.setVisibility(View.GONE);
-        ViewGroup.LayoutParams lp = holder.title.getLayoutParams();
-        lp.height = ViewGroup.LayoutParams.MATCH_PARENT;
-        holder.title.setLayoutParams(lp);
-
-        holder.favorite.setImageResource(R.drawable.ic_keyboard_arrow_right_white_24dp);
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -146,8 +144,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
             subtitle = (TextView) itemView.findViewById(R.id.tv_subtitle);
             if (viewType == CARD || viewType == DAY_SCHEDULE) {
                 cardView = (CardView) itemView.findViewById(R.id.card_view_item);
-                favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
-                ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
+                if (viewType == CARD) {
+                    favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
+                    ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
+                }
             }
         }
     }

@@ -9,9 +9,9 @@
         android:layout_height="wrap_content"
         android:background="@color/primary"
         android:minHeight="?attr/actionBarSize"
+        app:subtitleTextColor="@color/white"
         app:title="@string/station_name"
-        app:titleTextColor="@color/white"
-        app:subtitleTextColor="@color/white"/>
+        app:titleTextColor="@color/white" />
 
 
     <FrameLayout
@@ -27,6 +27,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:background="@color/accent_dark"
+        android:clickable="true"
+        android:foreground="?attr/selectableItemBackground"
         android:gravity="center"
         android:minHeight="72dp"
         app:navigationIcon="@drawable/ic_keyboard_arrow_up_white_24dp"
