@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     private FragmentActivity mContext;
     private Schedule mSchedule;
     private Favorites mFavorites;
+    private int animatePos;
 
     // define view types
     public static final int SECTION_HEADER = 0;
@@ -76,7 +79,24 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
             case DAY_SCHEDULE:
                 bindDaySchedule(holder, item);
                 break;
+            case SECTION_HEADER:
+                bindSectionHeader(holder, item);
+                break;
         }
+        animateCard(holder.itemView, position);
+    }
+
+    private void animateCard(View v, int position) {
+        if (position > animatePos) {
+            Animation cardAnimation = AnimationUtils.loadAnimation(mContext, R.anim.scale_card_up);
+            v.startAnimation(cardAnimation);
+            animatePos = position;
+        }
+    }
+
+    private void bindSectionHeader(ViewHolder holder, ScheduleRecyclerItem item) {
+        holder.title.setText(item.getS1());
+        holder.subtitle.setText(item.getS2());
     }
 
     public void bindCard(ViewHolder holder, final ScheduleRecyclerItem item) {
