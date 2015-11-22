@@ -14,6 +14,7 @@ import edu.grinnell.kdic.R;
 public class VisualizeFragment extends Fragment {
 
     public VisualizeFragment() {
+        super();
     }
 
     @Override

@@ -2,15 +2,14 @@ package edu.grinnell.kdic;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
+import android.support.design.widget.NavigationView;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-
-import java.util.List;
 
 import edu.grinnell.kdic.schedule.GetSchedule;
 import edu.grinnell.kdic.schedule.ScheduleFragment;
@@ -21,16 +20,16 @@ public class MainActivity extends AppCompatActivity {
     boolean isVisualizeShown;
     VisualizeFragment visualizeFragment;
     ScheduleFragment scheduleFragment;
+    Toolbar navigationToolbar;
     Toolbar playbackToolbar;
-
+    DrawerLayout drawerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // set toolbar as actionbar
-        setSupportActionBar((Toolbar) findViewById(R.id.toolbar_main));
+        setupNavigation();
 
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
@@ -53,18 +52,6 @@ public class MainActivity extends AppCompatActivity {
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment, scheduleFragment).commit();
-
-            getSupportFragmentManager().addOnBackStackChangedListener(
-                    new FragmentManager.OnBackStackChangedListener() {
-                        @Override
-                        public void onBackStackChanged() {
-
-                            //Enable Up button only  if there are entries in the back stack
-                            boolean canBack = getSupportFragmentManager().getBackStackEntryCount() > 0;
-                            getSupportActionBar().setDisplayHomeAsUpEnabled(canBack);
-                        }
-                    }
-            );
 
         }
 
@@ -90,14 +77,76 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void setupNavigation() {
+        // get toolbar and nav drawer
+        navigationToolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+
+        // set toolbar as actionbar
+        setSupportActionBar(navigationToolbar);
+
+        // initialize navigation drawer
+        navigationToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        navigationToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(GravityCompat.START);
+            }
+        });
+
+        // set onclick listeners to navigation menu items
+        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem menuItem) {
+                if (isVisualizeShown && menuItem.getItemId() != R.id.visualizer) {
+                    getSupportFragmentManager().popBackStack();
+                    playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
+                    isVisualizeShown = false;
+                }
+                switch (menuItem.getItemId()) {
+                    case R.id.schedule:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment, scheduleFragment)
+                                .addToBackStack(null)
+                                .commit();
+                        break;
+                    case R.id.visualizer:
+                        showVisualizeFragment();
+                        break;
+                    case R.id.blog:
+                        getSupportFragmentManager().beginTransaction()
+                                .replace(R.id.fragment, new BlogWebViewFragment())
+                                .addToBackStack(null)
+                                .commit();
+                        break;
+                    default:
+                        break;
+                }
+
+                // close the drawer after something is clicked
+                drawerLayout.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+
+
+    }
+
     public void toggleVisualizeFragment() {
         if (isVisualizeShown) {
             // hide visualize fragment
-
-            getSupportFragmentManager().popBackStack();
             playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
+            getSupportFragmentManager().popBackStack();
+            isVisualizeShown = false;
         } else {
             // show visualize fragment
+            showVisualizeFragment();
+        }
+    }
+
+    public void showVisualizeFragment() {
+        if (!isVisualizeShown) {
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_bottom)
                     .replace(R.id.fragment, visualizeFragment)
@@ -105,16 +154,7 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
             playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
         }
-        isVisualizeShown = !isVisualizeShown;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        if (isVisualizeShown)
-            toggleVisualizeFragment();
-        else
-            getSupportFragmentManager().popBackStack();
-        return true;
+        isVisualizeShown = true;
     }
 
     @Override

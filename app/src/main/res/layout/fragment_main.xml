@@ -7,7 +7,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/visualizer"
+        android:src="@drawable/equalizer"
         android:background="@color/white"
         android:layout_marginBottom="132dp"
         android:padding="48dp"/>

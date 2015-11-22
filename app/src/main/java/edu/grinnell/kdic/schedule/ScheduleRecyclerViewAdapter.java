@@ -83,7 +83,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
                 bindSectionHeader(holder, item);
                 break;
         }
-        animateCard(holder.itemView, position);
+        //animateCard(holder.itemView, position);
     }
 
     private void animateCard(View v, int position) {
