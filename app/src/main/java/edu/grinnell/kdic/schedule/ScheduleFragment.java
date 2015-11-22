@@ -41,13 +41,15 @@ public class ScheduleFragment extends Fragment {
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return 3;
+                //if (mContent.get(position).getViewType() == ScheduleRecyclerViewAdapter.CARD)
+                //    return 1;
+                //else
+                    return 3;
             }
         });
         recyclerView.setLayoutManager(layoutManager);
         mAdapter = new ScheduleRecyclerViewAdapter(getActivity());
         recyclerView.setAdapter(mAdapter);
-
 
 
         return view;
