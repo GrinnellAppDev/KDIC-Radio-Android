@@ -13,6 +13,8 @@ import edu.grinnell.kdic.R;
  */
 public class VisualizeFragment extends Fragment {
 
+    public static final String TAG = "VisualizeFragment";
+
     public VisualizeFragment() {
         super();
     }

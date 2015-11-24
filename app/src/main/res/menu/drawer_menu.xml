@@ -2,14 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/visualizer"
+            android:icon="@drawable/ic_music_video_white_24dp"
+            android:title="Now Playing" />
+        <item
             android:id="@+id/schedule"
             android:icon="@drawable/ic_schedule_white_24dp"
             android:title="Schedule"
             android:checked="true"/>
-        <item
-            android:id="@+id/visualizer"
-            android:icon="@drawable/ic_music_video_white_24dp"
-            android:title="Visualizer" />
         <item
             android:id="@+id/favorites"
             android:icon="@drawable/ic_favorite_border_white_24dp"

@@ -3,6 +3,7 @@ package edu.grinnell.kdic;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -11,18 +12,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import java.util.Stack;
+
 import edu.grinnell.kdic.schedule.GetSchedule;
 import edu.grinnell.kdic.schedule.ScheduleFragment;
 import edu.grinnell.kdic.visualizer.VisualizeFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    boolean isVisualizeShown;
     VisualizeFragment visualizeFragment;
     ScheduleFragment scheduleFragment;
     Toolbar navigationToolbar;
     Toolbar playbackToolbar;
     DrawerLayout drawerLayout;
+    NavigationView navigationView;
+    Stack<Integer> backStack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,7 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment, scheduleFragment).commit();
+                    .add(R.id.fragment, scheduleFragment, ScheduleFragment.TAG)
+                    .commit();
+            backStack.add(R.id.schedule);
 
         }
 
@@ -68,8 +74,14 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                toggleVisualizeFragment();
-
+                if (backStack.peek() != R.id.visualizer) {
+                    showVisualizeFragment();
+                    backStack.add(R.id.visualizer);
+                } else {
+                    hideVisualizeFragment();
+                    backStack.pop();
+                }
+                updateNavigationView();
             }
         };
         playbackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
@@ -94,34 +106,49 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        // set up backstack
+        backStack = new Stack<>();
+
         // set onclick listeners to navigation menu items
-        final NavigationView navigationView = (NavigationView) findViewById(R.id.navigation_view);
+        navigationView = (NavigationView) findViewById(R.id.navigation_view);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                if (isVisualizeShown && menuItem.getItemId() != R.id.visualizer) {
-                    getSupportFragmentManager().popBackStack();
-                    playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-                    isVisualizeShown = false;
-                }
-                switch (menuItem.getItemId()) {
-                    case R.id.schedule:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment, scheduleFragment)
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-                    case R.id.visualizer:
-                        showVisualizeFragment();
-                        break;
-                    case R.id.blog:
-                        getSupportFragmentManager().beginTransaction()
-                                .replace(R.id.fragment, new BlogWebViewFragment())
-                                .addToBackStack(null)
-                                .commit();
-                        break;
-                    default:
-                        break;
+                if (backStack.peek() != menuItem.getItemId()) {
+                    if (backStack.peek() == R.id.visualizer) {
+                        hideVisualizeFragment();
+                        backStack.pop();
+                    }
+                    backStack.push(menuItem.getItemId());
+
+                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                    switch (menuItem.getItemId()) {
+                        case R.id.schedule:
+                            ft.replace(R.id.fragment, scheduleFragment, ScheduleFragment.TAG)
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.visualizer:
+                            showVisualizeFragment();
+                            break;
+                        case R.id.favorites:
+                            ft.replace(R.id.fragment, new AboutFragment(), AboutFragment.TAG)
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.blog:
+                            ft.replace(R.id.fragment, new BlogWebViewFragment(), BlogWebViewFragment.TAG)
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        case R.id.about:
+                            ft.replace(R.id.fragment, new AboutFragment(), AboutFragment.TAG)
+                                    .addToBackStack(null)
+                                    .commit();
+                            break;
+                        default:
+                            break;
+                    }
                 }
 
                 // close the drawer after something is clicked
@@ -129,32 +156,26 @@ public class MainActivity extends AppCompatActivity {
                 return true;
             }
         });
-
-
     }
 
-    public void toggleVisualizeFragment() {
-        if (isVisualizeShown) {
-            // hide visualize fragment
-            playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-            getSupportFragmentManager().popBackStack();
-            isVisualizeShown = false;
-        } else {
-            // show visualize fragment
-            showVisualizeFragment();
-        }
+    public void updateNavigationView() {
+        navigationView.setCheckedItem(backStack.peek());
+    }
+
+
+    public void hideVisualizeFragment() {
+        // hide visualize fragment
+        playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
+        getSupportFragmentManager().popBackStack();
     }
 
     public void showVisualizeFragment() {
-        if (!isVisualizeShown) {
-            getSupportFragmentManager().beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_bottom)
-                    .replace(R.id.fragment, visualizeFragment)
-                    .addToBackStack(null)
-                    .commit();
-            playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
-        }
-        isVisualizeShown = true;
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_bottom)
+                .replace(R.id.fragment, visualizeFragment, VisualizeFragment.TAG)
+                .addToBackStack(null)
+                .commit();
+        playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
     }
 
     @Override
@@ -183,10 +204,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        if (isVisualizeShown) {
-            playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-            isVisualizeShown = false;
+        if (backStack.size() > 1) {
+            int menuId = backStack.pop();
+            if (menuId == R.id.visualizer) {
+                playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
+            }
+            updateNavigationView();
         }
+        super.onBackPressed();
     }
 }

@@ -23,6 +23,8 @@ import edu.grinnell.kdic.Show;
 
 public class ScheduleFragment extends Fragment {
 
+    public static final String TAG = "ScheduleFragment";
+
     private ScheduleRecyclerViewAdapter mAdapter;
     private ArrayList<ScheduleRecyclerItem> mContent;
 

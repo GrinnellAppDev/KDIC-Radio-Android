@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 public class BlogWebViewFragment extends Fragment {
 
+    public static final String TAG = "BlogFragment";
     public static final String BLOG_URL = "http://kdic.grinnell.edu/";
 
     @Override

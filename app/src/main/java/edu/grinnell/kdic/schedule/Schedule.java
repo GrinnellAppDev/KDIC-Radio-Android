@@ -134,16 +134,19 @@ public class Schedule {
 
             for (int j = 0; j < times.length(); j++) { // iterate through times
                 String time = times.getString(j);
-                String showName = dayObject.getString(time);
+                String showName = dayObject.getString(time).trim();
 
-                // Create a new map of values, where column names are the keys
-                ContentValues values = new ContentValues();
-                values.put(Entry.COLUMN_DAY, day);
-                values.put(Entry.COLUMN_TIME, time);
-                values.put(Entry.COLUMN_SHOW_TITLE, showName);
+                if (!showName.equals("")) {
 
-                // insert values into the db
-                db.insert(Entry.TABLE_NAME, null, values);
+                    // Create a new map of values, where column names are the keys
+                    ContentValues values = new ContentValues();
+                    values.put(Entry.COLUMN_DAY, day);
+                    values.put(Entry.COLUMN_TIME, time);
+                    values.put(Entry.COLUMN_SHOW_TITLE, showName);
+
+                    // insert values into the db
+                    db.insert(Entry.TABLE_NAME, null, values);
+                }
             }
         }
     }
