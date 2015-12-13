@@ -1,7 +1,6 @@
 package edu.grinnell.kdic;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -18,15 +17,21 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
-import android.widget.ImageButton;
+import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.Stack;
 
 import edu.grinnell.kdic.schedule.GetSchedule;
+import edu.grinnell.kdic.schedule.Schedule;
 import edu.grinnell.kdic.schedule.ScheduleFragment;
 import edu.grinnell.kdic.visualizer.VisualizeFragment;
 
@@ -38,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
     ScheduleFragment scheduleFragment;
     Toolbar navigationToolbar;
     Toolbar playbackToolbar;
+    ImageView playPauseButton;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Stack<Integer> backStack;
@@ -104,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         rotate.setRepeatCount(Animation.INFINITE);
         rotate.setInterpolator(new LinearInterpolator());
 
-        final ImageView playPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
+        playPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -116,22 +122,23 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // play
                     if (NetworkState.isOnline(MainActivity.this)) {
-                        if (radioService.isLoaded()) {
-                            playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
-                            playPauseButton.clearAnimation();
-                        }
-                        else {
-                            playPauseButton.setImageResource(R.drawable.ic_loading_spinner);
-                            playPauseButton.startAnimation(rotate);
-                        }
-                        radioService.setRunOnStreamPrepared(new Runnable() {
-                            @Override
-                            public void run() {
+                        if (!radioService.isLoading()) {
+                            if (radioService.isLoaded()) {
                                 playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
                                 playPauseButton.clearAnimation();
+                            } else {
+                                playPauseButton.setImageResource(R.drawable.ic_loading_spinner);
+                                playPauseButton.startAnimation(rotate);
                             }
-                        });
-                        radioService.play();
+                            radioService.setRunOnStreamPrepared(new Runnable() {
+                                @Override
+                                public void run() {
+                                    playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+                                    playPauseButton.clearAnimation();
+                                }
+                            });
+                            radioService.play();
+                        }
                     } else {
                         showNoInternetDialog();
                     }
@@ -256,7 +263,40 @@ public class MainActivity extends AppCompatActivity {
     public void hideVisualizeFragment() {
         // hide visualize fragment
         playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
+        updateShowNamePlaybackToolbar();
         getSupportFragmentManager().popBackStack();
+
+        // move the play button to the right
+        final float shiftAmnt = (playbackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
+        TranslateAnimation animation = new TranslateAnimation(0, shiftAmnt, 0, 0);
+        animation.setDuration(200);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setFillAfter(false);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                playPauseButton.setTranslationX(0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+        });
+        playPauseButton.startAnimation(animation);
+
+        // move the info onto the screen
+        AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
+        alphaAnimation.setDuration(200);
+        alphaAnimation.setStartOffset(100);
+        alphaAnimation.setFillAfter(true);
+        alphaAnimation.setInterpolator(new AccelerateInterpolator());
+        findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
     }
 
     public void showVisualizeFragment() {
@@ -265,16 +305,65 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.fragment, visualizeFragment, VisualizeFragment.TAG)
                 .addToBackStack(null)
                 .commit();
+        ((TextView) findViewById(R.id.tv_playback_show_name)).setText("");
+        ((TextView) findViewById(R.id.tv_playback_show_time)).setText("");
         playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
+
+        // move the play button to the middle
+        final float shiftAmnt = (playbackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
+        TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
+        animation.setDuration(200);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setFillAfter(true);
+        playPauseButton.setTranslationX(-1 * shiftAmnt);
+        playPauseButton.startAnimation(animation);
+
+        // move the info off the screen
+        AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
+        alphaAnimation.setDuration(200);
+        alphaAnimation.setStartOffset(200);
+        alphaAnimation.setFillAfter(true);
+        alphaAnimation.setInterpolator(new AccelerateInterpolator());
+        findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
     }
 
+    /**
+     * Update the show name in the bottom playback toolbar to the current show
+     */
+    public void updateShowNamePlaybackToolbar() {
+        TextView showName = (TextView) findViewById(R.id.tv_playback_show_name);
+        TextView showTime = (TextView) findViewById(R.id.tv_playback_show_time);
+
+        Show curShow = Schedule.getCurrentShow(this);
+        if (curShow == null) {
+            showName.setText("Auto Play");
+            showTime.setVisibility(View.GONE);
+        } else {
+            showName.setText(curShow.getTitle());
+            showTime.setText(curShow.getTime());
+            showTime.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * Create a show an alert dialog warning about no internet connection
+     */
     public void showNoInternetDialog() {
         new AlertDialog.Builder(this)
                 .setTitle("No Internet Connection")
                 .setMessage("Connect to the internet to play the live stream.")
-                .setNeutralButton("OK", null)
-                .setIcon(R.drawable.ic_warning_white_24dp)
+                .setPositiveButton("OK", null)
+                .setIcon(R.drawable.ic_warning_black_24dp)
                 .show();
+    }
+
+    @Override
+    protected void onResume() {
+
+        if (backStack.peek() != R.id.visualizer)
+            updateShowNamePlaybackToolbar();
+
+        super.onResume();
     }
 
     @Override

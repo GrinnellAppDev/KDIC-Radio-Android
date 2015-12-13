@@ -96,7 +96,9 @@ public class Schedule {
         Date today = new Date();
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
         String todayDayOfWeek = dayFormat.format(today);
-        return schedule.getShow(todayDayOfWeek, new SimpleDateFormat("h:00 a").format(today));
+        Show show = schedule.getShow(todayDayOfWeek, new SimpleDateFormat("h:00 a").format(today));
+        schedule.close();
+        return show;
     }
 
     /**

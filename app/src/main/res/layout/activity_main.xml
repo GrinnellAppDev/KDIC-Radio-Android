@@ -37,12 +37,33 @@
             android:foreground="?attr/selectableItemBackground"
             android:gravity="center"
             android:minHeight="72dp"
-            android:titleTextAppearance="@style/ActionBarTitleAppearance"
-            app:navigationIcon="@drawable/ic_keyboard_arrow_up_white_24dp"
-            app:subtitle="Hello"
-            app:subtitleTextColor="@color/material_grey_300"
-            app:title="Hello"
-            app:titleTextColor="@color/white">
+            app:navigationIcon="@drawable/ic_keyboard_arrow_up_white_24dp">
+
+            <LinearLayout
+                android:id="@+id/ll_show_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="72dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_playback_show_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_playback_show_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/material_grey_300" />
+
+            </LinearLayout>
 
 
             <ImageView

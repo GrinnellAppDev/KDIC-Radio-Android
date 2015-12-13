@@ -31,8 +31,9 @@ public class RadioService extends Service {
     private static final int NOTIFICATION_ID = 1;
 
     private AudioManager audioManager;
-    OnAudioFocusChangeListener audioFocusListener;
+    private OnAudioFocusChangeListener audioFocusListener;
     private boolean isLoaded;
+    private boolean isLoading;
     private WifiManager.WifiLock wifiLock;
     private MediaPlayer mediaPlayer;
 
@@ -139,6 +140,7 @@ public class RadioService extends Service {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
                     Log.d(TAG, "Stream Prepared");
+                    isLoading = false;
                     isLoaded = true;
                     play();
                     if (runOnStreamPrepared != null) runOnStreamPrepared.run();
@@ -151,6 +153,7 @@ public class RadioService extends Service {
                 mediaPlayer.setDataSource(Constants.STREAM_URL);
 
                 // prepare the stream asynchronously
+                isLoading = true;
                 mediaPlayer.prepareAsync();
 
             } catch (IOException e) {
@@ -231,6 +234,10 @@ public class RadioService extends Service {
 
     public boolean isLoaded() {
         return isLoaded;
+    }
+
+    public boolean isLoading() {
+        return isLoading;
     }
 
     private void showNotification() {

@@ -47,10 +47,5 @@
         <item name="android:clickable">true</item>
     </style>
 
-    <style name="ActionBarTitleAppearance" parent="@android:style/TextAppearance.DialogWindowTitle">
-        <item name="android:textColor">@color/white</item>
-        <item name="android:textSize">36sp</item>
-        <item name="android:textStyle">bold</item>
-    </style>
 
 </resources>

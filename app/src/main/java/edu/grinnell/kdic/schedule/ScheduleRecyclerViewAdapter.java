@@ -177,7 +177,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
             subtitle = (TextView) itemView.findViewById(R.id.tv_subtitle);
             if (viewType == CARD || viewType == CARD_NO_FAV || viewType == DAY_SCHEDULE) {
                 cardView = (CardView) itemView.findViewById(R.id.card_view_item);
-                if (viewType == CARD) {
+                if (viewType == CARD || viewType == CARD_NO_FAV) {
                     favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
                     ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
                 }
