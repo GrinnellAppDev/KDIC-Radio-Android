@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         // bind to the radio service
         Intent intent = new Intent(this, RadioService.class);
-        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+        bindService(intent, mConnection, BIND_AUTO_CREATE);
 
     }
 

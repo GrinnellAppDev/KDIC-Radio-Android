@@ -1,14 +1,18 @@
 package edu.grinnell.kdic;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
+import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,14 +20,18 @@ import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import edu.grinnell.kdic.schedule.Schedule;
+
 /**
  * Service used to play the radio from the stream.
  */
 public class RadioService extends Service {
 
     public static final String TAG = RadioService.class.getSimpleName();
+    private static final int NOTIFICATION_ID = 1;
 
     private AudioManager audioManager;
+    OnAudioFocusChangeListener audioFocusListener;
     private boolean isLoaded;
     private WifiManager.WifiLock wifiLock;
     private MediaPlayer mediaPlayer;
@@ -32,7 +40,7 @@ public class RadioService extends Service {
     private final IBinder mBinder = new RadioBinder();
 
     // timer for stopping stream after pause
-    private Timer timer;
+    private Timer timer = new Timer();
     private static final long STOP_STREAM_DELAY = 30 * 1000;
     // reset the media player 30 seconds after pause
 
@@ -54,23 +62,11 @@ public class RadioService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
 
-        Toast.makeText(RadioService.this, "Radio Service Bound", Toast.LENGTH_SHORT).show();
-
         return mBinder;
     }
 
     @Override
-    public boolean onUnbind(Intent intent) {
-
-        Toast.makeText(RadioService.this, "Radio Service UNBound", Toast.LENGTH_SHORT).show();
-
-        return super.onUnbind(intent);
-    }
-
-    @Override
     public void onCreate() {
-
-        Toast.makeText(RadioService.this, "Radio Service Started", Toast.LENGTH_SHORT).show();
 
         // obtain WifiLock
         wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
@@ -78,53 +74,7 @@ public class RadioService extends Service {
 
         setupMediaPlayer();
 
-        // obtain audioManager for requesting audio focus
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        AudioManager.OnAudioFocusChangeListener audioFocusListener = new AudioManager.OnAudioFocusChangeListener() {
-            @Override
-            public void onAudioFocusChange(int focusChange) {
-                switch (focusChange) {
-                    case AudioManager.AUDIOFOCUS_GAIN:
-                        // resume playback
-                        if (mediaPlayer == null) setupMediaPlayer();
-                        else if (!mediaPlayer.isPlaying()) mediaPlayer.start();
-                        mediaPlayer.setVolume(1.0f, 1.0f);
-                        break;
-
-                    case AudioManager.AUDIOFOCUS_LOSS:
-                        // Lost focus for an unbounded amount of time: stop playback and release media player
-                        if (mediaPlayer.isPlaying()) mediaPlayer.stop();
-                        isLoaded = false;
-                        mediaPlayer.release();
-                        mediaPlayer = null;
-                        break;
-
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                        // Lost focus for a short time, but we have to stop
-                        // playback. We don't release the media player because playback
-                        // is likely to resume
-                        if (mediaPlayer.isPlaying()) mediaPlayer.pause();
-                        break;
-
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                        // Lost focus for a short time, but it's ok to keep playing
-                        // at an attenuated level
-                        if (mediaPlayer.isPlaying()) mediaPlayer.setVolume(0.2f, 0.2f);
-                        break;
-                }
-            }
-        };
-        // request focus to play audio
-        int result = audioManager.requestAudioFocus(audioFocusListener, AudioManager.STREAM_MUSIC,
-                AudioManager.AUDIOFOCUS_GAIN);
-
-        if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
-            // could not get audio focus.
-            Toast.makeText(RadioService.this, "Cannot play audio.", Toast.LENGTH_SHORT).show();
-            Log.i(TAG, "Audio Manager request not granted.");
-        } else {
-            Log.d(TAG, "AUDIO REQUEST GRANTED.");
-        }
+        setupAudioManager();
 
     }
 
@@ -141,32 +91,74 @@ public class RadioService extends Service {
                 return false;
             }
         });
+    }
 
+    private void setupAudioManager() {
+        // obtain audioManager for requesting audio focus
+        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
+        audioFocusListener = new AudioManager.OnAudioFocusChangeListener() {
+            @Override
+            public void onAudioFocusChange(int focusChange) {
+                switch (focusChange) {
+                    case AudioManager.AUDIOFOCUS_GAIN:
+                        // resume playback
+                        if (mediaPlayer == null) setupMediaPlayer();
+                        else if (!mediaPlayer.isPlaying()) play();
+                        mediaPlayer.setVolume(1.0f, 1.0f);
+                        break;
 
+                    case AudioManager.AUDIOFOCUS_LOSS:
+                        // Lost focus for an unbounded amount of time: stop playback and release media player
+                        if (mediaPlayer.isPlaying()) reset();
+                        isLoaded = false;
+                        mediaPlayer.release();
+                        mediaPlayer = null;
+                        break;
+
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                        // Lost focus for a short time, but we have to stop
+                        // playback. We don't release the media player because playback
+                        // is likely to resume
+                        if (isPlaying()) pause();
+                        break;
+
+                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                        // Lost focus for a short time, but it's ok to keep playing
+                        // at an attenuated level
+                        if (isPlaying()) mediaPlayer.setVolume(0.2f, 0.2f);
+                        break;
+                }
+            }
+        };
     }
 
     private void prepStreamForPlay() {
+        if (mediaPlayer != null) {
+            // callback for once the stream is prepared
+            mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    Log.d(TAG, "Stream Prepared");
+                    isLoaded = true;
+                    play();
+                    if (runOnStreamPrepared != null) runOnStreamPrepared.run();
+                }
+            });
 
-        // callback for once the stream is prepared
-        mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-            @Override
-            public void onPrepared(MediaPlayer mp) {
-                Log.d(TAG, "Stream Prepared");
-                isLoaded = true;
-                mediaPlayer.start();
-                if (runOnStreamPrepared != null) runOnStreamPrepared.run();
+
+            try {
+                // set the URL for the stream
+                mediaPlayer.setDataSource(Constants.STREAM_URL);
+
+                // prepare the stream asynchronously
+                mediaPlayer.prepareAsync();
+
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        });
-
-        try {
-            // set the URL for the stream
-            mediaPlayer.setDataSource(Constants.STREAM_URL);
-
-            // prepare the stream asynchronously
-            mediaPlayer.prepareAsync();
-
-        } catch (IOException e) {
-            e.printStackTrace();
+        } else { // mediaplayer == null
+            setupMediaPlayer();
+            prepStreamForPlay();
         }
     }
 
@@ -176,9 +168,22 @@ public class RadioService extends Service {
 
     public void play() {
         if (isLoaded) { // if stream is loaded
+
+            // request focus to play audio
+            int result = audioManager.requestAudioFocus(audioFocusListener, AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN);
+
+            if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+                // could not get audio focus.
+                Toast.makeText(RadioService.this, "Cannot play audio.", Toast.LENGTH_SHORT).show();
+                Log.i(TAG, "Audio Manager request not granted.");
+            } else {
+                Log.d(TAG, "AUDIO REQUEST GRANTED.");
+            }
             timer.cancel(); // cancel the stop timer if it is loaded
             if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
             mediaPlayer.start(); // play
+            showNotification();
         } else {
             prepStreamForPlay();
         }
@@ -197,6 +202,8 @@ public class RadioService extends Service {
                 }
             };
             timer.schedule(stopPlayerTask, STOP_STREAM_DELAY);
+
+            removeNotification();
         }
         if (wifiLock.isHeld())
             wifiLock.release(); // release wifi lock
@@ -214,6 +221,8 @@ public class RadioService extends Service {
         if (mediaPlayer != null)
             mediaPlayer.reset();
         Log.d(TAG, "Stopping stream!");
+
+        removeNotification();
     }
 
     public boolean isPlaying() {
@@ -224,11 +233,54 @@ public class RadioService extends Service {
         return isLoaded;
     }
 
+    private void showNotification() {
+        Show currentShow = Schedule.getCurrentShow(this);
+        String title = currentShow != null ? currentShow.getTitle() : "Auto Play";
+        // Instantiate a Builder object.
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                .setSmallIcon(R.drawable.ic_play_arrow_white_24dp)
+                .setContentTitle(title + " - KDIC")
+                .setContentText("Grinnell College Radio")
+                .setColor(getResources().getColor(R.color.primary))
+                .setOngoing(true);
+
+        // Creates an Intent for the Activity
+        Intent notifyIntent =
+                new Intent(this, MainActivity.class);
+        // Creates the PendingIntent
+        PendingIntent notifyPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        notifyIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        // Puts the PendingIntent into the notification builder
+        builder.setContentIntent(notifyPendingIntent);
+        // Notifications are issued by sending them to the
+        // NotificationManager system service.
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        // Builds an anonymous Notification object from the builder, and
+        // passes it to the NotificationManager
+        mNotificationManager.notify(NOTIFICATION_ID, builder.build());
+    }
+
+    private void removeNotification() {
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(NOTIFICATION_ID);
+
+    }
+
     @Override
     public void onDestroy() {
-        Toast.makeText(RadioService.this, "Destroying Service", Toast.LENGTH_SHORT).show();
+
+        reset();
 
         if (mediaPlayer != null) mediaPlayer.release();
+        mediaPlayer = null;
     }
 
 }

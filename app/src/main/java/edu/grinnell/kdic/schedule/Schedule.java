@@ -10,7 +10,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import edu.grinnell.kdic.Constants;
 import edu.grinnell.kdic.Show;
@@ -82,6 +84,19 @@ public class Schedule {
         }
         c.close();
         return show;
+    }
+
+    /**
+     * gets the current show
+     * @param context context
+     * @return the current show playing or @null if nothing is playing
+     */
+    public static Show getCurrentShow(Context context) {
+        Schedule schedule = new Schedule(context);
+        Date today = new Date();
+        SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
+        String todayDayOfWeek = dayFormat.format(today);
+        return schedule.getShow(todayDayOfWeek, new SimpleDateFormat("h:00 a").format(today));
     }
 
     /**
