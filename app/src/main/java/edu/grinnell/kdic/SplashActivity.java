@@ -16,6 +16,10 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        // start the radio service
+        Intent intent = new Intent(this, RadioService.class);
+        startService(intent);
+
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {

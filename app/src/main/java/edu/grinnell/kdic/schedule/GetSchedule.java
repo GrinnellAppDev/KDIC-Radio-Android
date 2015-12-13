@@ -23,14 +23,13 @@ import edu.grinnell.kdic.NetworkState;
  */
 public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
     private Context context;
+    private ScheduleFragment scheduleFragment;
     public static final String TAG = GetSchedule.class.getSimpleName();
     private ProgressDialog dialog;
 
-
-
-
-    public GetSchedule(Context context) {
+    public GetSchedule(Context context, ScheduleFragment scheduleFragment) {
         this.context = context;
+        this.scheduleFragment = scheduleFragment;
     }
 
     @Override
@@ -75,10 +74,12 @@ public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
         if (success) {
             Log.i(TAG, "Schedule successfully parsed.");
             Toast.makeText(context, "Schedule updated", Toast.LENGTH_LONG).show();
+            scheduleFragment.getContent();
         } else {
-            // failure messege
+            // failure message
             Toast.makeText(context, "Failed to Update Schedule", Toast.LENGTH_LONG).show();
         }
+
         super.onPostExecute(success);
     }
 

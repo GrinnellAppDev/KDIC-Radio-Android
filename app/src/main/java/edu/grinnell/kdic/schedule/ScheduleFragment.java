@@ -70,7 +70,7 @@ public class ScheduleFragment extends Fragment {
         mAdapter.addContent(mContent);
     }
 
-    private void getContent() {
+    public void getContent() {
         mContent = new ArrayList<>();
         Schedule schedule = new Schedule(getActivity());
         SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
@@ -92,7 +92,7 @@ public class ScheduleFragment extends Fragment {
         if (showOnAir != null)
             mContent.add(showOnAir);
         else
-            mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.CARD, "Auto-Play", "There's no show playing."));
+            mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.CARD_NO_FAV, "Auto-Play", "There's no show playing."));
 
         // add later today header
         mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.SECTION_HEADER, "Later Today", "Shows On Air Tonight"));

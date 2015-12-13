@@ -1,7 +1,7 @@
 package edu.grinnell.kdic;
 
 public abstract class Constants {
-    public static final String STREAM_URL = "http://";
+    public static final String STREAM_URL = "http://kdic.grinnell.edu:8001/stream";
     public static final String SCHEDULE_URL = "http://kdic.grinnell.edu/scheduleScript.php";
 
     public static final String SHARED_PREFS = "shared_prefs";

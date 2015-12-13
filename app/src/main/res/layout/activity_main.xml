@@ -45,11 +45,14 @@
             app:titleTextColor="@color/white">
 
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/ib_play_pause"
                 style="@style/music_button_style"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
                 android:layout_gravity="right"
                 android:padding="24dp"
+                android:scaleType="fitXY"
                 android:src="@drawable/ic_play_arrow_white_24dp" />
         </android.support.v7.widget.Toolbar>
     </RelativeLayout>

@@ -30,9 +30,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     private int animatePos;
 
     // define view types
-    public static final int SECTION_HEADER = 0;
-    public static final int CARD = 1;
-    public static final int DAY_SCHEDULE = 2;
+    public static final int SECTION_HEADER = 0; // section header card
+    public static final int CARD = 1;           // card with show info
+    public static final int DAY_SCHEDULE = 2;   // card for day
+    public static final int CARD_NO_FAV = 3;    // card for Auto-Play
 
     private ArrayList<ScheduleRecyclerItem> mContent;
 
@@ -56,6 +57,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
                 v = inflater.inflate(R.layout.rv_item_header, parent, false);
                 break;
             case CARD:
+            case CARD_NO_FAV:
                 v = inflater.inflate(R.layout.rv_item_card, parent, false);
                 break;
             case DAY_SCHEDULE:
@@ -74,6 +76,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
 
         switch (item.getViewType()) {
             case CARD:
+            case CARD_NO_FAV:
                 bindCard(holder, item);
                 break;
             case DAY_SCHEDULE:
@@ -102,25 +105,32 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     public void bindCard(ViewHolder holder, final ScheduleRecyclerItem item) {
         holder.title.setText(item.getS1());
         holder.subtitle.setText(item.getS2());
-        if (mFavorites.isFavorite(item.getS1()))
-            holder.favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
-        else
-            holder.favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
-        holder.ll_favorite.setClickable(true);
-        holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mFavorites.isFavorite(item.getS1())) {
-                    mFavorites.removeFavorite(item.getS1());
-                    Log.d(TAG, "Removed from Favorites");
-                } else {
-                    mFavorites.addFavorites(item.getS1());
-                    Log.d(TAG, "Added to Favorites");
-                }
-                notifyDataSetChanged();
-            }
-        });
 
+        if (holder.viewType == CARD_NO_FAV)
+            holder.ll_favorite.setVisibility(View.GONE);  // remove the favorite button for Auto Play card
+        else {
+            holder.ll_favorite.setVisibility(View.VISIBLE);
+
+            // add heart if show is a favorite
+            if (mFavorites.isFavorite(item.getS1()))
+                holder.favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
+            else
+                holder.favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
+            holder.ll_favorite.setClickable(true);
+            holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mFavorites.isFavorite(item.getS1())) {
+                        mFavorites.removeFavorite(item.getS1());
+                        Log.d(TAG, "Removed from Favorites");
+                    } else {
+                        mFavorites.addFavorites(item.getS1());
+                        Log.d(TAG, "Added to Favorites");
+                    }
+                    notifyDataSetChanged();
+                }
+            });
+        }
     }
 
     public void bindDaySchedule(final ViewHolder holder, final ScheduleRecyclerItem item) {
@@ -153,6 +163,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
 
     protected class ViewHolder extends RecyclerView.ViewHolder {
 
+        int viewType;
         CardView cardView;
         TextView title;
         TextView subtitle;
@@ -161,9 +172,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
+            this.viewType = viewType;
             title = (TextView) itemView.findViewById(R.id.tv_title);
             subtitle = (TextView) itemView.findViewById(R.id.tv_subtitle);
-            if (viewType == CARD || viewType == DAY_SCHEDULE) {
+            if (viewType == CARD || viewType == CARD_NO_FAV || viewType == DAY_SCHEDULE) {
                 cardView = (CardView) itemView.findViewById(R.id.card_view_item);
                 if (viewType == CARD) {
                     favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
