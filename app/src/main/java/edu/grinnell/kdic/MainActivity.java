@@ -38,14 +38,16 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    VisualizeFragment visualizeFragment;
-    ScheduleFragment scheduleFragment;
     Toolbar navigationToolbar;
     Toolbar playbackToolbar;
     ImageView playPauseButton;
     DrawerLayout drawerLayout;
     NavigationView navigationView;
     Stack<Integer> backStack;
+
+    VisualizeFragment visualizeFragment;
+    ScheduleFragment scheduleFragment;
+    FavoritesFragment favoritesFragment;
 
     // for RadioService
     RadioService radioService;
@@ -242,7 +244,9 @@ public class MainActivity extends AppCompatActivity {
                             showVisualizeFragment();
                             break;
                         case R.id.favorites:
-                            ft.replace(R.id.fragment, new AboutFragment(), AboutFragment.TAG)
+                            ft.replace(R.id.fragment,
+                                    favoritesFragment == null ? new FavoritesFragment() : favoritesFragment,
+                                    FavoritesFragment.TAG)
                                     .addToBackStack(null)
                                     .commit();
                             break;

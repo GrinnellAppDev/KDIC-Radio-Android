@@ -87,7 +87,40 @@ public class Schedule {
     }
 
     /**
+     * Gets show by the show name.
+     *
+     * @param name
+     * @return
+     */
+    public Show getShow(String name) {
+        // which columns to see for query
+        String[] projection = {Entry.COLUMN_SHOW_TITLE, Entry.COLUMN_DAY, Entry.COLUMN_TIME};
+        String selection = Entry.COLUMN_SHOW_TITLE + "='" + name + "'";
+
+        Cursor c = db.query(
+                Entry.TABLE_NAME,  // The table to query
+                projection,                               // The columns to return
+                selection,                                // The columns for the WHERE clause
+                null,                                     // The values for the WHERE clause
+                null,                                     // don't group the rows
+                null,                                     // don't filter by row groups
+                null                                      // The sort order
+        );
+        Show show = null;
+        if (!c.isAfterLast()) { // check if anything was found
+            c.moveToFirst();
+            String day = c.getString(c.getColumnIndex(Entry.COLUMN_DAY));
+            String time = c.getString(c.getColumnIndex(Entry.COLUMN_TIME));
+            show = new Show(name, time);
+            show.setDay(day);
+        }
+        c.close();
+        return show;
+    }
+
+    /**
      * gets the current show
+     *
      * @param context context
      * @return the current show playing or @null if nothing is playing
      */
@@ -105,9 +138,9 @@ public class Schedule {
      * Gets all show names for a day.
      *
      * @param day
-     * @return HashMap of String time -> String showName.
+     * @return
      */
-    public ArrayList<Show> getShow(String day) {
+    public ArrayList<Show> getShowByDay(String day) {
         ArrayList<Show> ret = new ArrayList<>();
 
         // which columns to see for query

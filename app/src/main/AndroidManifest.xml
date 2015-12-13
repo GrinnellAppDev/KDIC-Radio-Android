@@ -37,6 +37,13 @@
 
         <service android:name=".RadioService" />
 
+        <activity android:name=".schedule.DayScheduleActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+
+        </activity>
+
     </application>
 
 </manifest>

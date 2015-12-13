@@ -99,7 +99,7 @@ public class ScheduleFragment extends Fragment {
 
         // get today's shows
 
-        ArrayList<Show> showsToday = schedule.getShow(todayDayOfWeek);
+        ArrayList<Show> showsToday = schedule.getShowByDay(todayDayOfWeek);
 
         try {
             Date todayTime = timeFormat.parse(timeFormat.format(today));

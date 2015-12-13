@@ -2,40 +2,53 @@ package edu.grinnell.kdic.schedule;
 
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import edu.grinnell.kdic.Constants;
 import edu.grinnell.kdic.R;
 import edu.grinnell.kdic.Show;
 
-public class DayScheduleFragment extends Fragment {
+public class DayScheduleActivity extends AppCompatActivity {
 
     private ScheduleRecyclerViewAdapter mAdapter;
     private ArrayList<ScheduleRecyclerItem> mContent;
     private String mDay;
-    private String oldTitle;
+
+
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public void onCreate (Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         // inflate the fragment's view
-        View view = inflater.inflate(R.layout.fragment_schedule, container, false);
+        setContentView(R.layout.fragment_schedule);
+
+        ActionBar toolbar = getSupportActionBar();
+        toolbar.setTitle("Daily Schedule");
+        toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+            }
+        });
+        setSupportActionBar(toolbar);
 
         // initialize the RecyclerView
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.rv_schedule);
-        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 3);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rv_schedule);
+        GridLayoutManager layoutManager = new GridLayoutManager(this, 3);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
@@ -43,33 +56,27 @@ public class DayScheduleFragment extends Fragment {
             }
         });
         recyclerView.setLayoutManager(layoutManager);
-        mAdapter = new ScheduleRecyclerViewAdapter(getActivity());
+        mAdapter = new ScheduleRecyclerViewAdapter(this);
         recyclerView.setAdapter(mAdapter);
 
-        mDay = getArguments().getString(Constants.DAY);
+        mDay = getIntent().getStringExtra(Constants.DAY);
 
         getContent();
         mAdapter.addContent(mContent);
 
-        ActionBar actionBar = ((AppCompatActivity)getActivity()).getSupportActionBar();
-        oldTitle = actionBar.getTitle().toString();
-        actionBar.setTitle("Daily Schedule");
-
-
-
-        return view;
     }
+
 
     private void getContent() {
         mContent = new ArrayList<>();
-        Schedule schedule = new Schedule(getActivity());
+        Schedule schedule = new Schedule(this);
 
         // add day header
         mContent.add(new ScheduleRecyclerItem(ScheduleRecyclerViewAdapter.SECTION_HEADER, mDay, "All Shows for the Day"));
 
         // get today's shows
 
-        ArrayList<Show> showsToday = schedule.getShow(mDay);
+        ArrayList<Show> showsToday = schedule.getShowByDay(mDay);
         for (int i = 0; i < showsToday.size(); i++) {
             Show show = showsToday.get(i);
             mContent.add(show);
@@ -78,10 +85,4 @@ public class DayScheduleFragment extends Fragment {
         schedule.close();
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setTitle(oldTitle);
-    }
 }

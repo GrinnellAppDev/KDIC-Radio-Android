@@ -1,6 +1,6 @@
 package edu.grinnell.kdic.schedule;
 
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
@@ -138,15 +138,9 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DayScheduleFragment fragment = new DayScheduleFragment();
-                Bundle args = new Bundle();
-                args.putString(Constants.DAY, item.getS1());
-                fragment.setArguments(args);
-                mContext.getSupportFragmentManager().beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_right)
-                        .replace(R.id.fragment, fragment)
-                        .addToBackStack(null)
-                        .commit();
+                Intent intent = new Intent(mContext, DayScheduleActivity.class);
+                intent.putExtra(Constants.DAY, item.getS1());
+                mContext.startActivity(intent);
             }
         });
     }
