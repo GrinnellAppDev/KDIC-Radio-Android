@@ -52,7 +52,7 @@ public class VisualizeFragment extends Fragment {
         try {
             if (currentShow == null) {
                 showName.setText("No show\nScheduled");
-                showTime.setText("The station's on auto play");
+                showTime.setText("The station is on Auto Play.");
                 fabFavorite.setVisibility(View.GONE);
             } else {
                 SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");

@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
@@ -102,6 +103,7 @@ public class RadioService extends Service {
             public void onAudioFocusChange(int focusChange) {
                 switch (focusChange) {
                     case AudioManager.AUDIOFOCUS_GAIN:
+                        Log.d(TAG, "AudioManager: AUDIOFOCUS_GAIN");
                         // resume playback
                         if (mediaPlayer == null) setupMediaPlayer();
                         else if (!mediaPlayer.isPlaying()) play();
@@ -110,13 +112,11 @@ public class RadioService extends Service {
 
                     case AudioManager.AUDIOFOCUS_LOSS:
                         // Lost focus for an unbounded amount of time: stop playback and release media player
-                        if (mediaPlayer.isPlaying()) reset();
-                        isLoaded = false;
-                        mediaPlayer.release();
-                        mediaPlayer = null;
+                        Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS");
                         break;
 
                     case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                        Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS_TRANSIENT");
                         // Lost focus for a short time, but we have to stop
                         // playback. We don't release the media player because playback
                         // is likely to resume
@@ -124,6 +124,7 @@ public class RadioService extends Service {
                         break;
 
                     case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                        Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
                         // Lost focus for a short time, but it's ok to keep playing
                         // at an attenuated level
                         if (isPlaying()) mediaPlayer.setVolume(0.2f, 0.2f);
@@ -246,14 +247,19 @@ public class RadioService extends Service {
         // Instantiate a Builder object.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.drawable.ic_play_arrow_white_24dp)
-                .setContentTitle(title + " - KDIC")
-                .setContentText("Grinnell College Radio")
-                .setColor(getResources().getColor(R.color.primary))
+                .setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                        R.drawable.ic_launcher))
+                .setContentTitle(title)
+                .setContentText("KDIC - Grinnell College Radio")
+                .setShowWhen(false) // hide the time
+                .setColor(getResources().getColor(R.color.accent))
                 .setOngoing(true);
 
         // Creates an Intent for the Activity
-        Intent notifyIntent =
-                new Intent(this, MainActivity.class);
+        Intent notifyIntent = new Intent(this, MainActivity.class);
+        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        notifyIntent.setAction(Constants.ACTION_STREAM_PLAYING);
+
         // Creates the PendingIntent
         PendingIntent notifyPendingIntent =
                 PendingIntent.getActivity(
@@ -283,6 +289,7 @@ public class RadioService extends Service {
 
     @Override
     public void onDestroy() {
+        Log.d(TAG, "RadioService destroyed.");
 
         reset();
 

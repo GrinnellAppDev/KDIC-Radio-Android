@@ -7,15 +7,17 @@
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
     <application
+        android:name=".KdicApplication"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
         android:theme="@style/AppTheme">
-        <activity android:name=".SplashActivity"
+        <activity
+            android:name=".SplashActivity"
             android:label="@string/app_name"
-            android:theme="@style/SplashTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -25,11 +27,15 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+            <intent-filter>
 
+                <action android:name="edu.grinnell.kdic.action.PLAY" />
+            </intent-filter>
         </activity>
-        <service android:name=".RadioService"/>
+
+        <service android:name=".RadioService" />
 
     </application>
 
