@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -31,19 +32,11 @@ public class DayScheduleActivity extends AppCompatActivity {
     public void onCreate (Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // inflate the fragment's view
-        setContentView(R.layout.fragment_schedule);
+        setContentView(R.layout.activity_day_schedule);
 
-        ActionBar toolbar = getSupportActionBar();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_main);
         toolbar.setTitle("Daily Schedule");
         toolbar.setNavigationIcon(R.drawable.ic_arrow_back_white_24dp);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
-        });
         setSupportActionBar(toolbar);
 
         // initialize the RecyclerView
@@ -85,4 +78,13 @@ public class DayScheduleActivity extends AppCompatActivity {
         schedule.close();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+                finish();
+
+            return true;
+        }
+        return false;
+    }
 }

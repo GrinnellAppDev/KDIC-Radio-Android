@@ -9,7 +9,7 @@
     android:layout_marginRight="24dp"
     android:clickable="true"
     android:foreground="?attr/selectableItemBackground"
-    app:cardBackgroundColor="@color/material_deep_teal_500">
+    app:cardBackgroundColor="@color/accent">
 
     <RelativeLayout
         android:layout_width="match_parent"
