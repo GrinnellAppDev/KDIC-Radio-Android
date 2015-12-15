@@ -10,6 +10,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.BounceInterpolator;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -102,7 +105,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         holder.subtitle.setText(item.getS2());
     }
 
-    public void bindCard(ViewHolder holder, final ScheduleRecyclerItem item) {
+    public void bindCard(final ViewHolder holder, final ScheduleRecyclerItem item) {
         holder.title.setText(item.getS1());
         holder.subtitle.setText(item.getS2());
 
@@ -128,6 +131,13 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
                         Log.d(TAG, "Added to Favorites");
                     }
                     notifyDataSetChanged();
+
+                    // animate the heart button
+                    ScaleAnimation animation = new ScaleAnimation(0f, 1f, 0f, 1f,
+                            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    animation.setInterpolator(new OvershootInterpolator());
+                    animation.setDuration(400);
+                    holder.ll_favorite.startAnimation(animation);
                 }
             });
         }
