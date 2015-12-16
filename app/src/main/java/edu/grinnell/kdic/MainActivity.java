@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
 
         // make sure the correct play/pause button is showing if radio is already playing
         String action = getIntent().getAction();
-        if (action != null && action.equals(Constants.ACTION_STREAM_PLAYING))
+        if (action != null && action.equals(Constants.ACTION_STREAM_PLAY_PAUSE))
             playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
 
     }
@@ -429,8 +429,6 @@ public class MainActivity extends AppCompatActivity {
 
         // unbind the radio service
         unbindService(mConnection);
-
-        stopService(new Intent(this, RadioService.class));
 
         super.onDestroy();
     }
