@@ -8,13 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.BounceInterpolator;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -110,34 +109,55 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         holder.subtitle.setText(item.getS2());
 
         if (holder.viewType == CARD_NO_FAV)
-            holder.ll_favorite.setVisibility(View.GONE);  // remove the favorite button for Auto Play card
+            holder.favorite.setVisibility(View.GONE);  // remove the favorite button for Auto Play card
         else {
-            holder.ll_favorite.setVisibility(View.VISIBLE);
+            holder.favorite.setVisibility(View.VISIBLE);
 
             // add heart if show is a favorite
             if (mFavorites.isFavorite(item.getS1()))
                 holder.favorite.setImageResource(R.drawable.ic_favorite_white_24dp);
             else
                 holder.favorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
-            holder.ll_favorite.setClickable(true);
-            holder.ll_favorite.setOnClickListener(new View.OnClickListener() {
+            holder.favorite.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (mFavorites.isFavorite(item.getS1())) {
+                    final boolean wasFavorite = mFavorites.isFavorite(item.getS1());
+                    if (wasFavorite) {
                         mFavorites.removeFavorite(item.getS1());
                         Log.d(TAG, "Removed from Favorites");
                     } else {
                         mFavorites.addFavorites(item.getS1());
                         Log.d(TAG, "Added to Favorites");
                     }
-                    notifyDataSetChanged();
 
                     // animate the heart button
-                    ScaleAnimation animation = new ScaleAnimation(0f, 1f, 0f, 1f,
+                    final ScaleAnimation heartInAnim = new ScaleAnimation(0f, 1f, 0f, 1f,
                             Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-                    animation.setInterpolator(new OvershootInterpolator());
-                    animation.setDuration(400);
-                    holder.ll_favorite.startAnimation(animation);
+                    heartInAnim.setInterpolator(new OvershootInterpolator());
+                    heartInAnim.setDuration(200);
+
+                    ScaleAnimation heartOutAnim = new ScaleAnimation(1f, 0f, 1f, 0f,
+                            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                    heartOutAnim.setInterpolator(new AccelerateInterpolator());
+                    heartOutAnim.setDuration(100);
+                    heartOutAnim.setAnimationListener(new Animation.AnimationListener() {
+                        @Override
+                        public void onAnimationStart(Animation animation) {
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animation animation) {
+                            holder.favorite.setImageResource(!wasFavorite ?
+                                    R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
+                            holder.favorite.startAnimation(heartInAnim);
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animation animation) {
+                        }
+                    });
+
+                    holder.favorite.startAnimation(heartOutAnim);
                 }
             });
         }
@@ -172,7 +192,6 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         TextView title;
         TextView subtitle;
         ImageView favorite;
-        LinearLayout ll_favorite;
 
         public ViewHolder(View itemView, int viewType) {
             super(itemView);
@@ -181,10 +200,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
             subtitle = (TextView) itemView.findViewById(R.id.tv_subtitle);
             if (viewType == CARD || viewType == CARD_NO_FAV || viewType == DAY_SCHEDULE) {
                 cardView = (CardView) itemView.findViewById(R.id.card_view_item);
-                if (viewType == CARD || viewType == CARD_NO_FAV) {
-                    favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
-                    ll_favorite = (LinearLayout) itemView.findViewById(R.id.ll_favorite);
-                }
+                favorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
             }
         }
     }

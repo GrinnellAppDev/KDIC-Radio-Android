@@ -1,5 +1,6 @@
 package edu.grinnell.kdic;
 
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -54,7 +55,7 @@ public class RadioService extends Service {
      */
     public class RadioBinder extends Binder {
         RadioService getService() {
-            // Return this instance of LocalService so clients can call public methods
+            // Return this instance of RadioBinder so clients can call public methods
             return RadioService.this;
         }
     }
@@ -63,15 +64,31 @@ public class RadioService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
 
+        Log.d(TAG, "onBind: ");
+
         return mBinder;
     }
 
-    @Override
-    public boolean onUnbind(Intent intent) {
-        Log.d(TAG, "Unbound");
-
-        return super.onUnbind(intent);
-    }
+//
+//    @Override
+//    public void onRebind(Intent intent) {
+//
+//        Log.d(TAG, "onRebound");
+//
+//        // remove the notification once MainActivity binds to radio
+//        hideNotification();
+//
+//    }
+//
+//    @Override
+//    public boolean onUnbind(Intent intent) {
+//        Log.d(TAG, "Unbound");
+//
+//        if (isPlaying() || isLoading)
+//            showNotification();
+//
+//        return super.onUnbind(intent);
+//    }
 
     @Override
     public void onCreate() {
@@ -81,7 +98,6 @@ public class RadioService extends Service {
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "myWifiLock");
 
         setupMediaPlayer();
-
         setupAudioManager();
 
         // time change?? show change
@@ -91,16 +107,23 @@ public class RadioService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if (intent.getAction() != null) {
+        if (intent != null && intent.getAction() != null) {
             switch (intent.getAction()) {
                 case Constants.ACTION_STOP_RADIO_SERVICE:
+                    Log.d(TAG, "Stop action");
+                    hideNotification();
                     stopSelf();
                     break;
                 case Constants.ACTION_STREAM_PLAY_PAUSE:
-                    if (isPlaying())
+                    if (isPlaying()) {
                         pause();
-                    else play();
-
+                        showNotification();
+                        stopForeground(false); // stop making it a foreground service but leave the notification there
+                    } else {
+                        play();
+                        showNotification();
+                    }
+                    break;
                 default:
                     break;
             }
@@ -144,6 +167,7 @@ public class RadioService extends Service {
                     case AudioManager.AUDIOFOCUS_LOSS:
                         // Lost focus for an unbounded amount of time: stop playback and release media player
                         Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS");
+                        if (isPlaying()) reset();
                         break;
 
                     case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -219,7 +243,6 @@ public class RadioService extends Service {
             }
             if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
             mediaPlayer.start(); // play
-            startForegroundNotification(); // start the notification and make this service foreground
         } else {
             prepStreamAndPlay();
         }
@@ -240,8 +263,6 @@ public class RadioService extends Service {
                 }
             };
             timer.schedule(stopPlayerTask, STOP_STREAM_DELAY);
-
-            stopForegroundNotification(); // stop making this service a foreground service
         }
         if (wifiLock.isHeld())
             wifiLock.release(); // release wifi lock
@@ -261,11 +282,11 @@ public class RadioService extends Service {
             mediaPlayer.reset();
         Log.d(TAG, "Stopping stream!");
 
-        stopForegroundNotification();
+        hideNotification();
     }
 
     public boolean isPlaying() {
-        return mediaPlayer != null && mediaPlayer.isPlaying();
+        return mediaPlayer != null && (mediaPlayer.isPlaying() || isLoading);
     }
 
     public boolean isLoaded() {
@@ -276,7 +297,7 @@ public class RadioService extends Service {
         return isLoading;
     }
 
-    private void startForegroundNotification() {
+    public void showNotification() {
 
 
         Show currentShow = Schedule.getCurrentShow(this);
@@ -299,7 +320,7 @@ public class RadioService extends Service {
                 this,
                 0,
                 deleteIntent,
-                PendingIntent.FLAG_CANCEL_CURRENT
+                PendingIntent.FLAG_ONE_SHOT
         );
 
         Intent notifyIntent = new Intent(this, MainActivity.class);
@@ -317,12 +338,13 @@ public class RadioService extends Service {
 
         // Instantiate a Builder object.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setSmallIcon(isPlaying() ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_arrow_white_24dp)
+                .setSmallIcon(isPlaying() ? R.drawable.ic_play_arrow_white_24dp : R.drawable.ic_pause_white_24dp)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
                         R.drawable.ic_launcher))
                 .setContentTitle(title)
                 .addAction(isPlaying() ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_arrow_white_24dp,
                         "Play/Pause", playPausePendingIntent)
+                .addAction(R.drawable.ic_close_white_24dp, "Close", pendingDelete)
                 .setContentText("KDIC - Grinnell College Radio")
                 .setShowWhen(false) // hide the time
                 .setDeleteIntent(pendingDelete)
@@ -359,10 +381,10 @@ public class RadioService extends Service {
         */
     }
 
-    private void stopForegroundNotification() {
 
-        startForegroundNotification();
-        stopForeground(false);
+    public void hideNotification() {
+
+        stopForeground(true);
 
         /*
         NotificationManager mNotificationManager =
@@ -378,7 +400,10 @@ public class RadioService extends Service {
 
         reset();
 
-        stopForegroundNotification();
+        // remove the notification
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.cancel(NOTIFICATION_ID);
 
         if (mediaPlayer != null) mediaPlayer.release();
         mediaPlayer = null;

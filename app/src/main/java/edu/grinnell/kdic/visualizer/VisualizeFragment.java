@@ -6,6 +6,10 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
 import java.text.ParseException;
@@ -86,13 +90,41 @@ public class VisualizeFragment extends Fragment {
                 fabFavorite.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (favorites.isFavorite(currentShow.getTitle())) {
+                        final boolean wasFavorite = favorites.isFavorite(currentShow.getTitle());
+                        if (wasFavorite) {
                             favorites.removeFavorite(currentShow.getTitle());
-                            fabFavorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
                         } else {
                             favorites.addFavorites(currentShow.getTitle());
-                            fabFavorite.setImageResource(R.drawable.ic_favorite_white_24dp);
                         }
+
+                        // animate the heart button
+                        final ScaleAnimation heartInAnim = new ScaleAnimation(0f, 1f, 0f, 1f,
+                                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                        heartInAnim.setInterpolator(new OvershootInterpolator());
+                        heartInAnim.setDuration(200);
+
+                        ScaleAnimation heartOutAnim = new ScaleAnimation(1f, 0f, 1f, 0f,
+                                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                        heartOutAnim.setInterpolator(new AccelerateInterpolator());
+                        heartOutAnim.setDuration(100);
+                        heartOutAnim.setAnimationListener(new Animation.AnimationListener() {
+                            @Override
+                            public void onAnimationStart(Animation animation) {
+                            }
+
+                            @Override
+                            public void onAnimationEnd(Animation animation) {
+                                fabFavorite.startAnimation(heartInAnim);
+                                fabFavorite.setImageResource(!wasFavorite ?
+                                        R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
+                            }
+
+                            @Override
+                            public void onAnimationRepeat(Animation animation) {
+                            }
+                        });
+
+                        fabFavorite.startAnimation(heartOutAnim);
                     }
                 });
                 fabFavorite.setImageResource(favorites.isFavorite(currentShow.getTitle()) ?

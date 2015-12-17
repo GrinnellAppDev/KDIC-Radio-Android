@@ -61,6 +61,14 @@ public class MainActivity extends AppCompatActivity {
             RadioService.RadioBinder binder = (RadioService.RadioBinder) service;
             radioService = binder.getService();
             boundToRadioService = true;
+
+            // if the stream is playing, then stop the notification
+            if (radioService.isPlaying()) {
+                radioService.hideNotification();
+                playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+            } else {
+                playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+            }
         }
 
         // Called when the connection with the service disconnects unexpectedly
@@ -73,20 +81,51 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // set the layout to use
         setContentView(R.layout.activity_main);
+
+        setupNavigation(); // setup the nav drawer and navigation functionality
+        setupFragments(savedInstanceState);
+        setupPlaybackToolbar(); // setup the playback toolbar
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.d(TAG, "onStart");
 
         // bind to the radio service
         Intent intent = new Intent(this, RadioService.class);
+        startService(intent);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
 
-        setupNavigation();
-        setupFragments(savedInstanceState);
-        setupPlaybackToolbar();
+        if (backStack.peek() != R.id.visualizer)
+            updateShowNamePlaybackToolbar();
+    }
 
-        // make sure the correct play/pause button is showing if radio is already playing
-        String action = getIntent().getAction();
-        if (action != null && action.equals(Constants.ACTION_STREAM_PLAY_PAUSE))
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // if the stream is playing, then stop the notification
+        if (boundToRadioService && radioService.isPlaying()) {
             playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+        } else {
+            playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        // if the stream is playing, then start the notification
+        if (boundToRadioService && radioService.isPlaying())
+            radioService.showNotification();
+
+        // unbind the radio service
+        unbindService(mConnection);
+
+        boundToRadioService = false;
 
     }
 
@@ -95,14 +134,16 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (backStack.peek() != R.id.visualizer) {
-                    showVisualizeFragment();
-                    backStack.add(R.id.visualizer);
-                } else {
-                    hideVisualizeFragment();
-                    backStack.pop();
+                if (!radioService.isLoading()) {
+                    if (backStack.peek() != R.id.visualizer) {
+                        showVisualizeFragment();
+                        backStack.add(R.id.visualizer);
+                    } else {
+                        hideVisualizeFragment();
+                        backStack.pop();
+                    }
+                    updateNavigationView();
                 }
-                updateNavigationView();
             }
         };
         playbackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
@@ -359,13 +400,13 @@ public class MainActivity extends AppCompatActivity {
             showTime.setVisibility(View.GONE);
         } else {
             showName.setText(curShow.getTitle());
-            showTime.setText(curShow.getTime());
+            showTime.setText("Started at " + curShow.getTime());
             showTime.setVisibility(View.VISIBLE);
         }
     }
 
     /**
-     * Create a show an alert dialog warning about no internet connection
+     * Create and show an alert dialog warning about no internet connection
      */
     public void showNoInternetDialog() {
         new AlertDialog.Builder(this)
@@ -374,15 +415,6 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("OK", null)
                 .setIcon(R.drawable.ic_warning_black_24dp)
                 .show();
-    }
-
-    @Override
-    protected void onResume() {
-
-        if (backStack.peek() != R.id.visualizer)
-            updateShowNamePlaybackToolbar();
-
-        super.onResume();
     }
 
     @Override
@@ -417,7 +449,6 @@ public class MainActivity extends AppCompatActivity {
             if (menuId == R.id.visualizer) {
                 hideVisualizeFragment();
                 return;
-                // playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
             }
         }
         super.onBackPressed();
@@ -426,9 +457,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(TAG, "MainActivity Destroyed.");
-
-        // unbind the radio service
-        unbindService(mConnection);
 
         super.onDestroy();
     }
