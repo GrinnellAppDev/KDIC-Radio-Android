@@ -17,6 +17,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import edu.grinnell.audiovisualizer.VisualizerView;
 import edu.grinnell.kdic.Favorites;
 import edu.grinnell.kdic.R;
 import edu.grinnell.kdic.Show;
@@ -34,6 +35,12 @@ public class VisualizeFragment extends Fragment {
     private FloatingActionButton fabFavorite;
     private Show currentShow;
     private Favorites favorites;
+    private int audioSession;
+    private VisualizerView visualizerView;
+
+    public VisualizeFragment() {
+        super();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -50,7 +57,7 @@ public class VisualizeFragment extends Fragment {
     }
 
     @Override
-    public void onResume() {
+    public void onStart() {
         currentShow = Schedule.getCurrentShow(getActivity());
 
         try {
@@ -135,6 +142,24 @@ public class VisualizeFragment extends Fragment {
             e.printStackTrace();
         }
 
-        super.onResume();
+
+        // visualizer
+
+
+        visualizerView = (VisualizerView) getView().findViewById(R.id.visualizer);
+        visualizerView.setBarColor(getResources().getColor(R.color.accent));
+        visualizerView.init();
+        visualizerView.link(0);
+        //visualizerView.link(audioSession);
+
+        super.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        visualizerView.release();
+        visualizerView = null;
     }
 }

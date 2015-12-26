@@ -1,7 +1,8 @@
 package edu.grinnell.kdic;
 
 public abstract class Constants {
-    public static final String STREAM_URL = "http://kdic.grinnell.edu:8001/stream";
+    //public static final String STREAM_URL = "http://kdic.grinnell.edu:8001/stream";
+    public static final String STREAM_URL = "http://192.168.1.42/test.mp3";
     public static final String SCHEDULE_URL = "http://kdic.grinnell.edu/scheduleScript.php";
 
     public static final String ACTION_STREAM_PLAY_PAUSE = "edu.grinnell.kdic.action.PLAY_PAUSE";

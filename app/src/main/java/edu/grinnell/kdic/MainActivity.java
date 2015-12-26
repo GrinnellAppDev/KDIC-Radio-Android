@@ -153,7 +153,7 @@ public class MainActivity extends AppCompatActivity {
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (radioService.isPlaying()) {
+                if (radioService.isPlaying() && !radioService.isLoading()) {
                     // pause
                     radioService.pause();
                     // switch to play icon

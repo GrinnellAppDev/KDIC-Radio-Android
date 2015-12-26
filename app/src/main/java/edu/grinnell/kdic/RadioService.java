@@ -394,6 +394,11 @@ public class RadioService extends Service {
 
     }
 
+    public int getAudioSession() {
+        return mediaPlayer != null ? mediaPlayer.getAudioSessionId() : 0;
+    }
+
+
     @Override
     public boolean stopService(Intent name) {
         Log.d(TAG, "RadioService stopped.");
