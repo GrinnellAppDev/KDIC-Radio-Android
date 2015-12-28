@@ -1,6 +1,6 @@
 # KDIC Android
 
-*__UPDATED:__ 30 September, 2015*
+*__UPDATED:__ 28 December, 2015*
 
 ## KDIC Streaming App
 
