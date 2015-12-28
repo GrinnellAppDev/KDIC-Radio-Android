@@ -23,11 +23,11 @@ Homebrewed by [Grinnell AppDev](http://appdev.grinnell.edu/)!
 
 ### Current Builds
 
-- [Michael Owusu](https://github.com/mkowusu)
 - [Prabir Pradhan](https://github.com/prabirmsp)
 
 ### Previous Builds
 
+- [Michael Owusu](https://github.com/mkowusu)
 - Patrick Triest
 - Spencer Liberto
 - Travis Law
