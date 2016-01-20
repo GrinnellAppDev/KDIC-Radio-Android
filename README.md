@@ -1,6 +1,6 @@
 # KDIC Android
 
-*__UPDATED:__ 30 September, 2015*
+*__UPDATED:__ 20 January, 2016*
 
 ## KDIC Streaming App
 
@@ -22,39 +22,72 @@ If you would like to contribute, shoot us a pull request.
 Homebrewed by [Grinnell AppDev](http://appdev.grinnell.edu/)!
 
 ### Current Builds
-
-- [Michael Owusu](https://github.com/mkowusu)
 - [Prabir Pradhan](https://github.com/prabirmsp)
 
 ### Previous Builds
 
+
+- [Michael Owusu](https://github.com/mkowusu)
 - Patrick Triest
 - Spencer Liberto
 - Travis Law
+
+## Screenshots
+
+![](screenshots/1.png)
+
+![](screenshots/2.png)
+
+![](screenshots/3.png)
+
+![](screenshots/4.png)
+
+![](screenshots/5.png)
 
 ## Organization
 
 ### Directory Structure
 
-Generated with `tree -d -I build|androidTest`.
+Generated with `tree -d -I build`.
 ```
 .
 ├── app
-│   ├── libs
 │   └── src
 │       └── main
 │           ├── java
 │           │   └── edu
 │           │       └── grinnell
 │           │           └── kdic
+│           │               ├── schedule
+│           │               └── visualizer
 │           └── res
+│               ├── anim
 │               ├── drawable
+│               ├── drawable-hdpi
+│               ├── drawable-mdpi
+│               ├── drawable-xhdpi
+│               ├── drawable-xxhdpi
+│               ├── drawable-xxxhdpi
 │               ├── layout
 │               ├── menu
 │               ├── values
 │               └── values-w820dp
-└── gradle
-    └── wrapper
+├── audiovisualizer
+│   ├── libs
+│   └── src
+│       └── main
+│           ├── java
+│           │   └── edu
+│           │       └── grinnell
+│           │           └── audiovisualizer
+│           └── res
+│               ├── drawable
+│               └── values
+├── gradle
+│   └── wrapper
+└── screenshots
+
+
 ```
 - `KDIC-android.php` is the PHP script used to parse the HTML table schedule data to JSON, and is hosted [here]().
 
