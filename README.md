@@ -1,5 +1,6 @@
 # KDIC Android
 
+
 *__UPDATED:__ 20 January, 2016*
 
 ## KDIC Streaming App
@@ -22,10 +23,10 @@ If you would like to contribute, shoot us a pull request.
 Homebrewed by [Grinnell AppDev](http://appdev.grinnell.edu/)!
 
 ### Current Builds
+
 - [Prabir Pradhan](https://github.com/prabirmsp)
 
 ### Previous Builds
-
 
 - [Michael Owusu](https://github.com/mkowusu)
 - Patrick Triest
