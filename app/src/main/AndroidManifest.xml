@@ -1,32 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.grinnell.kdic" >
+    package="edu.grinnell.kdic">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
     <application
+        android:name=".KdicApplication"
+        android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:screenOrientation="portrait"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
-            android:name="edu.grinnell.kdic.MainActivity"
-            android:label="@string/title_activity_main" >
+            android:name=".SplashActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/MainActivityTheme">
+            <intent-filter>
 
-        <service
-            android:name="edu.grinnell.kdic.RadioStreamService"
-            android:label="RadioStreamService"
-            android:enabled="true" >
-        </service>
-        <meta-data android:name="com.crashlytics.ApiKey" android:value="45894d9e8a6bc3b8513651d6de36159e2c836e51"/>
+                <action android:name="edu.grinnell.kdic.action.PLAY" />
+            </intent-filter>
+        </activity>
+
+        <service android:name=".RadioService" />
+
+        <activity
+            android:name=".schedule.DayScheduleActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme">
+
+        </activity>
+
     </application>
 
 </manifest>
