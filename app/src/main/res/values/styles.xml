@@ -1,5 +1,55 @@
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Light" />
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--Main Theme Colors-->
+        <!--   primary branding color for the app -->
+        <item name="colorPrimary">@color/primary</item>
+        <!--   darker variant for the status bar and contextual app bars -->
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <!--   theme UI controls like checkboxes and text fields -->
+        <item name="colorAccent">@color/accent</item>
+        <!--   window background color-->
+        <item name="android:windowBackground">@color/white</item>
+        <!--   ripple/selector color-->
+        <item name="colorControlHighlight">@color/ripple_color</item>
+        <!--   remove shadow from below action bar - pre lollipop-->
+        <item name="android:windowContentOverlay">@null</item>
+        <!--   overflow button theme -->
+        <item name="android:actionOverflowButtonStyle">@style/Overflow</item>
+    </style>
+
+    <!-- Style for Main Activity -->
+    <style name="MainActivityTheme" parent="AppTheme">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+    </style>
+
+    <!-- style for overflow button -->
+    <style name="Overflow">
+        <item name="android:src">@drawable/ic_more_vert_white_24dp</item>
+        <item name="android:paddingRight">12dp</item>
+    </style>
+
+    <!-- Splash screen theme. -->
+    <style name="SplashTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--Main Theme Colors-->
+        <!--   primary branding color for the app -->
+        <item name="colorPrimary">@color/primary</item>
+        <!--   darker variant for the status bar and contextual app bars -->
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <!--   window background color-->
+        <item name="android:windowBackground">@color/white</item>
+    </style>
+
+    <style name="music_button_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:scaleType">center</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+    </style>
+
 
 </resources>

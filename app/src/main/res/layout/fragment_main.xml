@@ -1,0 +1,65 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/equalizer"
+        android:background="@color/white"
+        android:layout_marginBottom="132dp"
+        android:padding="48dp"/>
+
+    <LinearLayout
+        android:id="@+id/ll_track_info"
+        android:layout_width="match_parent"
+        android:layout_height="132dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/accent"
+        android:gravity="bottom"
+        android:orientation="vertical"
+        android:paddingBottom="24dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp">
+
+        <TextView
+            android:id="@+id/tv_show_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-thin"
+            android:maxLines="2"
+            android:text="I SING THE\nBODY ELECTRIC"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="22sp"
+            android:textStyle="normal" />
+
+        <TextView
+            android:id="@+id/tv_show_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mondays 6:00 PM to 7:00 PM"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_favorite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/ll_track_info"
+        android:layout_alignRight="@id/ll_track_info"
+        android:layout_marginBottom="104dp"
+        android:layout_marginRight="24dp"
+        android:clickable="true"
+        android:src="@drawable/ic_favorite_border_white_24dp"
+        app:backgroundTint="@color/primary"
+        app:elevation="6dp"
+        app:fabSize="normal"
+        app:rippleColor="@color/ripple_color" />
+
+
+</RelativeLayout>
