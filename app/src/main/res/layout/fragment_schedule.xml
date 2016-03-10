@@ -1,28 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/black_overlay"
-    tools:context=".ScheduleFragment" >
+    android:layout_height="match_parent">
 
-    <View 
-        android:color="@color/gblack"
-        android:layout_height="10dp"
-        android:layout_width="match_parent"/>
-    
-    <ListView
-        android:id="@android:id/list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_schedule"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:drawSelectorOnTop="false"
-        android:fastScrollAlwaysVisible="false"
-        android:listSelector="@android:color/transparent"
-         >
+        android:layout_height="match_parent"
+        android:scrollbars="vertical">
 
-    </ListView>
-
-</RelativeLayout><!--
-     android:background="@color/black_overlay" 
-    android:background="@drawable/red_carbon"
-    android:scaleType="centerCrop"
--->
+    </android.support.v7.widget.RecyclerView>
+</RelativeLayout>

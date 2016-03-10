@@ -1,66 +1,91 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/mainLayout"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:background="@color/gblack"
-    android:orientation="vertical"
-    android:scaleType="fitXY"
-    android:weightSum="100" >
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawer_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical" >
+        android:layout_height="match_parent">
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="80dp"
-            android:background="@color/gblack"
-            android:layout_gravity="center_horizontal" >
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/primary"
+            android:minHeight="?attr/actionBarSize"
+            app:subtitleTextColor="@color/white"
+            app:title="@string/station_name"
+            app:titleTextColor="@color/white" />
 
-            <ImageView
-                android:id="@+id/kdicBanner"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:scaleType="centerInside"
-                android:src="@drawable/kdic_wide" />
-        </RelativeLayout>
 
         <FrameLayout
-            android:id="@+id/radio_banner_container"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
-    </LinearLayout>
+            android:id="@+id/fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/toolbar_main"
+            android:layout_marginBottom="72dp" />
 
-    <FrameLayout
-        android:id="@+id/schedule_container"
-        android:layout_width="match_parent"
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/playback_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/accent_dark"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:minHeight="72dp"
+            app:navigationIcon="@drawable/ic_keyboard_arrow_up_white_24dp">
+
+            <LinearLayout
+                android:id="@+id/ll_show_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="72dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_playback_show_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:lines="1"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tv_playback_show_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@color/material_grey_300" />
+
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/ib_play_pause"
+                style="@style/music_button_style"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:layout_gravity="right"
+                android:padding="24dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/ic_play_arrow_white_24dp" />
+        </android.support.v7.widget.Toolbar>
+    </RelativeLayout>
+
+    <android.support.design.widget.NavigationView
+        android:id="@+id/navigation_view"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:layout_gravity="top"
-        android:layout_marginTop="80dp" />
+        android:layout_gravity="start"
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/drawer_header"
+        app:menu="@menu/drawer_menu" />
 
-    <Button
-        android:id="@+id/schedule"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="top|right"
-        android:layout_marginRight="3dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/list_black"
-        android:onClick="showSchedule"
-        android:scaleType="centerInside" />
 
-    <Button
-        android:id="@+id/disks"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:layout_gravity="top|left"
-        android:layout_marginLeft="3dp"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/disk_button"
-        android:onClick="swapDisk"
-        android:scaleType="centerInside" />
-
-</FrameLayout>
+</android.support.v4.widget.DrawerLayout>
