@@ -10,28 +10,28 @@ import java.util.Set;
 public class Favorites {
 
     private static final String SHARED_PREF = "favorites_shared_pref";
-    private SharedPreferences favorites;
+    private SharedPreferences mFavorites;
 
 
     public Favorites(Context context) {
-        favorites = context.getSharedPreferences(SHARED_PREF, 0);
+        mFavorites = context.getSharedPreferences(SHARED_PREF, 0);
     }
 
     public void addFavorites(String showName) {
-        if (!favorites.getBoolean(showName, false))
-            favorites.edit().putBoolean(showName, true).apply();
+        if (!mFavorites.getBoolean(showName, false))
+            mFavorites.edit().putBoolean(showName, true).apply();
     }
 
     public void removeFavorite(String showName) {
-        if (favorites.getBoolean(showName, false))
-            favorites.edit().remove(showName).apply();
+        if (mFavorites.getBoolean(showName, false))
+            mFavorites.edit().remove(showName).apply();
     }
 
     public boolean isFavorite(String showName) {
-        return favorites.contains(showName);
+        return mFavorites.contains(showName);
     }
 
-    public Set<String> getFavorites () {
-        return favorites.getAll().keySet();
+    public Set<String> getFavorites() {
+        return mFavorites.getAll().keySet();
     }
 }
