@@ -8,8 +8,8 @@ android {
         applicationId "edu.grinnell.kdic"
         minSdkVersion 14
         targetSdkVersion 25
-        versionCode 2
-        versionName "1.1"
+        versionCode 11
+        versionName "2.0.1"
     }
     buildTypes {
         release {
