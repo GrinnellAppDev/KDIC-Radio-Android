@@ -295,7 +295,7 @@ public class RadioService extends Service {
         return mMediaPlayer != null && (mMediaPlayer.isPlaying() || isLoading);
     }
 
-    public boolean ismIsLoaded() {
+    public boolean isLoaded() {
         return mIsLoaded;
     }
 

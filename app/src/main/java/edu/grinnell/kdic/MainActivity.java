@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                     // play
                     if (NetworkState.isOnline(MainActivity.this)) {
                         if (!radioService.isLoading()) {
-                            if (radioService.ismIsLoaded()) {
+                            if (radioService.isLoaded()) {
                                 playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
                                 playPauseButton.clearAnimation();
                             } else {
