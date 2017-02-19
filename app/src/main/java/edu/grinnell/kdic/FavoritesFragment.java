@@ -20,8 +20,8 @@ public class FavoritesFragment extends Fragment {
 
     public static final String TAG = FavoritesFragment.class.getSimpleName();
 
-    private RecyclerView recyclerView;
-    private ScheduleRecyclerViewAdapter adapter;
+    private RecyclerView mRecyclerView;
+    private ScheduleRecyclerViewAdapter mAdapter;
     private ArrayList<ScheduleRecyclerItem> mContent;
 
     @Nullable
@@ -29,10 +29,10 @@ public class FavoritesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_schedule, null);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.rv_schedule);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        adapter = new ScheduleRecyclerViewAdapter(getActivity());
-        recyclerView.setAdapter(adapter);
+        mRecyclerView = (RecyclerView) view.findViewById(R.id.rv_schedule);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mAdapter = new ScheduleRecyclerViewAdapter(getActivity());
+        mRecyclerView.setAdapter(mAdapter);
 
         return view;
     }
@@ -68,7 +68,7 @@ public class FavoritesFragment extends Fragment {
                     show.getDay() + "s at " + show.getTime()));
         }
 
-        adapter.addContent(mContent);
+        mAdapter.addContent(mContent);
 
         schedule.close();
     }

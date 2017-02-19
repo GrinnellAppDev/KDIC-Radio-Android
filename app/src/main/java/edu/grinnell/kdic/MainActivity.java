@@ -1,6 +1,6 @@
 package edu.grinnell.kdic;
 
-import android.content.ComponentName;
+import  android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
