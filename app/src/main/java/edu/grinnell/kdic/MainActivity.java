@@ -90,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
         setupFragments(savedInstanceState);
         setupPlaybackToolbar(); // setup the playback toolbar
 
+        // update the schedule if connected to internet
+        if (NetworkState.isOnline(this))
+            updateSchedule();
+
     }
 
     @Override
@@ -436,10 +440,16 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.update_schedule) {
             GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
             getSchedule.execute();
+            updateSchedule();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void updateSchedule() {
+        GetSchedule getSchedule = new GetSchedule(MainActivity.this, scheduleFragment);
+        getSchedule.execute();
     }
 
     @Override
