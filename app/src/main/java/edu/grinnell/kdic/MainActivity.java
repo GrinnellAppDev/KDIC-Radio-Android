@@ -448,7 +448,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSchedule() {
-        GetSchedule getSchedule = new GetSchedule(MainActivity.this, scheduleFragment);
+        GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
         getSchedule.execute();
     }
 

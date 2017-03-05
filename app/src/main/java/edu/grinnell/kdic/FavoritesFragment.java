@@ -39,10 +39,7 @@ public class FavoritesFragment extends Fragment {
 
     @Override
     public void onResume() {
-
         getFavoritesList();
-
-
         super.onResume();
     }
 
@@ -69,7 +66,11 @@ public class FavoritesFragment extends Fragment {
         }
 
         mAdapter.addContent(mContent);
-
         schedule.close();
+    }
+
+    @Override
+    public void onDestroyView(){
+        super.onDestroyView();
     }
 }
