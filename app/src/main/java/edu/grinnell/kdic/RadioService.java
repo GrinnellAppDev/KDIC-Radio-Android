@@ -7,14 +7,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
-import android.media.AudioManager.OnAudioFocusChangeListener;
+import static android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
 import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -64,8 +63,6 @@ public class RadioService extends Service {
     @Override
     public IBinder onBind(Intent intent) {
 
-        Log.d(TAG, "onBind: ");
-
         return mBinder;
     }
 
@@ -87,7 +84,6 @@ public class RadioService extends Service {
         if (intent != null && intent.getAction() != null) {
             switch (intent.getAction()) {
                 case Constants.ACTION_STOP_RADIO_SERVICE:
-                    Log.d(TAG, "Stop action");
                     hideNotification();
                     stopSelf();
                     break;
@@ -134,7 +130,6 @@ public class RadioService extends Service {
             public void onAudioFocusChange(int focusChange) {
                 switch (focusChange) {
                     case AudioManager.AUDIOFOCUS_GAIN:
-                        Log.d(TAG, "AudioManager: AUDIOFOCUS_GAIN");
                         // resume playback
                         if (mediaPlayer == null) setupMediaPlayer();
                         else if (!mediaPlayer.isPlaying()) play();
@@ -143,12 +138,10 @@ public class RadioService extends Service {
 
                     case AudioManager.AUDIOFOCUS_LOSS:
                         // Lost focus for an unbounded amount of time: stop playback and release media player
-                        Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS");
                         if (isPlaying()) reset();
                         break;
 
                     case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-                        Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS_TRANSIENT");
                         // Lost focus for a short time, but we have to stop
                         // playback. We don't release the media player because playback
                         // is likely to resume
@@ -156,7 +149,6 @@ public class RadioService extends Service {
                         break;
 
                     case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                        Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
                         // Lost focus for a short time, but it's ok to keep playing
                         // at an attenuated level
                         if (isPlaying()) mediaPlayer.setVolume(0.2f, 0.2f);
@@ -172,7 +164,6 @@ public class RadioService extends Service {
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    Log.d(TAG, "Stream Prepared");
                     isLoading = false;
                     isLoaded = true;
                     play();
@@ -202,6 +193,9 @@ public class RadioService extends Service {
         this.runOnStreamPrepared = runOnStreamPrepared;
     }
 
+    /*
+        Plays the currently loaded stream. If stream is not loaded, load stream and play.
+     */
     public void play() {
         if (isLoaded) { // if stream is loaded
 
@@ -214,17 +208,17 @@ public class RadioService extends Service {
             if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
                 // could not get audio focus.
                 Toast.makeText(RadioService.this, "Cannot play audio.", Toast.LENGTH_SHORT).show();
-                Log.i(TAG, "Audio Manager request not granted.");
-            } else {
-                Log.d(TAG, "AUDIO REQUEST GRANTED.");
-            }
-            if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
+
+            } if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
             mediaPlayer.start(); // play
         } else {
             prepStreamAndPlay();
         }
     }
 
+    /*
+    Pauses the currently loaded stream.
+    */
     public void pause() {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
@@ -257,23 +251,35 @@ public class RadioService extends Service {
         isLoaded = false;
         if (mediaPlayer != null)
             mediaPlayer.reset();
-        Log.d(TAG, "Stopping stream!");
 
         hideNotification();
     }
 
+    /**
+     * Returns true if the media player is playing or loading.
+     */
     public boolean isPlaying() {
         return mediaPlayer != null && (mediaPlayer.isPlaying() || isLoading);
     }
 
+    /**
+     * Returns true if the media player is loaded.
+     */
     public boolean isLoaded() {
         return isLoaded;
     }
 
+    /**
+     * Returns true if the media player is loading.
+     */
     public boolean isLoading() {
         return isLoading;
     }
 
+    /**
+     * Displays a notification with the current show name, as well as actionable play, pause and
+     * close buttons.
+     */
     public void showNotification() {
 
 
@@ -332,7 +338,9 @@ public class RadioService extends Service {
 
     }
 
-
+    /**
+     * Removes the notification.
+     */
     public void hideNotification() {
 
         stopForeground(true);
@@ -341,7 +349,6 @@ public class RadioService extends Service {
 
     @Override
     public boolean stopService(Intent name) {
-        Log.d(TAG, "RadioService stopped.");
 
         reset();
 
@@ -357,7 +364,6 @@ public class RadioService extends Service {
 
     @Override
     public void onDestroy() {
-        Log.d(TAG, "RadioService destroyed.");
 
         reset();
 
