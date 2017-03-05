@@ -69,27 +69,6 @@ public class RadioService extends Service {
         return mBinder;
     }
 
-//
-//    @Override
-//    public void onRebind(Intent intent) {
-//
-//        Log.d(TAG, "onRebound");
-//
-//        // remove the notification once MainActivity binds to radio
-//        hideNotification();
-//
-//    }
-//
-//    @Override
-//    public boolean onUnbind(Intent intent) {
-//        Log.d(TAG, "Unbound");
-//
-//        if (isPlaying() || isLoading)
-//            showNotification();
-//
-//        return super.onUnbind(intent);
-//    }
-
     @Override
     public void onCreate() {
 
@@ -99,8 +78,6 @@ public class RadioService extends Service {
 
         setupMediaPlayer();
         setupAudioManager();
-
-        // time change?? show change
 
     }
 
@@ -353,44 +330,12 @@ public class RadioService extends Service {
 
         startForeground(NOTIFICATION_ID, builder.build());
 
-        /*
-        // Creates an Intent for the Activity
-        Intent notifyIntent = new Intent(this, MainActivity.class);
-        notifyIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        notifyIntent.setAction(Constants.ACTION_STREAM_PLAY_PAUSE);
-
-        // Creates the PendingIntent
-        PendingIntent notifyPendingIntent =
-                PendingIntent.getActivity(
-                        this,
-                        0,
-                        notifyIntent,
-                        PendingIntent.FLAG_UPDATE_CURRENT
-                );
-
-        // Puts the PendingIntent into the notification builder
-        builder.setContentIntent(notifyPendingIntent);
-        // Notifications are issued by sending them to the
-        // NotificationManager system service.
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        // Builds an anonymous Notification object from the builder, and
-        // passes it to the NotificationManager
-        mNotificationManager.notify(NOTIFICATION_ID, builder.build());
-
-        */
     }
 
 
     public void hideNotification() {
 
         stopForeground(true);
-
-        /*
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.cancel(NOTIFICATION_ID);
-        */
 
     }
 
