@@ -29,7 +29,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     private FragmentActivity mContext;
     private Schedule mSchedule;
     private Favorites mFavorites;
-    private int animatePos;
+    private int mAnimatePos;
 
     // define view types
     public static final int SECTION_HEADER = 0; // section header card
@@ -92,10 +92,10 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     }
 
     private void animateCard(View v, int position) {
-        if (position > animatePos) {
+        if (position > mAnimatePos) {
             Animation cardAnimation = AnimationUtils.loadAnimation(mContext, R.anim.scale_card_up);
             v.startAnimation(cardAnimation);
-            animatePos = position;
+            mAnimatePos = position;
         }
     }
 

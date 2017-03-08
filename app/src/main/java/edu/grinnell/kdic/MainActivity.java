@@ -1,6 +1,6 @@
 package edu.grinnell.kdic;
 
-import android.content.ComponentName;
+import  android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -38,20 +38,20 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
-    Toolbar navigationToolbar;
-    Toolbar playbackToolbar;
-    ImageView playPauseButton;
-    DrawerLayout drawerLayout;
-    NavigationView navigationView;
-    Stack<Integer> backStack;
+    private Toolbar mNavigationToolbar;
+    private Toolbar mPlaybackToolbar;
+    private ImageView playPauseButton;
+    private DrawerLayout mDrawerLayout;
+    private NavigationView mNavigationView;
+    private Stack<Integer> mBackStack;
 
-    VisualizeFragment visualizeFragment;
-    ScheduleFragment scheduleFragment;
-    FavoritesFragment favoritesFragment;
+    private VisualizeFragment mVisualizeFragment;
+    private ScheduleFragment mScheduleFragment;
+    private FavoritesFragment mFavoritesFragment;
 
     // for RadioService
-    RadioService radioService;
-    boolean boundToRadioService;
+    private RadioService radioService;
+    private boolean boundToRadioService;
     private ServiceConnection mConnection = new ServiceConnection() {
         // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -62,7 +62,8 @@ public class MainActivity extends AppCompatActivity {
             radioService = binder.getService();
             boundToRadioService = true;
 
-            // if the stream is playing, then stop the notification
+            // if the stream is playing, then stop the notification and change the button from
+            // pause to play
             if (radioService.isPlaying()) {
                 radioService.hideNotification();
                 playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Called when the connection with the service disconnects unexpectedly
+        // Changed the boolean boundToRadioService to false.
         public void onServiceDisconnected(ComponentName className) {
             Log.e(TAG, "onServiceDisconnected");
             boundToRadioService = false;
@@ -104,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         startService(intent);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
 
-        if (backStack.peek() != R.id.visualizer)
+        if (mBackStack.peek() != R.id.visualizer)
             updateShowNamePlaybackToolbar();
     }
 
@@ -134,25 +136,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setupPlaybackToolbar() {
-        playbackToolbar = (Toolbar) findViewById(R.id.playback_toolbar);
+        mPlaybackToolbar = (Toolbar) findViewById(R.id.playback_toolbar);
         View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!radioService.isLoading()) {
-                    if (backStack.peek() != R.id.visualizer) {
+                    if (mBackStack.peek() != R.id.visualizer) {
                         showVisualizeFragment();
-                        backStack.add(R.id.visualizer);
+                        mBackStack.add(R.id.visualizer);
                     } else {
                         hideVisualizeFragment();
-                        backStack.pop();
+                        mBackStack.pop();
                     }
                     updateNavigationView();
                 }
             }
         };
-        playbackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
-        playbackToolbar.setOnClickListener(onToggleVisualizeFragment);
-
+        mPlaybackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
+        mPlaybackToolbar.setOnClickListener(onToggleVisualizeFragment);
         playPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
         playPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -176,13 +177,13 @@ public class MainActivity extends AppCompatActivity {
                                 RotateAnimation rotate;
                                 // different center point for rotation if playPauseButton is in the
                                 // center of the screen
-                                if (backStack.peek() != R.id.visualizer)
+                                if (mBackStack.peek() != R.id.visualizer)
                                     rotate = new RotateAnimation(0, 360,
                                             Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
                                             0.5f);
                                 else {
-                                    float shiftX = playbackToolbar.getWidth() / -2 + playPauseButton.getWidth();
-                                    float shiftY = playbackToolbar.getHeight() / 2;
+                                    float shiftX = mPlaybackToolbar.getWidth() / -2 + playPauseButton.getWidth();
+                                    float shiftY = mPlaybackToolbar.getHeight() / 2;
                                     rotate = new RotateAnimation(0, 360, shiftX, shiftY);
                                 }
                                 rotate.setDuration(1000);
@@ -222,66 +223,66 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Create a new Fragment to be placed in the activity layout
-            scheduleFragment = new ScheduleFragment();
+            mScheduleFragment = new ScheduleFragment();
 
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
-            scheduleFragment.setArguments(getIntent().getExtras());
+            mScheduleFragment.setArguments(getIntent().getExtras());
 
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fragment, scheduleFragment, ScheduleFragment.TAG)
+                    .add(R.id.fragment, mScheduleFragment, ScheduleFragment.TAG)
                     .commit();
-            backStack.add(R.id.schedule);
+            mBackStack.add(R.id.schedule);
 
 
             SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFS, 0);
             if (sharedPreferences.getBoolean(Constants.FIRST_RUN, true)) {
-                GetSchedule getSchedule = new GetSchedule(MainActivity.this, scheduleFragment);
+                GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
                 getSchedule.execute();
                 sharedPreferences.edit().putBoolean(Constants.FIRST_RUN, false).apply();
             }
 
-            visualizeFragment = new VisualizeFragment();
+            mVisualizeFragment = new VisualizeFragment();
         }
     }
 
     private void setupNavigation() {
         // get toolbar and nav drawer
-        navigationToolbar = (Toolbar) findViewById(R.id.toolbar_main);
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mNavigationToolbar = (Toolbar) findViewById(R.id.toolbar_main);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         // set toolbar as actionbar
-        setSupportActionBar(navigationToolbar);
+        setSupportActionBar(mNavigationToolbar);
 
         // initialize navigation drawer
-        navigationToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
-        navigationToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+        mNavigationToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
+        mNavigationToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                drawerLayout.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
 
         // set up backstack
-        backStack = new Stack<>();
+        mBackStack = new Stack<>();
 
         // set onclick listeners to navigation menu items
-        navigationView = (NavigationView) findViewById(R.id.navigation_view);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
+        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                if (backStack.peek() != menuItem.getItemId()) {
-                    if (backStack.peek() == R.id.visualizer) {
+                if (mBackStack.peek() != menuItem.getItemId()) {
+                    if (mBackStack.peek() == R.id.visualizer) {
                         hideVisualizeFragment();
-                        backStack.pop();
+                        mBackStack.pop();
                     }
-                    backStack.push(menuItem.getItemId());
+                    mBackStack.push(menuItem.getItemId());
 
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     switch (menuItem.getItemId()) {
                         case R.id.schedule:
-                            ft.replace(R.id.fragment, scheduleFragment, ScheduleFragment.TAG)
+                            ft.replace(R.id.fragment, mScheduleFragment, ScheduleFragment.TAG)
                                     .addToBackStack(null)
                                     .commit();
                             break;
@@ -290,7 +291,7 @@ public class MainActivity extends AppCompatActivity {
                             break;
                         case R.id.favorites:
                             ft.replace(R.id.fragment,
-                                    favoritesFragment == null ? new FavoritesFragment() : favoritesFragment,
+                                    mFavoritesFragment == null ? new FavoritesFragment() : mFavoritesFragment,
                                     FavoritesFragment.TAG)
                                     .addToBackStack(null)
                                     .commit();
@@ -311,26 +312,26 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // close the drawer after something is clicked
-                drawerLayout.closeDrawer(GravityCompat.START);
+                mDrawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
         });
     }
 
     public void updateNavigationView() {
-        navigationView.setCheckedItem(backStack.peek());
+        mNavigationView.setCheckedItem(mBackStack.peek());
     }
 
 
     public void hideVisualizeFragment() {
         if (!radioService.isLoading()) {
             // hide visualize fragment
-            playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
+            mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
             updateShowNamePlaybackToolbar();
             getSupportFragmentManager().popBackStack();
 
             // move the play button to the right
-            final float shiftAmnt = (playbackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
+            final float shiftAmnt = (mPlaybackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
             TranslateAnimation animation = new TranslateAnimation(0, shiftAmnt, 0, 0);
             animation.setDuration(200);
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -365,15 +366,15 @@ public class MainActivity extends AppCompatActivity {
         if (!radioService.isLoading()) {
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_bottom)
-                    .replace(R.id.fragment, visualizeFragment, VisualizeFragment.TAG)
+                    .replace(R.id.fragment, mVisualizeFragment, VisualizeFragment.TAG)
                     .addToBackStack(null)
                     .commit();
             ((TextView) findViewById(R.id.tv_playback_show_name)).setText("");
             ((TextView) findViewById(R.id.tv_playback_show_time)).setText("");
-            playbackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
+            mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
 
             // move the play button to the middle
-            final float shiftAmnt = (playbackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
+            final float shiftAmnt = (mPlaybackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
             TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
             animation.setDuration(200);
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -437,6 +438,8 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.update_schedule) {
+            GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
+            getSchedule.execute();
             updateSchedule();
             return true;
         }
@@ -445,14 +448,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void updateSchedule() {
-        GetSchedule getSchedule = new GetSchedule(MainActivity.this, scheduleFragment);
+        GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
         getSchedule.execute();
     }
 
     @Override
     public void onBackPressed() {
-        if (backStack.size() > 1) {
-            int menuId = backStack.pop();
+        if (mBackStack.size() > 1) {
+            int menuId = mBackStack.pop();
             updateNavigationView();
             if (menuId == R.id.visualizer) {
                 hideVisualizeFragment();
