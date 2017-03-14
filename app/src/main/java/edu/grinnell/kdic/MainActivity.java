@@ -1,11 +1,12 @@
 package edu.grinnell.kdic;
 
-import  android.content.ComponentName;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -40,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     private Toolbar mNavigationToolbar;
     private Toolbar mPlaybackToolbar;
-    private ImageView playPauseButton;
+    private ImageView mPlayPauseButton;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private Stack<Integer> mBackStack;
@@ -50,8 +51,9 @@ public class MainActivity extends AppCompatActivity {
     private FavoritesFragment mFavoritesFragment;
 
     // for RadioService
-    private RadioService radioService;
-    private boolean boundToRadioService;
+    private RadioService mRadioService;
+    private boolean mBoundToRadioService;
+
     private ServiceConnection mConnection = new ServiceConnection() {
         // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -59,24 +61,21 @@ public class MainActivity extends AppCompatActivity {
             // service that is running in our own process, we can
             // cast its IBinder to a concrete class and directly access it.
             RadioService.RadioBinder binder = (RadioService.RadioBinder) service;
-            radioService = binder.getService();
-            boundToRadioService = true;
+            mRadioService = binder.getService();
+            mBoundToRadioService = true;
 
-            // if the stream is playing, then stop the notification and change the button from
-            // pause to play
-            if (radioService.isPlaying()) {
-                radioService.hideNotification();
-                playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+            // if the stream is playing, then stop the notification
+            if (mRadioService.isPlaying()) {
+                mRadioService.hideNotification();
+                mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
             } else {
-                playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
             }
         }
-
         // Called when the connection with the service disconnects unexpectedly
-        // Changed the boolean boundToRadioService to false.
         public void onServiceDisconnected(ComponentName className) {
             Log.e(TAG, "onServiceDisconnected");
-            boundToRadioService = false;
+            mBoundToRadioService = false;
         }
     };
 
@@ -85,27 +84,19 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // set the layout to use
         setContentView(R.layout.activity_main);
-
         setupNavigation(); // setup the nav drawer and navigation functionality
         setupFragments(savedInstanceState);
         setupPlaybackToolbar(); // setup the playback toolbar
-
-        // update the schedule if connected to internet
-        if (NetworkState.isOnline(this))
-            updateSchedule();
-
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Log.d(TAG, "onStart");
-
         // bind to the radio service
         Intent intent = new Intent(this, RadioService.class);
         startService(intent);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
-
         if (mBackStack.peek() != R.id.visualizer)
             updateShowNamePlaybackToolbar();
     }
@@ -114,10 +105,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         // if the stream is playing, then stop the notification
-        if (boundToRadioService && radioService.isPlaying()) {
-            playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+        if (mBoundToRadioService && mRadioService.isPlaying()) {
+            mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
         } else {
-            playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+            mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
         }
     }
 
@@ -125,22 +116,87 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         // if the stream is playing, then start the notification
-        if (boundToRadioService && radioService.isPlaying())
-            radioService.showNotification();
+        if (mBoundToRadioService && mRadioService.isPlaying())
+            mRadioService.showNotification();
 
         // unbind the radio service
         unbindService(mConnection);
 
-        boundToRadioService = false;
+        mBoundToRadioService = false;
 
     }
 
     private void setupPlaybackToolbar() {
         mPlaybackToolbar = (Toolbar) findViewById(R.id.playback_toolbar);
-        View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
+        View.OnClickListener onToggleVisualizeFragment = toggleVisualizeFragmentClickListener();
+        mPlaybackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
+        mPlaybackToolbar.setOnClickListener(onToggleVisualizeFragment);
+        mPlayPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
+        mPlayPauseButton.setOnClickListener(togglePlayPauseClickListener());
+    }
+
+    @NonNull
+    private View.OnClickListener togglePlayPauseClickListener() {
+        return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!radioService.isLoading()) {
+                if (mRadioService.isPlaying()) {
+                    // pause
+                    mRadioService.pause();
+                    // switch to play icon
+                    mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                } else {
+                    // play
+                    if (NetworkState.isOnline(MainActivity.this)) {
+                        if (!mRadioService.isLoading()) {
+                            if (mRadioService.isLoaded()) {
+                                mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+                                mPlayPauseButton.clearAnimation();
+                            } else {
+                                mPlayPauseButton.setImageResource(R.drawable.ic_loading_spinner);
+
+                                // rotation to use for loading icon
+                                RotateAnimation rotate;
+                                // different center point for rotation if mPlayPauseButton is in the
+                                // center of the screen
+                                if (mBackStack.peek() != R.id.visualizer)
+                                    rotate = new RotateAnimation(0, 360,
+                                            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                                            0.5f);
+                                else {
+                                    float shiftX = mPlaybackToolbar.getWidth() / -2 + mPlayPauseButton.getWidth();
+                                    float shiftY = mPlaybackToolbar.getHeight() / 2;
+                                    rotate = new RotateAnimation(0, 360, shiftX, shiftY);
+                                }
+                                rotate.setDuration(1000);
+                                rotate.setRepeatCount(Animation.INFINITE);
+                                rotate.setInterpolator(new LinearInterpolator());
+
+                                mPlayPauseButton.startAnimation(rotate);
+                            }
+                            mRadioService.setRunOnStreamPrepared(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+                                    mPlayPauseButton.clearAnimation();
+                                }
+                            });
+                            mRadioService.play();
+                        }
+                    } else {
+                        showNoInternetDialog();
+                    }
+                }
+            }
+        };
+    }
+
+    @NonNull
+    private View.OnClickListener toggleVisualizeFragmentClickListener() {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mRadioService.isLoading()) {
                     if (mBackStack.peek() != R.id.visualizer) {
                         showVisualizeFragment();
                         mBackStack.add(R.id.visualizer);
@@ -152,61 +208,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
-        mPlaybackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
-        mPlaybackToolbar.setOnClickListener(onToggleVisualizeFragment);
-        playPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
-        playPauseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (radioService.isPlaying()) {
-                    // pause
-                    radioService.pause();
-                    // switch to play icon
-                    playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
-                } else {
-                    // play
-                    if (NetworkState.isOnline(MainActivity.this)) {
-                        if (!radioService.isLoading()) {
-                            if (radioService.isLoaded()) {
-                                playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
-                                playPauseButton.clearAnimation();
-                            } else {
-                                playPauseButton.setImageResource(R.drawable.ic_loading_spinner);
-
-                                // rotation to use for loading icon
-                                RotateAnimation rotate;
-                                // different center point for rotation if playPauseButton is in the
-                                // center of the screen
-                                if (mBackStack.peek() != R.id.visualizer)
-                                    rotate = new RotateAnimation(0, 360,
-                                            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                                            0.5f);
-                                else {
-                                    float shiftX = mPlaybackToolbar.getWidth() / -2 + playPauseButton.getWidth();
-                                    float shiftY = mPlaybackToolbar.getHeight() / 2;
-                                    rotate = new RotateAnimation(0, 360, shiftX, shiftY);
-                                }
-                                rotate.setDuration(1000);
-                                rotate.setRepeatCount(Animation.INFINITE);
-                                rotate.setInterpolator(new LinearInterpolator());
-
-                                playPauseButton.startAnimation(rotate);
-                            }
-                            radioService.setRunOnStreamPrepared(new Runnable() {
-                                @Override
-                                public void run() {
-                                    playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
-                                    playPauseButton.clearAnimation();
-                                }
-                            });
-                            radioService.play();
-                        }
-                    } else {
-                        showNoInternetDialog();
-                    }
-                }
-            }
-        });
     }
 
     private void setupFragments(Bundle savedInstanceState) {
@@ -264,12 +265,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // set up backstack
+        // set up mBackStack
         mBackStack = new Stack<>();
 
         // set onclick listeners to navigation menu items
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
-        mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+        mNavigationView.setNavigationItemSelectedListener(setOnClickListenerToNavMenuItems());
+    }
+
+    @NonNull
+    private NavigationView.OnNavigationItemSelectedListener setOnClickListenerToNavMenuItems() {
+        return new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
                 if (mBackStack.peek() != menuItem.getItemId()) {
@@ -315,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return true;
             }
-        });
+        };
     }
 
     public void updateNavigationView() {
@@ -324,14 +330,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void hideVisualizeFragment() {
-        if (!radioService.isLoading()) {
+        if (!mRadioService.isLoading()) {
             // hide visualize fragment
             mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
             updateShowNamePlaybackToolbar();
             getSupportFragmentManager().popBackStack();
 
             // move the play button to the right
-            final float shiftAmnt = (mPlaybackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
+            final float shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
             TranslateAnimation animation = new TranslateAnimation(0, shiftAmnt, 0, 0);
             animation.setDuration(200);
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -343,14 +349,14 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    playPauseButton.setTranslationX(0);
+                    mPlayPauseButton.setTranslationX(0);
                 }
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
                 }
             });
-            playPauseButton.startAnimation(animation);
+            mPlayPauseButton.startAnimation(animation);
 
             // move the info onto the screen
             AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
@@ -363,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void showVisualizeFragment() {
-        if (!radioService.isLoading()) {
+        if (!mRadioService.isLoading()) {
             getSupportFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_bottom)
                     .replace(R.id.fragment, mVisualizeFragment, VisualizeFragment.TAG)
@@ -374,13 +380,13 @@ public class MainActivity extends AppCompatActivity {
             mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
 
             // move the play button to the middle
-            final float shiftAmnt = (mPlaybackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
+            final float shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
             TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
             animation.setDuration(200);
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
             animation.setFillAfter(true);
-            playPauseButton.setTranslationX(-1 * shiftAmnt);
-            playPauseButton.startAnimation(animation);
+            mPlayPauseButton.setTranslationX(-1 * shiftAmnt);
+            mPlayPauseButton.startAnimation(animation);
 
             // move the info off the screen
             AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
@@ -440,16 +446,10 @@ public class MainActivity extends AppCompatActivity {
         if (id == R.id.update_schedule) {
             GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
             getSchedule.execute();
-            updateSchedule();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void updateSchedule() {
-        GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
-        getSchedule.execute();
     }
 
     @Override
@@ -468,7 +468,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         Log.d(TAG, "MainActivity Destroyed.");
-
         super.onDestroy();
+        super.onDestroy();
+        mNavigationToolbar = null;
+        mPlaybackToolbar = null;
+        mPlayPauseButton = null;
+        mDrawerLayout = null;
+        mNavigationView = null;
+        mBackStack = null;
+        mVisualizeFragment = null;
+        mScheduleFragment = null;
+        mFavoritesFragment = null;
+        mRadioService = null;
+        mBoundToRadioService = false;
     }
 }
