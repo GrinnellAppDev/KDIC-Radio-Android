@@ -1,6 +1,6 @@
 package edu.grinnell.kdic;
 
-import android.content.ComponentName;
+import  android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private VisualizeFragment mVisualizeFragment;
     private ScheduleFragment mScheduleFragment;
 
+
     // for RadioService
     private RadioService radioService;
     private boolean boundToRadioService;
@@ -60,7 +61,8 @@ public class MainActivity extends AppCompatActivity {
             radioService = binder.getService();
             boundToRadioService = true;
 
-            // if the stream is playing, then stop the notification
+            // if the stream is playing, then stop the notification and change the button from
+            // pause to play
             if (radioService.isPlaying()) {
                 radioService.hideNotification();
                 mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
@@ -69,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         // Called when the connection with the service disconnects unexpectedly
+        // Changed the boolean boundToRadioService to false.
         public void onServiceDisconnected(ComponentName className) {
             boundToRadioService = false;
         }
@@ -103,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, RadioService.class);
         startService(intent);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
+
         if (mBackStack.peek() != R.id.visualizer)
             updateShowNamePlaybackToolbar();
     }
@@ -146,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
 
         //Handling response after clicking on the bar
         //Generate/Hide the visualizer action according to the current element in backstack
+
         View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -161,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
 
         mPlaybackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
         mPlaybackToolbar.setOnClickListener(onToggleVisualizeFragment);
@@ -188,10 +194,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // play
             if (NetworkState.isOnline(MainActivity.this)) {
-                if (!radioService.isLoading()) {
+                  if (!radioService.isLoading()) {
                     if (radioService.isLoaded()) {
                         mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
                         mPlayPauseButton.clearAnimation();
+
                     } else {
                         mPlayPauseButton.setImageResource(R.drawable.ic_loading_spinner);
 
@@ -262,6 +269,7 @@ public class MainActivity extends AppCompatActivity {
                 getSchedule.execute();
                 sharedPreferences.edit().putBoolean(Constants.FIRST_RUN, false).apply();
             }
+
             mVisualizeFragment = new VisualizeFragment();
         }
     }
@@ -364,6 +372,7 @@ public class MainActivity extends AppCompatActivity {
 
             // move the play button to the right
             shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
+
             TranslateAnimation animation = new TranslateAnimation(0, shiftAmnt, 0, 0);
             animation.setDuration(200); //milliseconds
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -411,6 +420,7 @@ public class MainActivity extends AppCompatActivity {
             mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
 
             // move the play button to the middle
+
             shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
             TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
             animation.setDuration(200);
@@ -486,6 +496,8 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
         //noinspection SimplifiableIfStatement
         if (id == R.id.update_schedule) {
+            GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
+            getSchedule.execute();
             updateSchedule();
             return true;
         }
