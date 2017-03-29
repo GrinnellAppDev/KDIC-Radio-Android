@@ -18,7 +18,7 @@ import edu.grinnell.kdic.Constants;
 import edu.grinnell.kdic.Show;
 
 public class Schedule {
-    private ScheduleDbHelper dbHelper;
+    private ScheduleDbHelper mDbHelper;
     private SQLiteDatabase db;
 
     public static final String TEXT_TYPE = " TEXT";
@@ -36,12 +36,12 @@ public class Schedule {
             "DROP TABLE IF EXISTS " + Entry.TABLE_NAME;
 
     public Schedule(Context context) {
-        dbHelper = new ScheduleDbHelper(context);
-        db = dbHelper.getWritableDatabase();
+        mDbHelper = new ScheduleDbHelper(context);
+        db = mDbHelper.getWritableDatabase();
     }
 
     public void close() {
-        dbHelper.close();
+        mDbHelper.close();
     }
 
     /* Inner class that defines the table contents */
@@ -172,7 +172,7 @@ public class Schedule {
 
     public void updateSchedule(String json) throws JSONException {
         db.execSQL(SQL_DELETE_ENTRIES); // delete old schedule if exists
-        dbHelper.onCreate(db); // create new schedule table
+        mDbHelper.onCreate(db); // create new schedule table
         JSONObject jsonObject = new JSONObject(json);
         JSONObject data = jsonObject.getJSONObject(Constants.JSON_DATA);
         JSONArray times = jsonObject.getJSONArray(Constants.JSON_TIMES);

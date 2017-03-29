@@ -3,24 +3,27 @@ package edu.grinnell.kdic;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
-import static android.media.AudioManager.OnAudioFocusChangeListener;
 import android.media.MediaPlayer;
-import android.net.wifi.WifiManager;
 import android.os.Binder;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
-import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import edu.grinnell.kdic.schedule.Schedule;
+
+import static android.media.AudioManager.*;
+import static android.media.AudioManager.OnAudioFocusChangeListener;
+import static android.widget.Toast.*;
+import static edu.grinnell.kdic.Constants.*;
+
+import android.net.wifi.WifiManager;
 
 /**
  * Service used to play the radio from the stream.
@@ -62,19 +65,21 @@ public class RadioService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-
         return mBinder;
     }
+
 
     @Override
     public void onCreate() {
 
         // obtain WifiLock
-        wifiLock = ((WifiManager) getSystemService(Context.WIFI_SERVICE))
+        wifiLock = ((WifiManager) getSystemService(WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "myWifiLock");
 
         setupMediaPlayer();
         setupAudioManager();
+
+        // time change?? show change
 
     }
 
@@ -83,11 +88,11 @@ public class RadioService extends Service {
 
         if (intent != null && intent.getAction() != null) {
             switch (intent.getAction()) {
-                case Constants.ACTION_STOP_RADIO_SERVICE:
+                case ACTION_STOP_RADIO_SERVICE:
                     hideNotification();
                     stopSelf();
                     break;
-                case Constants.ACTION_STREAM_PLAY_PAUSE:
+                case ACTION_STREAM_PLAY_PAUSE:
                     if (isPlaying()) {
                         pause();
                         showNotification();
@@ -108,14 +113,14 @@ public class RadioService extends Service {
 
     private void setupMediaPlayer() {
         mediaPlayer = new MediaPlayer();
-        mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        mediaPlayer.setAudioStreamType(STREAM_MUSIC);
 
         // reset the media player if an error occurs
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                Toast.makeText(RadioService.this, "There was an error playing the stream. Reloading...",
-                        Toast.LENGTH_SHORT).show();
+                makeText(RadioService.this, "There was an error playing the stream. Reloading...",
+                        LENGTH_SHORT).show();
                 mediaPlayer.reset();
                 return false;
             }
@@ -124,34 +129,36 @@ public class RadioService extends Service {
 
     private void setupAudioManager() {
         // obtain audioManager for requesting audio focus
-        audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioFocusListener = new AudioManager.OnAudioFocusChangeListener() {
+        audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        audioFocusListener = new OnAudioFocusChangeListener() {
             @Override
             public void onAudioFocusChange(int focusChange) {
                 switch (focusChange) {
-                    case AudioManager.AUDIOFOCUS_GAIN:
+                    case AUDIOFOCUS_GAIN:
                         // resume playback
                         if (mediaPlayer == null) setupMediaPlayer();
                         else if (!mediaPlayer.isPlaying()) play();
                         mediaPlayer.setVolume(1.0f, 1.0f);
                         break;
 
-                    case AudioManager.AUDIOFOCUS_LOSS:
+                    case AUDIOFOCUS_LOSS:
                         // Lost focus for an unbounded amount of time: stop playback and release media player
                         if (isPlaying()) reset();
                         break;
 
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    case AUDIOFOCUS_LOSS_TRANSIENT:
                         // Lost focus for a short time, but we have to stop
                         // playback. We don't release the media player because playback
                         // is likely to resume
                         if (isPlaying()) pause();
                         break;
 
-                    case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    case AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
                         // Lost focus for a short time, but it's ok to keep playing
                         // at an attenuated level
-                        if (isPlaying()) mediaPlayer.setVolume(0.2f, 0.2f);
+                        float MEDIA_PLAYER_LEFT_VOLUME = 0.2f;
+                        float MEDIA_PLAYER_RIGHT_VOLUME = 0.2f;
+                        if (isPlaying()) mediaPlayer.setVolume(MEDIA_PLAYER_LEFT_VOLUME, MEDIA_PLAYER_RIGHT_VOLUME);
                         break;
                 }
             }
@@ -174,7 +181,7 @@ public class RadioService extends Service {
 
             try {
                 // set the URL for the stream
-                mediaPlayer.setDataSource(Constants.STREAM_URL);
+                mediaPlayer.setDataSource(STREAM_URL);
 
                 // prepare the stream asynchronously
                 isLoading = true;
@@ -195,21 +202,21 @@ public class RadioService extends Service {
 
     /*
         Plays the currently loaded stream. If stream is not loaded, load stream and play.
-     */
+    */
     public void play() {
         if (isLoaded) { // if stream is loaded
 
             timer.cancel(); // cancel the stop timer if it is loaded
 
             // request focus to play audio
-            int result = audioManager.requestAudioFocus(audioFocusListener, AudioManager.STREAM_MUSIC,
-                    AudioManager.AUDIOFOCUS_GAIN);
+            int result = audioManager.requestAudioFocus(audioFocusListener, STREAM_MUSIC,
+                    AUDIOFOCUS_GAIN);
 
-            if (result != AudioManager.AUDIOFOCUS_REQUEST_GRANTED) {
+            if (result != AUDIOFOCUS_REQUEST_GRANTED) {
                 // could not get audio focus.
-                Toast.makeText(RadioService.this, "Cannot play audio.", Toast.LENGTH_SHORT).show();
-
-            } if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
+                makeText(RadioService.this, R.string.audio_playback_error, LENGTH_SHORT).show();
+            }
+            if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
             mediaPlayer.start(); // play
         } else {
             prepStreamAndPlay();
@@ -217,7 +224,7 @@ public class RadioService extends Service {
     }
 
     /*
-    Pauses the currently loaded stream.
+        Pauses the currently loaded stream.
     */
     public void pause() {
         if (mediaPlayer.isPlaying()) {
@@ -287,7 +294,7 @@ public class RadioService extends Service {
         String title = currentShow != null ? currentShow.getTitle() : "Auto Play";
 
         Intent playPauseIntent = new Intent(this, RadioService.class);
-        playPauseIntent.setAction(Constants.ACTION_STREAM_PLAY_PAUSE);
+        playPauseIntent.setAction(ACTION_STREAM_PLAY_PAUSE);
 
         PendingIntent playPausePendingIntent = PendingIntent.getService(
                 this,
@@ -297,7 +304,7 @@ public class RadioService extends Service {
         );
 
         Intent deleteIntent = new Intent(this, RadioService.class);
-        deleteIntent.setAction(Constants.ACTION_STOP_RADIO_SERVICE);
+        deleteIntent.setAction(ACTION_STOP_RADIO_SERVICE);
 
         PendingIntent pendingDelete = PendingIntent.getService(
                 this,
@@ -338,23 +345,22 @@ public class RadioService extends Service {
 
     }
 
+
     /**
      * Removes the notification.
      */
     public void hideNotification() {
 
         stopForeground(true);
-
     }
 
     @Override
     public boolean stopService(Intent name) {
-
         reset();
 
         // remove the notification
         NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+                (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotificationManager.cancel(NOTIFICATION_ID);
 
         if (mediaPlayer != null) mediaPlayer.release();

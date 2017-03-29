@@ -22,27 +22,27 @@ import edu.grinnell.kdic.NetworkState;
  * Gets the schedule from network location through JSON
  */
 public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
-    private Context context;
-    private ScheduleFragment scheduleFragment;
+    private Context mContext;
+    private ScheduleFragment mScheduleFragment;
     public static final String TAG = GetSchedule.class.getSimpleName();
-    private ProgressDialog dialog;
+    private ProgressDialog mDialog;
 
     public GetSchedule(Context context, ScheduleFragment scheduleFragment) {
-        this.context = context;
-        this.scheduleFragment = scheduleFragment;
+        this.mContext = context;
+        this.mScheduleFragment = scheduleFragment;
     }
 
     @Override
     protected void onPreExecute() {
-        if (!NetworkState.isOnline(context)) {
+        if (!NetworkState.isOnline(mContext)) {
             cancel(true);
         } else {
-            dialog = new ProgressDialog(context);
-            dialog.setTitle("Fetching Schedule");
-            dialog.setMessage("Getting the schedule");
-            dialog.setIndeterminate(true);
-            dialog.setCancelable(false);
-            dialog.show();
+            mDialog = new ProgressDialog(mContext);
+            mDialog.setTitle("Fetching Schedule");
+            mDialog.setMessage("Getting the schedule");
+            mDialog.setIndeterminate(true);
+            mDialog.setCancelable(false);
+            mDialog.show();
         }
         super.onPreExecute();
     }
@@ -57,7 +57,7 @@ public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
         try {
             Response response = client.newCall(request).execute();
 
-            Schedule schedule = new Schedule(context);
+            Schedule schedule = new Schedule(mContext);
             // Parse JSON and add it to SQLite DB
             schedule.updateSchedule(response.body().string());
 
@@ -70,14 +70,14 @@ public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onPostExecute(Boolean success) {
-        dialog.dismiss();
+        mDialog.dismiss();
         if (success) {
             Log.i(TAG, "Schedule successfully parsed.");
-            Toast.makeText(context, "Schedule updated", Toast.LENGTH_LONG).show();
-            scheduleFragment.getContent();
+            Toast.makeText(mContext, "Schedule updated", Toast.LENGTH_LONG).show();
+            mScheduleFragment.getContent();
         } else {
             // failure message
-            Toast.makeText(context, "Failed to Update Schedule", Toast.LENGTH_LONG).show();
+            Toast.makeText(mContext, "Failed to Update Schedule", Toast.LENGTH_LONG).show();
         }
 
         super.onPostExecute(success);
@@ -85,9 +85,9 @@ public class GetSchedule extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onCancelled() {
-        dialog.dismiss();
+        mDialog.dismiss();
         // No internet connection
-        Toast.makeText(context, "There was an error fetching data.", Toast.LENGTH_LONG).show();
+        Toast.makeText(mContext, "There was an error fetching data.", Toast.LENGTH_LONG).show();
         super.onCancelled();
     }
 }
