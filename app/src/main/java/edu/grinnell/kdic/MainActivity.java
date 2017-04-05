@@ -34,7 +34,6 @@ import edu.grinnell.kdic.schedule.ScheduleFragment;
 import edu.grinnell.kdic.visualizer.VisualizeFragment;
 
 public class MainActivity extends AppCompatActivity {
-    //Set the tag for Main Activity class
     public static final String TAG = MainActivity.class.getSimpleName();
     private Toolbar mNavigationToolbar;
     private Toolbar mPlaybackToolbar;
@@ -77,10 +76,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
 
-    /**
-     *  Generate main layout, navigation drawer for the main activity
-     * @param savedInstanceState
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,9 +106,6 @@ public class MainActivity extends AppCompatActivity {
             updateShowNamePlaybackToolbar();
     }
 
-    /**
-     *Set up icon for the pause and play button
-     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -125,9 +117,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    /**
-     * Stop the activity
-     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -154,23 +143,11 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (!radioService.isLoading()) {
-                    if (mBackStack.peek() != R.id.visualizer) {
-                        showVisualizeFragment();
-                        mBackStack.add(R.id.visualizer);
-                    } else {
-                        hideVisualizeFragment();
-                        mBackStack.pop();
-                    }
-                    updateNavigationView();
-                }
+                setBottomNavigationOnClickListeners(v);
             }
         };
-
-
         mPlaybackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
         mPlaybackToolbar.setOnClickListener(onToggleVisualizeFragment);
-
         //Handling pause button and set on click method
         mPlayPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
         mPlayPauseButton.setOnClickListener(new View.OnClickListener() {
@@ -179,6 +156,22 @@ public class MainActivity extends AppCompatActivity {
                 onClickPauseButton(v);
             }
         });
+    }
+
+    /**
+     * Set response when clicking in the bottom navigation
+     */
+    public void setBottomNavigationOnClickListeners(View v) {
+        if (!radioService.isLoading()) {
+            if (mBackStack.peek() != R.id.visualizer) {
+                showVisualizeFragment();
+                mBackStack.add(R.id.visualizer);
+            } else {
+                hideVisualizeFragment();
+                mBackStack.pop();
+            }
+            updateNavigationView();
+        }
     }
 
     /**
@@ -194,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         } else {
             // play
             if (NetworkState.isOnline(MainActivity.this)) {
-                  if (!radioService.isLoading()) {
+                if (!radioService.isLoading()) {
                     if (radioService.isLoaded()) {
                         mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
                         mPlayPauseButton.clearAnimation();
@@ -302,57 +295,63 @@ public class MainActivity extends AppCompatActivity {
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(MenuItem menuItem) {
-                if (mBackStack.peek() != menuItem.getItemId()) {
-                    if (mBackStack.peek() == R.id.visualizer) {
-                        hideVisualizeFragment();
-                        mBackStack.pop();
-                    }
-                    mBackStack.push(menuItem.getItemId());
-
-                    //Create fragment transaction to handle response to call from the navigation drawer
-                    FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                    switch (menuItem.getItemId()) {
-                        case R.id.schedule:
-                            //generate schedule fragment after clicking on Schedule
-                            ft.replace(R.id.fragment, mScheduleFragment, ScheduleFragment.TAG)
-                                    .addToBackStack(null)
-                                    .commit();
-                            break;
-                        case R.id.visualizer:
-                            //Generate now playing response
-                            showVisualizeFragment();
-                            break;
-                        case R.id.favorites:
-                            //Generate favorite response
-                            ft.replace(R.id.fragment,
-                                    mFavoritesFragment == null ? new FavoritesFragment() : mFavoritesFragment,
-                                    FavoritesFragment.TAG)
-                                    .addToBackStack(null)
-                                    .commit();
-                            break;
-                        case R.id.blog:
-                            //Generate blog fragment in response to the blog button
-                            ft.replace(R.id.fragment, new BlogWebViewFragment(), BlogWebViewFragment.TAG)
-                                    .addToBackStack(null)
-                                    .commit();
-                            break;
-                        case R.id.about:
-                            //Generate about fragment in response to the about button
-                            ft.replace(R.id.fragment, new AboutFragment(), AboutFragment.TAG)
-                                    .addToBackStack(null)
-                                    .commit();
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                // close the drawer after something is clicked
-                mDrawerLayout.closeDrawer(GravityCompat.START);
-                return true;
+                return setOnClickNavigationItem(menuItem);
             }
         });
     }
 
+    /**
+     * Set response after clicking on items in the navigation drawer
+     */
+    public boolean setOnClickNavigationItem(MenuItem menuItem) {
+        if (mBackStack.peek() != menuItem.getItemId()) {
+            if (mBackStack.peek() == R.id.visualizer) {
+                hideVisualizeFragment();
+                mBackStack.pop();
+            }
+            mBackStack.push(menuItem.getItemId());
+
+            //Create fragment transaction to handle response to call from the navigation drawer
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            switch (menuItem.getItemId()) {
+                case R.id.schedule:
+                    //generate schedule fragment after clicking on Schedule
+                    ft.replace(R.id.fragment, mScheduleFragment, ScheduleFragment.TAG)
+                            .addToBackStack(null)
+                            .commit();
+                    break;
+                case R.id.visualizer:
+                    //Generate now playing response
+                    showVisualizeFragment();
+                    break;
+                case R.id.favorites:
+                    //Generate favorite response
+                    ft.replace(R.id.fragment,
+                            mFavoritesFragment == null ? new FavoritesFragment() : mFavoritesFragment,
+                            FavoritesFragment.TAG)
+                            .addToBackStack(null)
+                            .commit();
+                    break;
+                case R.id.blog:
+                    //Generate blog fragment in response to the blog button
+                    ft.replace(R.id.fragment, new BlogWebViewFragment(), BlogWebViewFragment.TAG)
+                            .addToBackStack(null)
+                            .commit();
+                    break;
+                case R.id.about:
+                    //Generate about fragment in response to the about button
+                    ft.replace(R.id.fragment, new AboutFragment(), AboutFragment.TAG)
+                            .addToBackStack(null)
+                            .commit();
+                    break;
+                default:
+                    break;
+            }
+        }
+        // close the drawer after something is clicked
+        mDrawerLayout.closeDrawer(GravityCompat.START);
+        return true;
+    }
     /**
      * Highlight selected item
      */
@@ -394,12 +393,7 @@ public class MainActivity extends AppCompatActivity {
             mPlayPauseButton.startAnimation(animation);
 
             // move the info onto the screen
-            AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
-            alphaAnimation.setDuration(200);
-            alphaAnimation.setStartOffset(100);
-            alphaAnimation.setFillAfter(true);
-            alphaAnimation.setInterpolator(new AccelerateInterpolator());
-            findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
+            moveInfo(0f, 1f);
         }
     }
 
@@ -422,22 +416,37 @@ public class MainActivity extends AppCompatActivity {
             // move the play button to the middle
 
             shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
-            TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
-            animation.setDuration(200);
-            animation.setInterpolator(new AccelerateDecelerateInterpolator());
-            animation.setFillAfter(true);
-            mPlayPauseButton.setTranslationX(-1 * shiftAmnt);
-            mPlayPauseButton.startAnimation(animation);
-
+            movePlayButton(shiftAmnt);
             // move the info off the screen
-            AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
-            alphaAnimation.setDuration(300);
-            alphaAnimation.setStartOffset(100);
-            alphaAnimation.setFillAfter(true);
-            alphaAnimation.setInterpolator(new AccelerateInterpolator());
-            findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
+            moveInfo(1f, 0f);
+
         }
     }
+
+    /**
+     * Move the play button to the middle
+     */
+
+    public void movePlayButton(float shiftAmnt) {
+        TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
+        animation.setDuration(200);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setFillAfter(true);
+
+    }
+
+    /**
+     * Create animation controls the alpha level
+     */
+    public void moveInfo(float fromAlpha, float toAlpha) {
+        AlphaAnimation alphaAnimation = new AlphaAnimation(fromAlpha, toAlpha);
+        alphaAnimation.setDuration(300);
+        alphaAnimation.setStartOffset(100);
+        alphaAnimation.setFillAfter(true);
+        alphaAnimation.setInterpolator(new AccelerateInterpolator());
+        findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
+    }
+
 
     /**
      * Update the show name in the bottom playback toolbar to the current show
@@ -471,11 +480,8 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    /**
-     * Generate the Update Schedule button
-     * @param menu
-     *
-     */
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -486,7 +492,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Generate Update Schedule fragment after clicking on update schedule
      * @param item
-     *
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -512,9 +517,7 @@ public class MainActivity extends AppCompatActivity {
         getSchedule.execute();
     }
 
-    /**
-     * Return to previous activity on the stack,
-     */
+
     @Override
     public void onBackPressed() {
         if (mBackStack.size() > 1) {
@@ -530,9 +533,6 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
-    /**
-     *
-     */
     @Override
     protected void onDestroy() {
         super.onDestroy();
