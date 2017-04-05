@@ -13,7 +13,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -35,19 +34,19 @@ import edu.grinnell.kdic.schedule.ScheduleFragment;
 import edu.grinnell.kdic.visualizer.VisualizeFragment;
 
 public class MainActivity extends AppCompatActivity {
-
+    //Set the tag for Main Activity class
     public static final String TAG = MainActivity.class.getSimpleName();
-
     private Toolbar mNavigationToolbar;
     private Toolbar mPlaybackToolbar;
-    private ImageView playPauseButton;
+    private ImageView mPlayPauseButton;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private Stack<Integer> mBackStack;
-
+    private float shiftAmnt;
+    private FavoritesFragment mFavoritesFragment;
     private VisualizeFragment mVisualizeFragment;
     private ScheduleFragment mScheduleFragment;
-    private FavoritesFragment mFavoritesFragment;
+
 
     // for RadioService
     private RadioService radioService;
@@ -66,42 +65,44 @@ public class MainActivity extends AppCompatActivity {
             // pause to play
             if (radioService.isPlaying()) {
                 radioService.hideNotification();
-                playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+                mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
             } else {
-                playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+                mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
             }
         }
-
         // Called when the connection with the service disconnects unexpectedly
         // Changed the boolean boundToRadioService to false.
         public void onServiceDisconnected(ComponentName className) {
-            Log.e(TAG, "onServiceDisconnected");
             boundToRadioService = false;
         }
     };
 
+    /**
+     *  Generate main layout, navigation drawer for the main activity
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // set the layout to use
         setContentView(R.layout.activity_main);
-
-        setupNavigation(); // setup the nav drawer and navigation functionality
+        // setup the nav drawer and navigation functionality
+        setupNavigation();
         setupFragments(savedInstanceState);
         setupPlaybackToolbar(); // setup the playback toolbar
 
         // update the schedule if connected to internet
         if (NetworkState.isOnline(this))
             updateSchedule();
-
     }
 
+    /**
+     *Bind the radio services after the activity is being displayed to the user
+     */
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
-
-        // bind to the radio service
+        // Start an intent to bind to the radio service
         Intent intent = new Intent(this, RadioService.class);
         startService(intent);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
@@ -110,33 +111,46 @@ public class MainActivity extends AppCompatActivity {
             updateShowNamePlaybackToolbar();
     }
 
+    /**
+     *Set up icon for the pause and play button
+     */
     @Override
     protected void onResume() {
         super.onResume();
         // if the stream is playing, then stop the notification
         if (boundToRadioService && radioService.isPlaying()) {
-            playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+            mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
         } else {
-            playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+            mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
         }
     }
 
+    /**
+     * Stop the activity
+     */
     @Override
     protected void onStop() {
         super.onStop();
         // if the stream is playing, then start the notification
-        if (boundToRadioService && radioService.isPlaying())
+        if (boundToRadioService && radioService.isPlaying()) {
             radioService.showNotification();
-
+        }
         // unbind the radio service
         unbindService(mConnection);
-
         boundToRadioService = false;
 
     }
 
+    /**
+     * Set up the playback bar on the bottom of the activity
+     */
     private void setupPlaybackToolbar() {
+        //Find the layout to populate into the screen
         mPlaybackToolbar = (Toolbar) findViewById(R.id.playback_toolbar);
+
+        //Handling response after clicking on the bar
+        //Generate/Hide the visualizer action according to the current element in backstack
+
         View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -152,65 +166,78 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+
+
         mPlaybackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
         mPlaybackToolbar.setOnClickListener(onToggleVisualizeFragment);
-        playPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
-        playPauseButton.setOnClickListener(new View.OnClickListener() {
+
+        //Handling pause button and set on click method
+        mPlayPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
+        mPlayPauseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (radioService.isPlaying()) {
-                    // pause
-                    radioService.pause();
-                    // switch to play icon
-                    playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
-                } else {
-                    // play
-                    if (NetworkState.isOnline(MainActivity.this)) {
-                        if (!radioService.isLoading()) {
-                            if (radioService.isLoaded()) {
-                                playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
-                                playPauseButton.clearAnimation();
-                            } else {
-                                playPauseButton.setImageResource(R.drawable.ic_loading_spinner);
-
-                                // rotation to use for loading icon
-                                RotateAnimation rotate;
-                                // different center point for rotation if playPauseButton is in the
-                                // center of the screen
-                                if (mBackStack.peek() != R.id.visualizer)
-                                    rotate = new RotateAnimation(0, 360,
-                                            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                                            0.5f);
-                                else {
-                                    float shiftX = mPlaybackToolbar.getWidth() / -2 + playPauseButton.getWidth();
-                                    float shiftY = mPlaybackToolbar.getHeight() / 2;
-                                    rotate = new RotateAnimation(0, 360, shiftX, shiftY);
-                                }
-                                rotate.setDuration(1000);
-                                rotate.setRepeatCount(Animation.INFINITE);
-                                rotate.setInterpolator(new LinearInterpolator());
-
-                                playPauseButton.startAnimation(rotate);
-                            }
-                            radioService.setRunOnStreamPrepared(new Runnable() {
-                                @Override
-                                public void run() {
-                                    playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
-                                    playPauseButton.clearAnimation();
-                                }
-                            });
-                            radioService.play();
-                        }
-                    } else {
-                        showNoInternetDialog();
-                    }
-                }
+                onClickPauseButton(v);
             }
         });
     }
 
-    private void setupFragments(Bundle savedInstanceState) {
+    /**
+     * Set response after clicking the pause button
+     * @param v
+     */
+    public void onClickPauseButton(View v) {
+        if (radioService.isPlaying()) {
+            // pause
+            radioService.pause();
+            // switch to play icon
+            mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+        } else {
+            // play
+            if (NetworkState.isOnline(MainActivity.this)) {
+                  if (!radioService.isLoading()) {
+                    if (radioService.isLoaded()) {
+                        mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+                        mPlayPauseButton.clearAnimation();
 
+                    } else {
+                        mPlayPauseButton.setImageResource(R.drawable.ic_loading_spinner);
+
+                        // rotation to use for loading icon
+                        RotateAnimation rotate;
+                        // different center point for rotation if playPauseButton is in the
+                        // center of the screen
+                        if (mBackStack.peek() != R.id.visualizer)
+                            rotate = new RotateAnimation(0, 360,
+                                    Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                                    0.5f);
+                        else {
+                            float shiftX = mPlaybackToolbar.getWidth() / -2 + mPlayPauseButton.getWidth();
+                            float shiftY = mPlaybackToolbar.getHeight() / 2;
+                            rotate = new RotateAnimation(0, 360, shiftX, shiftY);
+                        }
+                        //Set duration of 1000 milliseconds
+                        rotate.setDuration(1000);
+                        rotate.setRepeatCount(Animation.INFINITE);
+                        rotate.setInterpolator(new LinearInterpolator());
+
+                        mPlayPauseButton.startAnimation(rotate);
+                    }
+                    radioService.setRunOnStreamPrepared(new Runnable() {
+                        @Override
+                        public void run() {
+                            mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+                            mPlayPauseButton.clearAnimation();
+                        }
+                    });
+                    radioService.play();
+                }
+            } else {
+                showNoInternetDialog();
+            }
+        }
+    }
+
+    private void setupFragments(Bundle savedInstanceState) {
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.fragment) != null) {
@@ -247,6 +274,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Set up navigation drawer bar
+     */
     private void setupNavigation() {
         // get toolbar and nav drawer
         mNavigationToolbar = (Toolbar) findViewById(R.id.toolbar_main);
@@ -279,17 +309,21 @@ public class MainActivity extends AppCompatActivity {
                     }
                     mBackStack.push(menuItem.getItemId());
 
+                    //Create fragment transaction to handle response to call from the navigation drawer
                     FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
                     switch (menuItem.getItemId()) {
                         case R.id.schedule:
+                            //generate schedule fragment after clicking on Schedule
                             ft.replace(R.id.fragment, mScheduleFragment, ScheduleFragment.TAG)
                                     .addToBackStack(null)
                                     .commit();
                             break;
                         case R.id.visualizer:
+                            //Generate now playing response
                             showVisualizeFragment();
                             break;
                         case R.id.favorites:
+                            //Generate favorite response
                             ft.replace(R.id.fragment,
                                     mFavoritesFragment == null ? new FavoritesFragment() : mFavoritesFragment,
                                     FavoritesFragment.TAG)
@@ -297,11 +331,13 @@ public class MainActivity extends AppCompatActivity {
                                     .commit();
                             break;
                         case R.id.blog:
+                            //Generate blog fragment in response to the blog button
                             ft.replace(R.id.fragment, new BlogWebViewFragment(), BlogWebViewFragment.TAG)
                                     .addToBackStack(null)
                                     .commit();
                             break;
                         case R.id.about:
+                            //Generate about fragment in response to the about button
                             ft.replace(R.id.fragment, new AboutFragment(), AboutFragment.TAG)
                                     .addToBackStack(null)
                                     .commit();
@@ -310,7 +346,6 @@ public class MainActivity extends AppCompatActivity {
                             break;
                     }
                 }
-
                 // close the drawer after something is clicked
                 mDrawerLayout.closeDrawer(GravityCompat.START);
                 return true;
@@ -318,11 +353,16 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Highlight selected item
+     */
     public void updateNavigationView() {
         mNavigationView.setCheckedItem(mBackStack.peek());
     }
 
-
+    /**
+     * Hide the station visualizer
+     */
     public void hideVisualizeFragment() {
         if (!radioService.isLoading()) {
             // hide visualize fragment
@@ -331,9 +371,10 @@ public class MainActivity extends AppCompatActivity {
             getSupportFragmentManager().popBackStack();
 
             // move the play button to the right
-            final float shiftAmnt = (mPlaybackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
+            shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
+
             TranslateAnimation animation = new TranslateAnimation(0, shiftAmnt, 0, 0);
-            animation.setDuration(200);
+            animation.setDuration(200); //milliseconds
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
             animation.setFillAfter(false);
             animation.setAnimationListener(new Animation.AnimationListener() {
@@ -343,14 +384,14 @@ public class MainActivity extends AppCompatActivity {
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    playPauseButton.setTranslationX(0);
+                    mPlayPauseButton.setTranslationX(0);
                 }
 
                 @Override
                 public void onAnimationRepeat(Animation animation) {
                 }
             });
-            playPauseButton.startAnimation(animation);
+            mPlayPauseButton.startAnimation(animation);
 
             // move the info onto the screen
             AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
@@ -362,9 +403,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Create visualizer fragment when the show is playing
+     */
     public void showVisualizeFragment() {
         if (!radioService.isLoading()) {
+            //Commiting the visualize fragment
             getSupportFragmentManager().beginTransaction()
+                    //Set transition
                     .setCustomAnimations(R.anim.slide_in_bottom, R.anim.fade_out, R.anim.fade_in, R.anim.slide_out_bottom)
                     .replace(R.id.fragment, mVisualizeFragment, VisualizeFragment.TAG)
                     .addToBackStack(null)
@@ -374,13 +420,14 @@ public class MainActivity extends AppCompatActivity {
             mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
 
             // move the play button to the middle
-            final float shiftAmnt = (mPlaybackToolbar.getWidth() - playPauseButton.getWidth()) / 2;
+
+            shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
             TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
             animation.setDuration(200);
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
             animation.setFillAfter(true);
-            playPauseButton.setTranslationX(-1 * shiftAmnt);
-            playPauseButton.startAnimation(animation);
+            mPlayPauseButton.setTranslationX(-1 * shiftAmnt);
+            mPlayPauseButton.startAnimation(animation);
 
             // move the info off the screen
             AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
@@ -396,9 +443,11 @@ public class MainActivity extends AppCompatActivity {
      * Update the show name in the bottom playback toolbar to the current show
      */
     public void updateShowNamePlaybackToolbar() {
+        //Finding the text fields for show names and show time
         TextView showName = (TextView) findViewById(R.id.tv_playback_show_name);
         TextView showTime = (TextView) findViewById(R.id.tv_playback_show_time);
-
+        //Get the current show, if it's null, the radio is on autoplay, else get
+        //the name of the show and its schedule
         Show curShow = Schedule.getCurrentShow(this);
         if (curShow == null) {
             showName.setText("Auto Play");
@@ -422,6 +471,11 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
+    /**
+     * Generate the Update Schedule button
+     * @param menu
+     *
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -429,13 +483,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Generate Update Schedule fragment after clicking on update schedule
+     * @param item
+     *
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.update_schedule) {
             GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
@@ -443,20 +501,27 @@ public class MainActivity extends AppCompatActivity {
             updateSchedule();
             return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     *  Reset and update the schedule fragment
+     */
     private void updateSchedule() {
         GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
         getSchedule.execute();
     }
 
+    /**
+     * Return to previous activity on the stack,
+     */
     @Override
     public void onBackPressed() {
         if (mBackStack.size() > 1) {
             int menuId = mBackStack.pop();
             updateNavigationView();
+            //If the most recent activity in the back stack is the visualizer,
+            //make a call to hide the visualizer
             if (menuId == R.id.visualizer) {
                 hideVisualizeFragment();
                 return;
@@ -465,10 +530,11 @@ public class MainActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    /**
+     *
+     */
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "MainActivity Destroyed.");
-
         super.onDestroy();
     }
 }
