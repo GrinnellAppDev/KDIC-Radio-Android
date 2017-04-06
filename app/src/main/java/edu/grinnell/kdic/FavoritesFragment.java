@@ -71,9 +71,14 @@ public class FavoritesFragment extends Fragment {
 
     @Override
     public void onDestroyView(){
+        mRecyclerView = null;
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDestroy() {
         mAdapter = null;
         mContent = null;
-        mRecyclerView = null;
+        super.onDestroy();
     }
 }
