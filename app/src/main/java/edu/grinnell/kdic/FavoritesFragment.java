@@ -18,7 +18,7 @@ import edu.grinnell.kdic.schedule.ScheduleRecyclerViewAdapter;
 
 public class FavoritesFragment extends Fragment {
 
-    public static final String TAG = FavoritesFragment.class.getSimpleName();
+    //public static final String TAG = FavoritesFragment.class.getSimpleName();
 
     private RecyclerView mRecyclerView;
     private ScheduleRecyclerViewAdapter mAdapter;
@@ -72,5 +72,8 @@ public class FavoritesFragment extends Fragment {
     @Override
     public void onDestroyView(){
         super.onDestroyView();
+        mAdapter = null;
+        mContent = null;
+        mRecyclerView = null;
     }
 }
