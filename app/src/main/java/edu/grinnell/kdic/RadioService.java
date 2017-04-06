@@ -30,7 +30,6 @@ import android.net.wifi.WifiManager;
  */
 public class RadioService extends Service {
 
-    public static final String TAG = RadioService.class.getSimpleName();
     private static final int NOTIFICATION_ID = 1;
 
     private AudioManager audioManager;
@@ -119,7 +118,7 @@ public class RadioService extends Service {
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
-                makeText(RadioService.this, "There was an error playing the stream. Reloading...",
+                makeText(RadioService.this, R.string.error_playing_stream,
                         LENGTH_SHORT).show();
                 mediaPlayer.reset();
                 return false;
