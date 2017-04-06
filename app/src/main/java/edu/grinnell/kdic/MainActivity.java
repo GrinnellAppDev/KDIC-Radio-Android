@@ -292,7 +292,7 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.favorites:
                             ft.replace(R.id.fragment,
                                     mFavoritesFragment == null ? new FavoritesFragment() : mFavoritesFragment,
-                                    FavoritesFragment.TAG)
+                                    FavoritesFragment.class.getSimpleName())
                                     .addToBackStack(null)
                                     .commit();
                             break;

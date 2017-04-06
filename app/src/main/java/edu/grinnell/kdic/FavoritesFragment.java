@@ -18,8 +18,6 @@ import edu.grinnell.kdic.schedule.ScheduleRecyclerViewAdapter;
 
 public class FavoritesFragment extends Fragment {
 
-    //public static final String TAG = FavoritesFragment.class.getSimpleName();
-
     private RecyclerView mRecyclerView;
     private ScheduleRecyclerViewAdapter mAdapter;
     private ArrayList<ScheduleRecyclerItem> mContent;
