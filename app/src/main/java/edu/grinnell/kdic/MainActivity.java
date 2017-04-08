@@ -1,6 +1,6 @@
 package edu.grinnell.kdic;
 
-import  android.content.ComponentName;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -45,8 +45,6 @@ public class MainActivity extends AppCompatActivity {
     private FavoritesFragment mFavoritesFragment;
     private VisualizeFragment mVisualizeFragment;
     private ScheduleFragment mScheduleFragment;
-
-
     // for RadioService
     private RadioService radioService;
     private boolean boundToRadioService;
@@ -59,7 +57,6 @@ public class MainActivity extends AppCompatActivity {
             RadioService.RadioBinder binder = (RadioService.RadioBinder) service;
             radioService = binder.getService();
             boundToRadioService = true;
-
             // if the stream is playing, then stop the notification and change the button from
             // pause to play
             if (radioService.isPlaying()) {
@@ -85,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
         setupNavigation();
         setupFragments(savedInstanceState);
         setupPlaybackToolbar(); // setup the playback toolbar
-
         // update the schedule if connected to internet
         if (NetworkState.isOnline(this))
             updateSchedule();
@@ -127,7 +123,6 @@ public class MainActivity extends AppCompatActivity {
         // unbind the radio service
         unbindService(mConnection);
         boundToRadioService = false;
-
     }
 
     /**
@@ -143,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
         View.OnClickListener onToggleVisualizeFragment = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setBottomNavigationOnClickListeners(v);
+                toggleVisualizeFragmentOnClick(v);
             }
         };
         mPlaybackToolbar.setNavigationOnClickListener(onToggleVisualizeFragment);
@@ -160,8 +155,9 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Set response when clicking in the bottom navigation
+     *
      */
-    public void setBottomNavigationOnClickListeners(View v) {
+    private void toggleVisualizeFragmentOnClick(View v) {
         if (!radioService.isLoading()) {
             if (mBackStack.peek() != R.id.visualizer) {
                 showVisualizeFragment();
@@ -194,7 +190,6 @@ public class MainActivity extends AppCompatActivity {
 
                     } else {
                         mPlayPauseButton.setImageResource(R.drawable.ic_loading_spinner);
-
                         // rotation to use for loading icon
                         RotateAnimation rotate;
                         // different center point for rotation if playPauseButton is in the
@@ -241,28 +236,22 @@ public class MainActivity extends AppCompatActivity {
             if (savedInstanceState != null) {
                 return;
             }
-
             // Create a new Fragment to be placed in the activity layout
             mScheduleFragment = new ScheduleFragment();
-
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
             mScheduleFragment.setArguments(getIntent().getExtras());
-
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment, mScheduleFragment, ScheduleFragment.TAG)
                     .commit();
             mBackStack.add(R.id.schedule);
-
-
             SharedPreferences sharedPreferences = getSharedPreferences(Constants.SHARED_PREFS, 0);
             if (sharedPreferences.getBoolean(Constants.FIRST_RUN, true)) {
                 GetSchedule getSchedule = new GetSchedule(MainActivity.this, mScheduleFragment);
                 getSchedule.execute();
                 sharedPreferences.edit().putBoolean(Constants.FIRST_RUN, false).apply();
             }
-
             mVisualizeFragment = new VisualizeFragment();
         }
     }
@@ -310,8 +299,6 @@ public class MainActivity extends AppCompatActivity {
                 mBackStack.pop();
             }
             mBackStack.push(menuItem.getItemId());
-
-            //Create fragment transaction to handle response to call from the navigation drawer
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             switch (menuItem.getItemId()) {
                 case R.id.schedule:
@@ -333,7 +320,6 @@ public class MainActivity extends AppCompatActivity {
                             .commit();
                     break;
                 case R.id.blog:
-                    //Generate blog fragment in response to the blog button
                     ft.replace(R.id.fragment, new BlogWebViewFragment(), BlogWebViewFragment.TAG)
                             .addToBackStack(null)
                             .commit();
@@ -391,7 +377,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
             mPlayPauseButton.startAnimation(animation);
-
             // move the info onto the screen
             moveInfo(0f, 1f);
         }
@@ -414,7 +399,6 @@ public class MainActivity extends AppCompatActivity {
             mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
 
             // move the play button to the middle
-
             shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
             movePlayButton(shiftAmnt);
             // move the info off the screen
@@ -427,18 +411,17 @@ public class MainActivity extends AppCompatActivity {
      * Move the play button to the middle
      */
 
-    public void movePlayButton(float shiftAmnt) {
+    private void movePlayButton(float shiftAmnt) {
         TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
         animation.setDuration(200);
         animation.setInterpolator(new AccelerateDecelerateInterpolator());
         animation.setFillAfter(true);
-
     }
 
     /**
      * Create animation controls the alpha level
      */
-    public void moveInfo(float fromAlpha, float toAlpha) {
+    private void moveInfo(float fromAlpha, float toAlpha) {
         AlphaAnimation alphaAnimation = new AlphaAnimation(fromAlpha, toAlpha);
         alphaAnimation.setDuration(300);
         alphaAnimation.setStartOffset(100);
