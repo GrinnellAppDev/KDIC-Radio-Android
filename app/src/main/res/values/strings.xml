@@ -6,4 +6,5 @@
     <string name="fav_shows_message">All your jams in one place</string>
     <string name="no_fav_shows">Nothing Here...</string>
     <string name="no_fav_shows_message">Your favorite shows will be right here. </string>
+    <string name="social_time">s at </string>
 </resources>
