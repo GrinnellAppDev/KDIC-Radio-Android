@@ -39,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
     private Stack<Integer> mBackStack;
-    private float shiftAmnt;
+    private float mShiftAmnt;
     private FavoritesFragment mFavoritesFragment;
     private VisualizeFragment mVisualizeFragment;
     private ScheduleFragment mScheduleFragment;
@@ -152,7 +152,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /**
-     * Set response when clicking in the bottom navigation
+     * Show the visualizer when the user clicks on the bottom navigation and
+     * hides it if the user click on it while the visualizer's showing
      */
     public void setBottomNavigationOnClickListeners(View v) {
         if (!radioService.isLoading()) {
@@ -184,10 +185,8 @@ public class MainActivity extends AppCompatActivity {
                     if (radioService.isLoaded()) {
                         mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
                         mPlayPauseButton.clearAnimation();
-
                     } else {
                         mPlayPauseButton.setImageResource(R.drawable.ic_loading_spinner);
-
                         // rotation to use for loading icon
                         RotateAnimation rotate;
                         // different center point for rotation if playPauseButton is in the
@@ -227,7 +226,6 @@ public class MainActivity extends AppCompatActivity {
         // Check that the activity is using the layout version with
         // the fragment_container FrameLayout
         if (findViewById(R.id.fragment) != null) {
-
             // However, if we're being restored from a previous state,
             // then we don't need to do anything and should return or else
             // we could end up with overlapping fragments.
@@ -239,7 +237,6 @@ public class MainActivity extends AppCompatActivity {
             // In case this activity was started with special instructions from an
             // Intent, pass the Intent's extras to the fragment as arguments
             mScheduleFragment.setArguments(getIntent().getExtras());
-
             // Add the fragment to the 'fragment_container' FrameLayout
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fragment, mScheduleFragment, ScheduleFragment.TAG)
@@ -262,10 +259,8 @@ public class MainActivity extends AppCompatActivity {
         // get toolbar and nav drawer
         mNavigationToolbar = (Toolbar) findViewById(R.id.toolbar_main);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
         // set toolbar as actionbar
         setSupportActionBar(mNavigationToolbar);
-
         // initialize navigation drawer
         mNavigationToolbar.setNavigationIcon(R.drawable.ic_menu_white_24dp);
         mNavigationToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -274,7 +269,6 @@ public class MainActivity extends AppCompatActivity {
                 mDrawerLayout.openDrawer(GravityCompat.START);
             }
         });
-
         // set up backstack
         mBackStack = new Stack<>();
         // set onclick listeners to navigation menu items
@@ -355,11 +349,9 @@ public class MainActivity extends AppCompatActivity {
             mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
             updateShowNamePlaybackToolbar();
             getSupportFragmentManager().popBackStack();
-
             // move the play button to the right
-            shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
-
-            TranslateAnimation animation = new TranslateAnimation(DELTA_LEVEL, shiftAmnt, DELTA_LEVEL, DELTA_LEVEL);
+            mShiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
+            TranslateAnimation animation = new TranslateAnimation(DELTA_LEVEL, mShiftAmnt, DELTA_LEVEL, DELTA_LEVEL);
             animation.setDuration(MS_ANIMATION_DURATION); //milliseconds
             animation.setInterpolator(new AccelerateDecelerateInterpolator());
             animation.setFillAfter(false);
@@ -400,9 +392,8 @@ public class MainActivity extends AppCompatActivity {
             mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
 
             // move the play button to the middle
-
-            shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
-            movePlayButton(shiftAmnt);
+            mShiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
+            movePlayButton(mShiftAmnt);
             // move the info off the screen
             moveInfo(ONE_ALPHA_LEVEL, ZERO_ALPHA_LEVEL);
 
@@ -412,7 +403,6 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Move the play button to the middle
      */
-
     public void movePlayButton(float shiftAmnt) {
         TranslateAnimation animation = new TranslateAnimation(shiftAmnt, DELTA_LEVEL, DELTA_LEVEL, DELTA_LEVEL);
         animation.setDuration(MS_ANIMATION_DURATION);
