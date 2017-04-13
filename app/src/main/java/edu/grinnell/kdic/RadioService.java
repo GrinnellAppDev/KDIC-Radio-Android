@@ -73,7 +73,7 @@ public class RadioService extends Service {
     public void onCreate() {
 
         // obtain WifiLock
-        wifiLock = ((WifiManager) getSystemService(WIFI_SERVICE))
+        wifiLock = ((WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, "myWifiLock");
 
         setupMediaPlayer();
@@ -214,7 +214,7 @@ public class RadioService extends Service {
 
             if (result != AUDIOFOCUS_REQUEST_GRANTED) {
                 // could not get audio focus.
-                makeText(RadioService.this, R.string.audio_playback_error, LENGTH_SHORT).show();
+                makeText(RadioService.this, "There was an error playing the stream. Reloading...", LENGTH_SHORT).show();
             }
             if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
             mediaPlayer.start(); // play
