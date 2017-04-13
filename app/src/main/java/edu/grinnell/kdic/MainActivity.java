@@ -35,6 +35,10 @@ import edu.grinnell.kdic.schedule.Schedule;
 import edu.grinnell.kdic.schedule.ScheduleFragment;
 import edu.grinnell.kdic.visualizer.VisualizeFragment;
 
+import static android.support.v4.view.GravityCompat.START;
+import static android.view.animation.Animation.RELATIVE_TO_SELF;
+import static edu.grinnell.kdic.NetworkState.isOnline;
+
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -55,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private boolean mBoundToRadioService;
 
     private ServiceConnection mConnection = new ServiceConnection() {
-        // Called when the connection with the service is established
         public void onServiceConnected(ComponentName className, IBinder service) {
             // Because we have bound to an explicit
             // service that is running in our own process, we can
@@ -64,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
             mRadioService = binder.getService();
             mBoundToRadioService = true;
 
-            // if the stream is playing, then stop the notification
             if (mRadioService.isPlaying()) {
                 mRadioService.hideNotification();
                 mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
@@ -74,7 +76,6 @@ public class MainActivity extends AppCompatActivity {
         }
         // Called when the connection with the service disconnects unexpectedly
         public void onServiceDisconnected(ComponentName className) {
-            Log.e(TAG, "onServiceDisconnected");
             mBoundToRadioService = false;
         }
     };
@@ -82,18 +83,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // set the layout to use
         setContentView(R.layout.activity_main);
-        setupNavigation(); // setup the nav drawer and navigation functionality
+        setupNavigation();
         setupFragments(savedInstanceState);
-        setupPlaybackToolbar(); // setup the playback toolbar
+        setupPlaybackToolbar();
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        Log.d(TAG, "onStart");
-        // bind to the radio service
         Intent intent = new Intent(this, RadioService.class);
         startService(intent);
         bindService(intent, mConnection, BIND_AUTO_CREATE);
@@ -137,42 +135,21 @@ public class MainActivity extends AppCompatActivity {
 
     @NonNull
     private View.OnClickListener togglePlayPauseClickListener() {
+        mPlayPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mRadioService.isPlaying()) {
-                    // pause
                     mRadioService.pause();
-                    // switch to play icon
                     mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
                 } else {
-                    // play
-                    if (NetworkState.isOnline(MainActivity.this)) {
+                    if (isOnline(MainActivity.this)) {
                         if (!mRadioService.isLoading()) {
                             if (mRadioService.isLoaded()) {
                                 mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
                                 mPlayPauseButton.clearAnimation();
                             } else {
-                                mPlayPauseButton.setImageResource(R.drawable.ic_loading_spinner);
-
-                                // rotation to use for loading icon
-                                RotateAnimation rotate;
-                                // different center point for rotation if mPlayPauseButton is in the
-                                // center of the screen
-                                if (mBackStack.peek() != R.id.visualizer)
-                                    rotate = new RotateAnimation(0, 360,
-                                            Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                                            0.5f);
-                                else {
-                                    float shiftX = mPlaybackToolbar.getWidth() / -2 + mPlayPauseButton.getWidth();
-                                    float shiftY = mPlaybackToolbar.getHeight() / 2;
-                                    rotate = new RotateAnimation(0, 360, shiftX, shiftY);
-                                }
-                                rotate.setDuration(1000);
-                                rotate.setRepeatCount(Animation.INFINITE);
-                                rotate.setInterpolator(new LinearInterpolator());
-
-                                mPlayPauseButton.startAnimation(rotate);
+                                loadingSpinAnimation();
                             }
                             mRadioService.setRunOnStreamPrepared(new Runnable() {
                                 @Override
@@ -189,6 +166,38 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    private void loadingSpinAnimation() {
+        mPlayPauseButton.setImageResource(R.drawable.ic_loading_spinner);
+        // rotation to use for loading icon
+        RotateAnimation rotate;
+        // different center point for rotation if mPlayPauseButton is in the
+        // center of the screen
+        if (mBackStack.peek() != R.id.visualizer) {
+            final float INITIAL_ANGLE_DEGREES = 0;
+            final float FINAL_ANGLE_DEGREES = 360;
+            final int PIVOT_X_TYPE = RELATIVE_TO_SELF;
+            final float PIVOT_X_COORDINATE = 0.5f;
+            final int PIVOT_Y_TYPE = RELATIVE_TO_SELF;
+            final float PIVOT_Y_COORDINATE = 0.5f;
+            rotate = new RotateAnimation(INITIAL_ANGLE_DEGREES, FINAL_ANGLE_DEGREES, PIVOT_X_TYPE, PIVOT_X_COORDINATE, PIVOT_Y_TYPE, PIVOT_Y_COORDINATE);
+        }
+        else {
+            float shiftX = mPlaybackToolbar.getWidth() / -2 + mPlayPauseButton.getWidth();
+            float shiftY = mPlaybackToolbar.getHeight() / 2;
+            final float INITIAL_ANGLE_DEGREES = 0;
+            final float FINAL_ANGLE_DEGREES = 360;
+            final float PIVOT_X_COORDINATE = shiftX;
+            final float PIVOT_Y_COORDINATE = shiftY;
+            rotate = new RotateAnimation(INITIAL_ANGLE_DEGREES, FINAL_ANGLE_DEGREES, PIVOT_X_COORDINATE, PIVOT_Y_COORDINATE);
+        }
+        final int MS_ANIMATION_DURATION_LOADING_SPIN = 1000;
+        rotate.setDuration(MS_ANIMATION_DURATION_LOADING_SPIN);
+        rotate.setRepeatCount(Animation.INFINITE);
+        rotate.setInterpolator(new LinearInterpolator());
+
+        mPlayPauseButton.startAnimation(rotate);
     }
 
     @NonNull
@@ -261,14 +270,11 @@ public class MainActivity extends AppCompatActivity {
         mNavigationToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mDrawerLayout.openDrawer(GravityCompat.START);
+                mDrawerLayout.openDrawer(START);
             }
         });
 
-        // set up mBackStack
         mBackStack = new Stack<>();
-
-        // set onclick listeners to navigation menu items
         mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
         mNavigationView.setNavigationItemSelectedListener(setOnClickListenerToNavMenuItems());
     }
@@ -318,7 +324,7 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 // close the drawer after something is clicked
-                mDrawerLayout.closeDrawer(GravityCompat.START);
+                mDrawerLayout.closeDrawer(START);
                 return true;
             }
         };
@@ -335,37 +341,57 @@ public class MainActivity extends AppCompatActivity {
             mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
             updateShowNamePlaybackToolbar();
             getSupportFragmentManager().popBackStack();
+            animationPlayPauseButtonHideVisualizeFragment();
+            animationShowInfoHideVisualizeFragment();
 
-            // move the play button to the right
-            final float shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
-            TranslateAnimation animation = new TranslateAnimation(0, shiftAmnt, 0, 0);
-            animation.setDuration(200);
-            animation.setInterpolator(new AccelerateDecelerateInterpolator());
-            animation.setFillAfter(false);
-            animation.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    mPlayPauseButton.setTranslationX(0);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-                }
-            });
-            mPlayPauseButton.startAnimation(animation);
-
-            // move the info onto the screen
-            AlphaAnimation alphaAnimation = new AlphaAnimation(0f, 1f);
-            alphaAnimation.setDuration(200);
-            alphaAnimation.setStartOffset(100);
-            alphaAnimation.setFillAfter(true);
-            alphaAnimation.setInterpolator(new AccelerateInterpolator());
-            findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
         }
+    }
+
+    private void animationShowInfoHideVisualizeFragment() {
+        // move the info onto the screen
+        final float INITIAL_ALPHA_LEVEL_SHOW_INFO= 0f;
+        final float FINAL_ALPHA_LEVEL_SHOW_INFO= 1f;
+        final int MS_DURATION_FADE_IN_SHOW_INFO= 200;
+        final int MS_DURATION_FADE_IN_DELAY_SHOW_INFO= 100;
+        AlphaAnimation alphaAnimation = new AlphaAnimation(INITIAL_ALPHA_LEVEL_SHOW_INFO, FINAL_ALPHA_LEVEL_SHOW_INFO);
+        alphaAnimation.setDuration(MS_DURATION_FADE_IN_SHOW_INFO);
+        alphaAnimation.setStartOffset(MS_DURATION_FADE_IN_DELAY_SHOW_INFO);
+        alphaAnimation.setFillAfter(true);
+        alphaAnimation.setInterpolator(new AccelerateInterpolator());
+        findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
+    }
+
+    private void animationPlayPauseButtonHideVisualizeFragment() {
+        // move the play button to the right
+        mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
+        final float shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
+        final float INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON= 0;
+        final float FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON = shiftAmnt;
+        final float INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON = 0;
+        final float FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON = 0;
+        TranslateAnimation animation = new TranslateAnimation( INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON,
+                                                               FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON,
+                                                               INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON,
+                                                               FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON);
+        final int MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT = 200;
+        animation.setDuration(MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setFillAfter(false);
+        animation.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                mPlayPauseButton.setTranslationX(0);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+            }
+        });
+        mPlayPauseButton.startAnimation(animation);
     }
 
     public void showVisualizeFragment() {
@@ -377,25 +403,46 @@ public class MainActivity extends AppCompatActivity {
                     .commit();
             ((TextView) findViewById(R.id.tv_playback_show_name)).setText("");
             ((TextView) findViewById(R.id.tv_playback_show_time)).setText("");
-            mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
+            animationPlayPauseButtonShowVisualizeFragment();
+            animationShowInfoShowVisualizeFragment();
 
-            // move the play button to the middle
-            final float shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
-            TranslateAnimation animation = new TranslateAnimation(shiftAmnt, 0, 0, 0);
-            animation.setDuration(200);
-            animation.setInterpolator(new AccelerateDecelerateInterpolator());
-            animation.setFillAfter(true);
-            mPlayPauseButton.setTranslationX(-1 * shiftAmnt);
-            mPlayPauseButton.startAnimation(animation);
 
-            // move the info off the screen
-            AlphaAnimation alphaAnimation = new AlphaAnimation(1f, 0f);
-            alphaAnimation.setDuration(300);
-            alphaAnimation.setStartOffset(100);
-            alphaAnimation.setFillAfter(true);
-            alphaAnimation.setInterpolator(new AccelerateInterpolator());
-            findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
         }
+    }
+
+    private void animationShowInfoShowVisualizeFragment() {
+        // move the info off the screen
+        final float INITIAL_ALPHA_LEVEL_SHOW_INFO=  1f;
+        final float FINAL_ALPHA_LEVEL_SHOW_INFO = 0f;
+        final int MS_DURATION_FADE_IN_SHOW_INFO = 300;
+        final int MS_DURATION_FADE_IN_DELAY_SHOW_INFO = 100;
+        AlphaAnimation alphaAnimation = new AlphaAnimation(INITIAL_ALPHA_LEVEL_SHOW_INFO, FINAL_ALPHA_LEVEL_SHOW_INFO);
+        alphaAnimation.setDuration(MS_DURATION_FADE_IN_SHOW_INFO);
+        alphaAnimation.setStartOffset(MS_DURATION_FADE_IN_DELAY_SHOW_INFO);
+        alphaAnimation.setFillAfter(true);
+        alphaAnimation.setInterpolator(new AccelerateInterpolator());
+        findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
+    }
+
+    private void animationPlayPauseButtonShowVisualizeFragment() {
+        mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
+
+        // move the play button to the middle
+        final float shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
+        final float INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON= shiftAmnt;
+        final float FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON= 0;
+        final float INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON= 0;
+        final float FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON= 0;
+        TranslateAnimation animation = new TranslateAnimation(INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON,
+                                                              FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON,
+                                                              INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON,
+                                                              FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON);
+        final int MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON= 200;
+        animation.setDuration(MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON);
+        animation.setInterpolator(new AccelerateDecelerateInterpolator());
+        animation.setFillAfter(true);
+        mPlayPauseButton.setTranslationX(-1 * shiftAmnt);
+        mPlayPauseButton.startAnimation(animation);
     }
 
     /**
@@ -467,9 +514,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
-        Log.d(TAG, "MainActivity Destroyed.");
-        super.onDestroy();
-        super.onDestroy();
         mNavigationToolbar = null;
         mPlaybackToolbar = null;
         mPlayPauseButton = null;
@@ -481,5 +525,6 @@ public class MainActivity extends AppCompatActivity {
         mFavoritesFragment = null;
         mRadioService = null;
         mBoundToRadioService = false;
+        super.onDestroy();
     }
 }
