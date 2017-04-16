@@ -31,6 +31,7 @@ import android.net.wifi.WifiManager;
 public class RadioService extends Service {
 
     private static final int NOTIFICATION_ID = 1;
+    private static final String WIFI_TAG = "myWifiLock";
 
     private AudioManager audioManager;
     private OnAudioFocusChangeListener audioFocusListener;
@@ -70,10 +71,9 @@ public class RadioService extends Service {
 
     @Override
     public void onCreate() {
-
         // obtain WifiLock
         wifiLock = ((WifiManager) getSystemService(WIFI_SERVICE))
-                .createWifiLock(WifiManager.WIFI_MODE_FULL, "myWifiLock");
+                .createWifiLock(WifiManager.WIFI_MODE_FULL, WIFI_TAG);
 
         setupMediaPlayer();
         setupAudioManager();
@@ -203,9 +203,8 @@ public class RadioService extends Service {
         Plays the currently loaded stream. If stream is not loaded, load stream and play.
     */
     public void play() {
-        if (isLoaded) { // if stream is loaded
-
-            timer.cancel(); // cancel the stop timer if it is loaded
+        if (isLoaded) {
+            timer.cancel();
 
             // request focus to play audio
             int result = audioManager.requestAudioFocus(audioFocusListener, STREAM_MUSIC,
@@ -290,7 +289,7 @@ public class RadioService extends Service {
 
 
         Show currentShow = Schedule.getCurrentShow(this);
-        String title = currentShow != null ? currentShow.getTitle() : "Auto Play";
+        String title = currentShow != null ? currentShow.getTitle() : getString(R.string.auto_play);
 
         Intent playPauseIntent = new Intent(this, RadioService.class);
         playPauseIntent.setAction(ACTION_STREAM_PLAY_PAUSE);
@@ -332,9 +331,9 @@ public class RadioService extends Service {
                         R.drawable.ic_launcher))
                 .setContentTitle(title)
                 .addAction(isPlaying() ? R.drawable.ic_pause_white_24dp : R.drawable.ic_play_arrow_white_24dp,
-                        "Play/Pause", playPausePendingIntent)
-                .addAction(R.drawable.ic_close_white_24dp, "Close", pendingDelete)
-                .setContentText("KDIC - Grinnell College Radio")
+                        getString(R.string.play_or_pause), playPausePendingIntent)
+                .addAction(R.drawable.ic_close_white_24dp, getString(R.string.close), pendingDelete)
+                .setContentText(getString(R.string.kdic_college_radio))
                 .setShowWhen(false) // hide the time
                 .setDeleteIntent(pendingDelete)
                 .setColor(getResources().getColor(R.color.accent))
@@ -344,12 +343,10 @@ public class RadioService extends Service {
 
     }
 
-
     /**
      * Removes the notification.
      */
     public void hideNotification() {
-
         stopForeground(true);
     }
 
@@ -373,7 +370,10 @@ public class RadioService extends Service {
         reset();
 
         if (mediaPlayer != null) mediaPlayer.release();
+        timer = null;
+        runOnStreamPrepared = null;
         mediaPlayer = null;
+        super.onDestroy();
     }
 
 }

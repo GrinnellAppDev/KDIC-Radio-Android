@@ -4,4 +4,8 @@
     <string name="action_settings">Settings</string>
     <string name="audio_playback_error">Cannot play audio.</string>
     <string name="error_playing_stream">There was an error playing the stream. Reloading...</string>
+    <string name="play_or_pause">Play/Pause</string>
+    <string name="close">Close</string>
+    <string name="kdic_college_radio">KDIC - Grinnell College Radio</string>
+    <string name="auto_play">Auto Play</string>
 </resources>
