@@ -130,60 +130,42 @@ public class RadioService extends Service {
     }
 
 
-    return super.onStartCommand(intent, flags, startId);
-  }
+    @Override
+    public void onCreate() {
 
-  private void setupMediaPlayer() {
-    mediaPlayer = new MediaPlayer();
-    mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
+        // obtain WifiLock
+        wifiLock = ((WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE))
+                .createWifiLock(WifiManager.WIFI_MODE_FULL, "myWifiLock");
 
-    // reset the media player if an error occurs
-    mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
-      @Override
-      public boolean onError(MediaPlayer mp, int what, int extra) {
-        Toast.makeText(RadioService.this, "There was an error playing the stream. Reloading...",
-            Toast.LENGTH_SHORT).show();
-        mediaPlayer.reset();
-        return false;
-      }
-    });
-  }
+        setupMediaPlayer();
+        setupAudioManager();
 
-  private void setupAudioManager() {
-    // obtain audioManager for requesting audio focus
-    audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-    audioFocusListener = new AudioManager.OnAudioFocusChangeListener() {
-      @Override
-      public void onAudioFocusChange(int focusChange) {
-        switch (focusChange) {
-          case AudioManager.AUDIOFOCUS_GAIN:
-            Log.d(TAG, "AudioManager: AUDIOFOCUS_GAIN");
-            // resume playback
-            if (mediaPlayer == null) setupMediaPlayer();
-            else if (!mediaPlayer.isPlaying()) play();
-            mediaPlayer.setVolume(1.0f, 1.0f);
-            break;
+        // time change?? show change
 
-          case AudioManager.AUDIOFOCUS_LOSS:
-            // Lost focus for an unbounded amount of time: stop playback and release media player
-            Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS");
-            if (isPlaying()) reset();
-            break;
+    }
 
-          case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
-            Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS_TRANSIENT");
-            // Lost focus for a short time, but we have to stop
-            // playback. We don't release the media player because playback
-            // is likely to resume
-            if (isPlaying()) pause();
-            break;
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
 
-          case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-            Log.d(TAG, "AudioManager: AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK");
-            // Lost focus for a short time, but it's ok to keep playing
-            // at an attenuated level
-            if (isPlaying()) mediaPlayer.setVolume(0.2f, 0.2f);
-            break;
+        if (intent != null && intent.getAction() != null) {
+            switch (intent.getAction()) {
+                case ACTION_STOP_RADIO_SERVICE:
+                    hideNotification();
+                    stopSelf();
+                    break;
+                case ACTION_STREAM_PLAY_PAUSE:
+                    if (isPlaying()) {
+                        pause();
+                        showNotification();
+                        stopForeground(false); // stop making it a foreground service but leave the notification there
+                    } else {
+                        play();
+                        showNotification();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
       }
     };
@@ -203,10 +185,51 @@ public class RadioService extends Service {
         }
       });
 
+    /*
+        Plays the currently loaded stream. If stream is not loaded, load stream and play.
+    */
+    public void play() {
+        if (isLoaded) { // if stream is loaded
 
-      try {
-        // set the URL for the stream
-        mediaPlayer.setDataSource(Constants.STREAM_URL);
+            timer.cancel(); // cancel the stop timer if it is loaded
+
+            // request focus to play audio
+            int result = audioManager.requestAudioFocus(audioFocusListener, STREAM_MUSIC,
+                    AUDIOFOCUS_GAIN);
+
+            if (result != AUDIOFOCUS_REQUEST_GRANTED) {
+                // could not get audio focus.
+                makeText(RadioService.this, "There was an error playing the stream. Reloading...", LENGTH_SHORT).show();
+            }
+            if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
+            mediaPlayer.start(); // play
+        } else {
+            prepStreamAndPlay();
+        }
+    }
+
+    /*
+        Pauses the currently loaded stream.
+    */
+    public void pause() {
+        if (mediaPlayer.isPlaying()) {
+            mediaPlayer.pause();
+
+            audioManager.abandonAudioFocus(audioFocusListener); // abandon the audio focus
+
+            timer = new Timer();
+            final TimerTask stopPlayerTask = new TimerTask() {
+                @Override
+                public void run() {
+                    reset();
+                    this.cancel();
+                }
+            };
+            timer.schedule(stopPlayerTask, STOP_STREAM_DELAY);
+        }
+        if (wifiLock.isHeld())
+            wifiLock.release(); // release wifi lock
+
 
         // prepare the stream asynchronously
         isLoading = true;

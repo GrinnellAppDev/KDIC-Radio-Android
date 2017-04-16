@@ -28,7 +28,6 @@ import edu.grinnell.kdic.schedule.Schedule;
 public class VisualizeFragment extends Fragment {
 
     public static final String TAG = "VisualizeFragment";
-
     private TextView showName;
     private TextView showTime;
     private FloatingActionButton fabFavorite;
@@ -43,7 +42,6 @@ public class VisualizeFragment extends Fragment {
         showName = (TextView) view.findViewById(R.id.tv_show_name);
         showTime = (TextView) view.findViewById(R.id.tv_show_time);
         fabFavorite = (FloatingActionButton) view.findViewById(R.id.fab_favorite);
-
         favorites = new Favorites(getContext());
 
         return view;
