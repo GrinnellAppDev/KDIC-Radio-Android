@@ -5,7 +5,6 @@ import android.content.ServiceConnection;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -13,7 +12,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -113,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
     mPlayPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
     mPlayPauseButton.setOnClickListener(togglePlayPauseClickListener());
   }
-  @NonNull
+
   private View.OnClickListener togglePlayPauseClickListener() {
     mPlayPauseButton = (ImageView) findViewById(R.id.ib_play_pause);
     return new View.OnClickListener() {
@@ -174,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
     rotate.setInterpolator(new LinearInterpolator());
     mPlayPauseButton.startAnimation(rotate);
   }
-  @NonNull
+
   private View.OnClickListener toggleVisualizeFragmentClickListener() {
     return new View.OnClickListener() {
       @Override
@@ -239,7 +237,7 @@ public class MainActivity extends AppCompatActivity {
     mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
     mNavigationView.setNavigationItemSelectedListener(setOnClickListenerToNavMenuItems());
   }
-  @NonNull
+
   private NavigationView.OnNavigationItemSelectedListener setOnClickListenerToNavMenuItems() {
     return new NavigationView.OnNavigationItemSelectedListener() {
       @Override
