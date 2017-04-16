@@ -30,7 +30,29 @@ import edu.grinnell.kdic.schedule.Schedule;
 import edu.grinnell.kdic.schedule.ScheduleFragment;
 import edu.grinnell.kdic.visualizer.VisualizeFragment;
 import static android.support.v4.view.GravityCompat.START;
-import static android.view.animation.Animation.RELATIVE_TO_SELF;
+import static edu.grinnell.kdic.Constants.FINAL_ALPHA_LEVEL_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.FINAL_ALPHA_LEVEL_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.FINAL_ANGLE_DEGREES;
+import static edu.grinnell.kdic.Constants.FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.INITIAL_ALPHA_LEVEL_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.INITIAL_ALPHA_LEVEL_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.INITIAL_ANGLE_DEGREES;
+import static edu.grinnell.kdic.Constants.INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.MS_ANIMATION_DURATION_LOADING_SPIN;
+import static edu.grinnell.kdic.Constants.MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.MS_DURATION_FADE_IN_DELAY_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.MS_DURATION_FADE_IN_DELAY_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.MS_DURATION_FADE_IN_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.MS_DURATION_FADE_IN_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT;
+import static edu.grinnell.kdic.Constants.PIVOT_X_COORDINATE_MIDDLE;
+import static edu.grinnell.kdic.Constants.PIVOT_X_TYPE;
+import static edu.grinnell.kdic.Constants.PIVOT_Y_COORDINATE_MIDDLE;
+import static edu.grinnell.kdic.Constants.PIVOT_Y_TYPE;
 import static edu.grinnell.kdic.NetworkState.isOnline;
 public class MainActivity extends AppCompatActivity {
   public static final String TAG = MainActivity.class.getSimpleName();
@@ -145,28 +167,18 @@ public class MainActivity extends AppCompatActivity {
       }
     };
   }
+
   private void loadingSpinAnimation() {
     mPlayPauseButton.setImageResource(R.drawable.ic_loading_spinner);
     RotateAnimation rotate;
     if (mBackStack.peek() != R.id.visualizer) {
-      final float INITIAL_ANGLE_DEGREES = 0;
-      final float FINAL_ANGLE_DEGREES = 360;
-      final int PIVOT_X_TYPE = RELATIVE_TO_SELF;
-      final float PIVOT_X_COORDINATE = 0.5f;
-      final int PIVOT_Y_TYPE = RELATIVE_TO_SELF;
-      final float PIVOT_Y_COORDINATE = 0.5f;
-      rotate = new RotateAnimation(INITIAL_ANGLE_DEGREES, FINAL_ANGLE_DEGREES, PIVOT_X_TYPE, PIVOT_X_COORDINATE, PIVOT_Y_TYPE, PIVOT_Y_COORDINATE);
+      rotate = new RotateAnimation(INITIAL_ANGLE_DEGREES, FINAL_ANGLE_DEGREES, PIVOT_X_TYPE, PIVOT_X_COORDINATE_MIDDLE, PIVOT_Y_TYPE, PIVOT_Y_COORDINATE_MIDDLE);
     }
     else {
-      float shiftX = mPlaybackToolbar.getWidth() / -2 + mPlayPauseButton.getWidth();
-      float shiftY = mPlaybackToolbar.getHeight() / 2;
-      final float INITIAL_ANGLE_DEGREES = 0;
-      final float FINAL_ANGLE_DEGREES = 360;
-      final float PIVOT_X_COORDINATE = shiftX;
-      final float PIVOT_Y_COORDINATE = shiftY;
-      rotate = new RotateAnimation(INITIAL_ANGLE_DEGREES, FINAL_ANGLE_DEGREES, PIVOT_X_COORDINATE, PIVOT_Y_COORDINATE);
+        final float pivotXCoordinate = mPlaybackToolbar.getWidth() / -2 + mPlayPauseButton.getWidth();
+        final float pivotYCoordinate = mPlaybackToolbar.getHeight() / 2;
+        rotate = new RotateAnimation(INITIAL_ANGLE_DEGREES, FINAL_ANGLE_DEGREES, pivotXCoordinate, pivotYCoordinate);
     }
-    final int MS_ANIMATION_DURATION_LOADING_SPIN = 1000;
     rotate.setDuration(MS_ANIMATION_DURATION_LOADING_SPIN);
     rotate.setRepeatCount(Animation.INFINITE);
     rotate.setInterpolator(new LinearInterpolator());
@@ -297,30 +309,21 @@ public class MainActivity extends AppCompatActivity {
   }
   private void animationShowInfoHideVisualizeFragment() {
     // move the info onto the screen
-    final float INITIAL_ALPHA_LEVEL_SHOW_INFO= 0f;
-    final float FINAL_ALPHA_LEVEL_SHOW_INFO= 1f;
-    final int MS_DURATION_FADE_IN_SHOW_INFO= 200;
-    final int MS_DURATION_FADE_IN_DELAY_SHOW_INFO= 100;
-    AlphaAnimation alphaAnimation = new AlphaAnimation(INITIAL_ALPHA_LEVEL_SHOW_INFO, FINAL_ALPHA_LEVEL_SHOW_INFO);
-    alphaAnimation.setDuration(MS_DURATION_FADE_IN_SHOW_INFO);
-    alphaAnimation.setStartOffset(MS_DURATION_FADE_IN_DELAY_SHOW_INFO);
+    AlphaAnimation alphaAnimation = new AlphaAnimation(INITIAL_ALPHA_LEVEL_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT,
+            FINAL_ALPHA_LEVEL_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT);
+    alphaAnimation.setDuration(MS_DURATION_FADE_IN_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT);
+    alphaAnimation.setStartOffset(MS_DURATION_FADE_IN_DELAY_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT);
     alphaAnimation.setFillAfter(true);
     alphaAnimation.setInterpolator(new AccelerateInterpolator());
     findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
   }
   private void animationPlayPauseButtonHideVisualizeFragment() {
-    // move the play button to the right
     mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_up_white_24dp);
-    final float shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
-    final float INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON= 0;
-    final float FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON = shiftAmnt;
-    final float INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON = 0;
-    final float FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON = 0;
-    TranslateAnimation animation = new TranslateAnimation( INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON,
-            FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON,
-            INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON,
-            FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON);
-    final int MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT = 200;
+    final float finalChangeInXCoordinatePlayPauseButton = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
+    TranslateAnimation animation = new TranslateAnimation(INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT,
+            finalChangeInXCoordinatePlayPauseButton,
+            INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT,
+            FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT);
     animation.setDuration(MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT);
     animation.setInterpolator(new AccelerateDecelerateInterpolator());
     animation.setFillAfter(false);
@@ -353,34 +356,25 @@ public class MainActivity extends AppCompatActivity {
   }
   private void animationShowInfoShowVisualizeFragment() {
     // move the info off the screen
-    final float INITIAL_ALPHA_LEVEL_SHOW_INFO=  1f;
-    final float FINAL_ALPHA_LEVEL_SHOW_INFO = 0f;
-    final int MS_DURATION_FADE_IN_SHOW_INFO = 300;
-    final int MS_DURATION_FADE_IN_DELAY_SHOW_INFO = 100;
-    AlphaAnimation alphaAnimation = new AlphaAnimation(INITIAL_ALPHA_LEVEL_SHOW_INFO, FINAL_ALPHA_LEVEL_SHOW_INFO);
-    alphaAnimation.setDuration(MS_DURATION_FADE_IN_SHOW_INFO);
-    alphaAnimation.setStartOffset(MS_DURATION_FADE_IN_DELAY_SHOW_INFO);
+    AlphaAnimation alphaAnimation = new AlphaAnimation(INITIAL_ALPHA_LEVEL_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT,
+            FINAL_ALPHA_LEVEL_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT);
+    alphaAnimation.setDuration(MS_DURATION_FADE_IN_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT);
+    alphaAnimation.setStartOffset(MS_DURATION_FADE_IN_DELAY_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT);
     alphaAnimation.setFillAfter(true);
     alphaAnimation.setInterpolator(new AccelerateInterpolator());
     findViewById(R.id.ll_show_info).startAnimation(alphaAnimation);
   }
   private void animationPlayPauseButtonShowVisualizeFragment() {
     mPlaybackToolbar.setNavigationIcon(R.drawable.ic_keyboard_arrow_down_white_24dp);
-    // move the play button to the middle
-    final float shiftAmnt = (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
-    final float INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON= shiftAmnt;
-    final float FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON= 0;
-    final float INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON= 0;
-    final float FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON= 0;
-    TranslateAnimation animation = new TranslateAnimation(INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON,
-            FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON,
-            INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON,
-            FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON);
-    final int MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON= 200;
-    animation.setDuration(MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON);
+    final float initialChangeInXCoordinatePlayPauseButton= (mPlaybackToolbar.getWidth() - mPlayPauseButton.getWidth()) / 2;
+    TranslateAnimation animation = new TranslateAnimation(initialChangeInXCoordinatePlayPauseButton,
+            FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT,
+            INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT,
+            FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT);
+    animation.setDuration(MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT);
     animation.setInterpolator(new AccelerateDecelerateInterpolator());
     animation.setFillAfter(true);
-    mPlayPauseButton.setTranslationX(-1 * shiftAmnt);
+    mPlayPauseButton.setTranslationX(-1 * initialChangeInXCoordinatePlayPauseButton);
     mPlayPauseButton.startAnimation(animation);
   }
   /**
