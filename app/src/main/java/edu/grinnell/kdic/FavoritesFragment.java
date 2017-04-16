@@ -23,6 +23,8 @@ import static edu.grinnell.kdic.schedule.ScheduleRecyclerViewAdapter.SECTION_HEA
  */
 public class FavoritesFragment extends Fragment {
 
+  public static final String TAG = "ScheduleFragment";
+
   private RecyclerView mRecyclerView;
   private ScheduleRecyclerViewAdapter mAdapter;
   private ArrayList<ScheduleRecyclerItem> mContent;
