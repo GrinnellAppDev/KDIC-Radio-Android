@@ -228,7 +228,7 @@ public class RadioService extends Service {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
 
-            audioManager.abandonAudioFocus(audioFocusListener); // abandon the audio focus
+            audioManager.abandonAudioFocus(audioFocusListener); // abandon the audio focus.
 
             timer = new Timer();
             final TimerTask stopPlayerTask = new TimerTask() {
