@@ -1,6 +1,6 @@
 package edu.grinnell.kdic;
 
-import  android.content.ComponentName;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
@@ -71,9 +71,9 @@ public class MainActivity extends AppCompatActivity {
       // pause to play
       if (radioService.isPlaying()) {
         radioService.hideNotification();
-        mPlayPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
+        playPauseButton.setImageResource(R.drawable.ic_pause_white_24dp);
       } else {
-        mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
+        playPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
       }
     }
     // Called when the connection with the service disconnects unexpectedly
@@ -82,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
       boundToRadioService = false;
     }
   };
-
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
