@@ -30,8 +30,6 @@ import android.net.wifi.WifiManager;
  */
 public class RadioService extends Service {
 
-    private static final int NOTIFICATION_ID = 1;
-    private static final String WIFI_TAG = "myWifiLock";
 
     private AudioManager audioManager;
     private OnAudioFocusChangeListener audioFocusListener;
@@ -40,13 +38,10 @@ public class RadioService extends Service {
     private WifiManager.WifiLock wifiLock;
     private MediaPlayer mediaPlayer;
 
-    // Binder given to clients
     private final IBinder mBinder = new RadioBinder();
 
     // timer for stopping stream after pause
     private Timer timer = new Timer();
-    private static final long STOP_STREAM_DELAY = 30 * 1000;
-    // reset the media player 30 seconds after pause
 
     private Runnable runOnStreamPrepared;
 
@@ -57,7 +52,6 @@ public class RadioService extends Service {
      */
     public class RadioBinder extends Binder {
         RadioService getService() {
-            // Return this instance of RadioBinder so clients can call public methods
             return RadioService.this;
         }
     }
@@ -71,14 +65,11 @@ public class RadioService extends Service {
 
     @Override
     public void onCreate() {
-        // obtain WifiLock
         wifiLock = ((WifiManager) getSystemService(WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, WIFI_TAG);
 
         setupMediaPlayer();
         setupAudioManager();
-
-        // time change?? show change
 
     }
 
@@ -95,7 +86,7 @@ public class RadioService extends Service {
                     if (isPlaying()) {
                         pause();
                         showNotification();
-                        stopForeground(false); // stop making it a foreground service but leave the notification there
+                        stopForeground(false);
                     } else {
                         play();
                         showNotification();
@@ -114,7 +105,6 @@ public class RadioService extends Service {
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setAudioStreamType(STREAM_MUSIC);
 
-        // reset the media player if an error occurs
         mediaPlayer.setOnErrorListener(new MediaPlayer.OnErrorListener() {
             @Override
             public boolean onError(MediaPlayer mp, int what, int extra) {
@@ -127,37 +117,29 @@ public class RadioService extends Service {
     }
 
     private void setupAudioManager() {
-        // obtain audioManager for requesting audio focus
         audioManager = (AudioManager) getSystemService(AUDIO_SERVICE);
         audioFocusListener = new OnAudioFocusChangeListener() {
             @Override
             public void onAudioFocusChange(int focusChange) {
                 switch (focusChange) {
                     case AUDIOFOCUS_GAIN:
-                        // resume playback
                         if (mediaPlayer == null) setupMediaPlayer();
                         else if (!mediaPlayer.isPlaying()) play();
-                        mediaPlayer.setVolume(1.0f, 1.0f);
+                        mediaPlayer.setVolume(MEDIA_PLAYER_LEFT_VOLUME,
+                                MEDIA_PLAYER_RIGHT_VOLUME);
                         break;
 
                     case AUDIOFOCUS_LOSS:
-                        // Lost focus for an unbounded amount of time: stop playback and release media player
                         if (isPlaying()) reset();
                         break;
 
                     case AUDIOFOCUS_LOSS_TRANSIENT:
-                        // Lost focus for a short time, but we have to stop
-                        // playback. We don't release the media player because playback
-                        // is likely to resume
                         if (isPlaying()) pause();
                         break;
 
                     case AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
-                        // Lost focus for a short time, but it's ok to keep playing
-                        // at an attenuated level
-                        float MEDIA_PLAYER_LEFT_VOLUME = 0.2f;
-                        float MEDIA_PLAYER_RIGHT_VOLUME = 0.2f;
-                        if (isPlaying()) mediaPlayer.setVolume(MEDIA_PLAYER_LEFT_VOLUME, MEDIA_PLAYER_RIGHT_VOLUME);
+                        if (isPlaying()) mediaPlayer.setVolume(MEDIA_PLAYER_LEFT_VOLUME_LOW,
+                                MEDIA_PLAYER_RIGHT_VOLUME_LOW);
                         break;
                 }
             }
@@ -166,7 +148,6 @@ public class RadioService extends Service {
 
     private void prepStreamAndPlay() {
         if (mediaPlayer != null) {
-            // callback for once the stream is prepared
             mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
@@ -179,17 +160,15 @@ public class RadioService extends Service {
 
 
             try {
-                // set the URL for the stream
                 mediaPlayer.setDataSource(STREAM_URL);
 
-                // prepare the stream asynchronously
                 isLoading = true;
                 mediaPlayer.prepareAsync();
 
             } catch (IOException e) {
                 e.printStackTrace();
             }
-        } else { // mediaplayer == null
+        } else {
             setupMediaPlayer();
             prepStreamAndPlay();
         }
@@ -206,16 +185,14 @@ public class RadioService extends Service {
         if (isLoaded) {
             timer.cancel();
 
-            // request focus to play audio
             int result = audioManager.requestAudioFocus(audioFocusListener, STREAM_MUSIC,
                     AUDIOFOCUS_GAIN);
 
             if (result != AUDIOFOCUS_REQUEST_GRANTED) {
-                // could not get audio focus.
                 makeText(RadioService.this, R.string.audio_playback_error, LENGTH_SHORT).show();
             }
-            if (!wifiLock.isHeld()) wifiLock.acquire(); // don't let the wifi radio turn off
-            mediaPlayer.start(); // play
+            if (!wifiLock.isHeld()) wifiLock.acquire();
+            mediaPlayer.start();
         } else {
             prepStreamAndPlay();
         }
@@ -228,7 +205,7 @@ public class RadioService extends Service {
         if (mediaPlayer.isPlaying()) {
             mediaPlayer.pause();
 
-            audioManager.abandonAudioFocus(audioFocusListener); // abandon the audio focus.
+            audioManager.abandonAudioFocus(audioFocusListener);
 
             timer = new Timer();
             final TimerTask stopPlayerTask = new TimerTask() {
@@ -241,9 +218,7 @@ public class RadioService extends Service {
             timer.schedule(stopPlayerTask, STOP_STREAM_DELAY);
         }
         if (wifiLock.isHeld())
-            wifiLock.release(); // release wifi lock
-
-
+            wifiLock.release();
     }
 
     /**
@@ -251,12 +226,11 @@ public class RadioService extends Service {
      */
     public void reset() {
         if (wifiLock.isHeld())
-            wifiLock.release(); // let the wifi radio turn off
-        audioManager.abandonAudioFocus(audioFocusListener); // abandon the audio focus
+            wifiLock.release();
+        audioManager.abandonAudioFocus(audioFocusListener);
         isLoaded = false;
         if (mediaPlayer != null)
             mediaPlayer.reset();
-
         hideNotification();
     }
 
@@ -296,7 +270,7 @@ public class RadioService extends Service {
 
         PendingIntent playPausePendingIntent = PendingIntent.getService(
                 this,
-                0,
+                REQUEST_CODE,
                 playPauseIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT
         );
@@ -306,7 +280,7 @@ public class RadioService extends Service {
 
         PendingIntent pendingDelete = PendingIntent.getService(
                 this,
-                0,
+                REQUEST_CODE,
                 deleteIntent,
                 PendingIntent.FLAG_ONE_SHOT
         );
@@ -318,13 +292,12 @@ public class RadioService extends Service {
         PendingIntent notifyPendingIntent =
                 PendingIntent.getActivity(
                         this,
-                        0,
+                        REQUEST_CODE,
                         notifyIntent,
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
 
-        // Instantiate a Builder object.
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(isPlaying() ? R.drawable.ic_play_arrow_white_24dp : R.drawable.ic_pause_white_24dp)
                 .setLargeIcon(BitmapFactory.decodeResource(getResources(),
@@ -334,7 +307,7 @@ public class RadioService extends Service {
                         getString(R.string.play_or_pause), playPausePendingIntent)
                 .addAction(R.drawable.ic_close_white_24dp, getString(R.string.close), pendingDelete)
                 .setContentText(getString(R.string.kdic_college_radio))
-                .setShowWhen(false) // hide the time
+                .setShowWhen(false)
                 .setDeleteIntent(pendingDelete)
                 .setColor(getResources().getColor(R.color.accent))
                 .setContentIntent(notifyPendingIntent);
@@ -354,7 +327,6 @@ public class RadioService extends Service {
     public boolean stopService(Intent name) {
         reset();
 
-        // remove the notification
         NotificationManager mNotificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         mNotificationManager.cancel(NOTIFICATION_ID);
