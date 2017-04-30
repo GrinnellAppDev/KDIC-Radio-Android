@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
@@ -23,7 +22,6 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
   private static final String TAG = ScheduleRecyclerViewAdapter.class.getSimpleName();
   private FragmentActivity mContext;
   private Favorites mFavorites;
-  private int animatePos;
   private ArrayList<ScheduleRecyclerItem> mContent;
 
   // define constants
@@ -88,15 +86,6 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
       case SECTION_HEADER:
         bindSectionHeader(holder, item);
         break;
-    }
-    //animateCard(holder.itemView, position);
-  }
-
-  private void animateCard(View v, int position) {
-    if (position > animatePos) {
-      Animation cardAnimation = AnimationUtils.loadAnimation(mContext, R.anim.scale_card_up);
-      v.startAnimation(cardAnimation);
-      animatePos = position;
     }
   }
 
