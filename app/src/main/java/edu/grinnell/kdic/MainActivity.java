@@ -30,6 +30,7 @@ import edu.grinnell.kdic.schedule.Schedule;
 import edu.grinnell.kdic.schedule.ScheduleFragment;
 import edu.grinnell.kdic.visualizer.VisualizeFragment;
 import static android.support.v4.view.GravityCompat.START;
+import static edu.grinnell.kdic.Constants.BLOG_TAG;
 import static edu.grinnell.kdic.Constants.FINAL_ALPHA_LEVEL_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT;
 import static edu.grinnell.kdic.Constants.FINAL_ALPHA_LEVEL_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT;
 import static edu.grinnell.kdic.Constants.FINAL_ANGLE_DEGREES;
@@ -277,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
                       .commit();
               break;
             case R.id.blog:
-              ft.replace(R.id.fragment, new BlogWebViewFragment(), BlogWebViewFragment.TAG)
+              ft.replace(R.id.fragment, new BlogWebViewFragment(), BLOG_TAG)
                       .addToBackStack(null)
                       .commit();
               break;

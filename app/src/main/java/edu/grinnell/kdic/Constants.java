@@ -26,6 +26,9 @@ public abstract class Constants {
     public static final float MEDIA_PLAYER_LEFT_VOLUME_LOW = 0.2f;
     public static final float MEDIA_PLAYER_RIGHT_VOLUME_LOW = 0.2f;
 
+    public static final String BLOG_TAG = "BlogFragment";
+    public static final String BLOG_URL = "http://kdic.grinnell.edu/";
+
 
     // for parsing JSON
     public static final String JSON_DAYS = "days";
