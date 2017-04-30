@@ -5,8 +5,6 @@
 The KDIC Streaming App is a convenient way for anyone to tune into their
 favorite radio station, KDIC, based out of Grinnell College, IA.
 
-Source for Grinnell-Menu can be obtained [here](https://github.com/GrinnellAppDev/KDIC-Radio-Android)!
-
 You can obtain the source with the following command:
 ```shell
 git clone git://github.com/GrinnellAppDev/KDIC-Radio-Android.git
