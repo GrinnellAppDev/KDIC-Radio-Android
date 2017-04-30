@@ -1,7 +1,5 @@
 # KDIC Android
 
-*__UPDATED:__ 30 September, 2015*
-
 ## KDIC Streaming App
 
 The KDIC Streaming App is a convenient way for anyone to tune into their
@@ -25,6 +23,12 @@ Homebrewed by [Grinnell AppDev](http://appdev.grinnell.edu/)!
 
 - [Michael Owusu](https://github.com/mkowusu)
 - [Prabir Pradhan](https://github.com/prabirmsp)
+
+### Currently Maintained By:
+- [Linh Pham](https://github.com/LinhPha)
+- [Papa Kojo Ampim-Darko](https://github.com/PapaKoj)
+- [Nikunj Agarwal](https://github.com/nikagarwal98)
+- [Jacob Ekstrand](https://github.com/xtrajacoby)
 
 ### Previous Builds
 
