@@ -1,5 +1,7 @@
 package edu.grinnell.kdic;
 
+import static android.view.animation.Animation.RELATIVE_TO_SELF;
+
 public abstract class Constants {
     public static final String STREAM_URL = "http://kdic.grinnell.edu/stream";
     public static final String SCHEDULE_URL = "http://prabirmsp.com/kdic.json";
@@ -20,5 +22,28 @@ public abstract class Constants {
     public static final String[] DAYS_OF_WEEK = {"Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday", "Sunday"};
 
-
+    // for MainActivity.java
+    public static final float INITIAL_ANGLE_DEGREES = 0;
+    public static final float FINAL_ANGLE_DEGREES = 360;
+    public static final int PIVOT_X_TYPE = RELATIVE_TO_SELF;
+    public static final int PIVOT_Y_TYPE = RELATIVE_TO_SELF;
+    public static final float PIVOT_X_COORDINATE_MIDDLE = 0.5f;
+    public static final float PIVOT_Y_COORDINATE_MIDDLE = 0.5f;
+    public static final int MS_ANIMATION_DURATION_LOADING_SPIN = 1000;
+    public static final float INITIAL_ALPHA_LEVEL_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT= 0f;
+    public static final float FINAL_ALPHA_LEVEL_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT= 1f;
+    public static final int MS_DURATION_FADE_IN_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT= 200;
+    public static final int MS_DURATION_FADE_IN_DELAY_SHOW_INFO_HIDE_VISUALIZE_FRAGMENT= 100;
+    public static final float INITIAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT= 0;
+    public static final float INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT = 0;
+    public static final float FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT = 0;
+    public static final int MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_HIDE_VISUALIZE_FRAGMENT = 200;
+    public static final float INITIAL_ALPHA_LEVEL_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT=  1f;
+    public static final float FINAL_ALPHA_LEVEL_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT = 0f;
+    public static final int MS_DURATION_FADE_IN_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT = 300;
+    public static final int MS_DURATION_FADE_IN_DELAY_SHOW_INFO_SHOW_VISUALIZE_FRAGMENT = 100;
+    public static final float FINAL_CHANGE_IN_X_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT= 0;
+    public static final float INITIAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT= 0;
+    public static final float FINAL_CHANGE_IN_Y_COORDINATE_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT= 0;
+    public static final int MS_ANIMATION_DURATION_PLAY_PAUSE_BUTTON_SHOW_VISUALIZE_FRAGMENT= 200;
 }
