@@ -10,6 +10,9 @@ public abstract class Constants {
     public static final String SHARED_PREFS = "shared_prefs";
     public static final String FIRST_RUN = "first_run";
 
+    public static final String BLOG_TAG = "BlogFragment";
+    public static final String BLOG_URL = "http://kdic.grinnell.edu/";
+
 
     // for parsing JSON
     public static final String JSON_DAYS = "days";

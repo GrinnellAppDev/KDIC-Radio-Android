@@ -33,6 +33,8 @@ import edu.grinnell.kdic.schedule.Schedule;
 import edu.grinnell.kdic.schedule.ScheduleFragment;
 import edu.grinnell.kdic.visualizer.VisualizeFragment;
 
+import static edu.grinnell.kdic.Constants.BLOG_TAG;
+
 public class MainActivity extends AppCompatActivity {
 
   public static final String TAG = MainActivity.class.getSimpleName();
@@ -277,7 +279,7 @@ public class MainActivity extends AppCompatActivity {
                       FavoritesFragment.class.getSimpleName()).addToBackStack(null).commit();
                   break;
                 case R.id.blog:
-                  ft.replace(R.id.fragment, new BlogWebViewFragment(), BlogWebViewFragment.TAG)
+                  ft.replace(R.id.fragment, new BlogWebViewFragment(), BLOG_TAG)
                       .addToBackStack(null)
                       .commit();
                   break;
