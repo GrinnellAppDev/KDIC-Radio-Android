@@ -11,7 +11,7 @@ import android.widget.TextView;
 import static edu.grinnell.kdic.Constants.BLOG_URL;
 
 /**
- * A fragment to display blog view
+ * A fragment to show the Blog
  */
 public class BlogWebViewFragment extends Fragment {
 
