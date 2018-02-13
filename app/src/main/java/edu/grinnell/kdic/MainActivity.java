@@ -452,7 +452,4 @@ public class MainActivity extends AppCompatActivity {
     super.onDestroy();
   }
 
-  public void forceCrash(View view) {
-    throw new RuntimeException("This is a crash");
-  }
 }
