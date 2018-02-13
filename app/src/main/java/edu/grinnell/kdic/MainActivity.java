@@ -451,4 +451,8 @@ public class MainActivity extends AppCompatActivity {
     mBoundToRadioService = false;
     super.onDestroy();
   }
+
+  public void forceCrash(View view) {
+    throw new RuntimeException("This is a crash");
+  }
 }

@@ -8,4 +8,10 @@
     <string name="close">Close</string>
     <string name="kdic_college_radio">KDIC - Grinnell College Radio</string>
     <string name="auto_play">Auto Play</string>
+    <string name="fav_shows">Favorite shows</string>
+    <string name="fav_shows_message">Favorite shows</string>
+    <string name="no_fav_shows_message">There are no favorite shows</string>
+    <string name="no_fav_shows">No Favorite Shows</string>
+    <string name="social_time">Social Time</string>
+
 </resources>
