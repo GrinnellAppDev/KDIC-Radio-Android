@@ -16,10 +16,8 @@ public abstract class Constants {
     public static final int NOTIFICATION_ID = 1;
     public static final String WIFI_TAG = "myWifiLock";
 
-
     public static final float MEDIA_PLAYER_LEFT_VOLUME = 1.0f;
     public static final float MEDIA_PLAYER_RIGHT_VOLUME = 1.0f;
-
 
     public static final int REQUEST_CODE = 0;
 
