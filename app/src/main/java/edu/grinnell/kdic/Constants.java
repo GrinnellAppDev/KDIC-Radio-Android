@@ -16,10 +16,8 @@ public abstract class Constants {
     public static final int NOTIFICATION_ID = 1;
     public static final String WIFI_TAG = "myWifiLock";
 
-
     public static final float MEDIA_PLAYER_LEFT_VOLUME = 1.0f;
     public static final float MEDIA_PLAYER_RIGHT_VOLUME = 1.0f;
-
 
     public static final int REQUEST_CODE = 0;
 
@@ -35,6 +33,13 @@ public abstract class Constants {
     public static final String DAY = "day";
     public static final String[] DAYS_OF_WEEK = {"Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday", "Sunday"};
+
+
+    //for splash activity
+    public static final int SPLASH_DELAY = 1000;
+
+    //for BlogWebViewFragment
+    public static final String BLOG_URL = "http://kdic.grinnell.edu/";
 
     // for MainActivity.java
     public static final float INITIAL_ANGLE_DEGREES = 0;

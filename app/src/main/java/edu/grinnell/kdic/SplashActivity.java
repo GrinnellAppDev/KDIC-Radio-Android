@@ -8,9 +8,9 @@ import android.view.View;
 
 import java.util.Timer;
 
-public class SplashActivity extends AppCompatActivity {
+import static edu.grinnell.kdic.Constants.SPLASH_DELAY;
 
-    public static final int SPLASH_DELAY = 1000;
+public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
