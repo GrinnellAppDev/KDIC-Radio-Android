@@ -4,7 +4,7 @@ import static android.view.animation.Animation.RELATIVE_TO_SELF;
 
 public abstract class Constants {
     public static final String STREAM_URL = "http://kdic.grinnell.edu/stream";
-    public static final String SCHEDULE_URL = "http://prabirmsp.com/kdic.json";
+    public static final String SCHEDULE_URL = "http://www.cs.grinnell.edu/~hrusanov/schedule.json";
 
     public static final String ACTION_STREAM_PLAY_PAUSE = "edu.grinnell.kdic.action.PLAY_PAUSE";
     public static final String ACTION_STOP_RADIO_SERVICE = "edu.grinnell.kdic.action.STOP_RADIO";
@@ -16,10 +16,8 @@ public abstract class Constants {
     public static final int NOTIFICATION_ID = 1;
     public static final String WIFI_TAG = "myWifiLock";
 
-
     public static final float MEDIA_PLAYER_LEFT_VOLUME = 1.0f;
     public static final float MEDIA_PLAYER_RIGHT_VOLUME = 1.0f;
-
 
     public static final int REQUEST_CODE = 0;
 

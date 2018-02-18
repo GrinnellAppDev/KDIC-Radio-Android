@@ -142,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         if (mRadioService.isPlaying()) {
           mRadioService.pause();
           mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
-        } else {
+        } else if (!mRadioService.isLoading()){
           if (isOnline(MainActivity.this)) {
             if (!mRadioService.isLoading()) {
               if (mRadioService.isLoaded()) {

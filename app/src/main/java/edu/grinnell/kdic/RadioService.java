@@ -237,10 +237,12 @@ public class RadioService extends Service {
     /**
      * Returns true if the media player is playing or loading.
      */
+//    public boolean isPlaying() {
+//        return mediaPlayer != null && (mediaPlayer.isPlaying() || isLoading);
+//    }
     public boolean isPlaying() {
-        return mediaPlayer != null && (mediaPlayer.isPlaying() || isLoading);
+        return mediaPlayer != null && (mediaPlayer.isPlaying());
     }
-
     /**
      * Returns true if the media player is loaded.
      */
