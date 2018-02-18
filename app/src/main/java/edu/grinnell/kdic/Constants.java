@@ -34,6 +34,13 @@ public abstract class Constants {
     public static final String[] DAYS_OF_WEEK = {"Monday", "Tuesday", "Wednesday", "Thursday",
             "Friday", "Saturday", "Sunday"};
 
+
+    //for splash activity
+    public static final int SPLASH_DELAY = 1000;
+
+    //for BlogWebViewFragment
+    public static final String BLOG_URL = "http://kdic.grinnell.edu/";
+
     // for MainActivity.java
     public static final float INITIAL_ANGLE_DEGREES = 0;
     public static final float FINAL_ANGLE_DEGREES = 360;

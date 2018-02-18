@@ -12,7 +12,6 @@ public class Favorites {
     private static final String SHARED_PREF = "favorites_shared_pref";
     private SharedPreferences mFavorites;
 
-
     public Favorites(Context context) {
         mFavorites = context.getSharedPreferences(SHARED_PREF, 0);
     }

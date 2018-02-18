@@ -24,6 +24,10 @@ import android.view.animation.RotateAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.crashlytics.android.answers.Answers;
+import com.crashlytics.android.answers.ContentViewEvent;
+
 import java.util.Stack;
 import edu.grinnell.kdic.schedule.GetSchedule;
 import edu.grinnell.kdic.schedule.Schedule;
@@ -114,6 +118,12 @@ public class MainActivity extends AppCompatActivity {
     } else {
       mPlayPauseButton.setImageResource(R.drawable.ic_play_arrow_white_24dp);
     }
+
+    //track user usage -> send to fabric
+    Answers.getInstance().logContentView(new ContentViewEvent()
+            .putContentName("Main page")
+            .putContentType("View")
+            .putContentId("viewed-first-page"));
   }
   @Override
   protected void onStop() {

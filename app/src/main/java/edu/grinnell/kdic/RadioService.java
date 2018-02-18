@@ -30,7 +30,6 @@ import android.net.wifi.WifiManager;
  */
 public class RadioService extends Service {
 
-
     private AudioManager audioManager;
     private OnAudioFocusChangeListener audioFocusListener;
     private boolean isLoaded;
