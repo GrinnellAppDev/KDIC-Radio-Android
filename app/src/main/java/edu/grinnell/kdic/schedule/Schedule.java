@@ -184,6 +184,7 @@ public class Schedule {
 
             for (int j = 0; j < times.length(); j++) { // iterate through times
                 String time = times.getString(j);
+                System.out.println("Time is " + time);
                 String showName = dayObject.getString(time).trim();
 
                 if (!showName.equals("")) {
