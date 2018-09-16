@@ -23,10 +23,8 @@ Homebrewed by [Grinnell AppDev](http://appdev.grinnell.edu/)!
 - [Prabir Pradhan](https://github.com/prabirmsp)
 
 ### Currently Maintained By:
-- [Linh Pham](https://github.com/LinhPha)
-- [Papa Kojo Ampim-Darko](https://github.com/PapaKoj)
-- [Nikunj Agarwal](https://github.com/nikagarwal98)
-- [Jacob Ekstrand](https://github.com/xtrajacoby)
+- [Tapiwa Zvidzwa](https://github.com/Tapszvidzwa)
+- [Shelby Frazier](https://github.com/sheltah22)
 
 ### Previous Builds
 
