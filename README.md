@@ -25,6 +25,7 @@ Homebrewed by [Grinnell AppDev](http://appdev.grinnell.edu/)!
 ### Currently Maintained By:
 - [Tapiwa Zvidzwa](https://github.com/Tapszvidzwa)
 - [Shelby Frazier](https://github.com/sheltah22)
+- [Minh Tran](https://github.com/tranminh75)
 
 ### Previous Builds
 
