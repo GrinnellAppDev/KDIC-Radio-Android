@@ -245,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
         mDrawerLayout.openDrawer(START);
       }
     });
+
     mBackStack = new Stack<>();
     mNavigationView = (NavigationView) findViewById(R.id.navigation_view);
     mNavigationView.setNavigationItemSelectedListener(setOnClickListenerToNavMenuItems());
