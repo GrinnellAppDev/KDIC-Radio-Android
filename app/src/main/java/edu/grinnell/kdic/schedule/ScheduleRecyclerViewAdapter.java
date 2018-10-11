@@ -197,12 +197,12 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     return mContent.size();
   }
 
-  protected class ViewHolder extends RecyclerView.ViewHolder {
-    private int mViewType;
+  public class ViewHolder extends RecyclerView.ViewHolder {
+    public int mViewType;
     private CardView mCardView;
-    private TextView mTitle;
+    public TextView mTitle;
     private TextView mSubtitle;
-    private ImageView mFavorite;
+    public ImageView mFavorite;
 
     //Constructor for the ViewHolder
     public ViewHolder(View itemView, int viewType) {
