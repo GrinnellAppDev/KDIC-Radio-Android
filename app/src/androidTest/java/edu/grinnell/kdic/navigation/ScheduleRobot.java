@@ -14,6 +14,7 @@ import org.hamcrest.Matchers;
 
 import java.util.ArrayList;
 
+import edu.grinnell.kdic.Constants;
 import edu.grinnell.kdic.R;
 import edu.grinnell.kdic.schedule.ScheduleRecyclerViewAdapter;
 
@@ -27,31 +28,34 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withResourceName;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 
 public class ScheduleRobot {
 
     public ScheduleRobot() {
     }
-
-    public ScheduleRobot checkLayoutOfItems() {
+    // check if the recyclerview is there, visible
+    public ScheduleRobot checkHeaders() {
         onView(withId(R.id.rv_schedule))
-                .check(selectedDescendantsMatch());
-        // check if first item is on-air heading
-        // check if second is auto-play or some show?
-        // third is later today
-        // check if full schedule heading exists
-        // check if days of week are there
-        // scroll as you check for these things
+                .check(matches(isDisplayed()))
+                .check(matches(hasDescendant(withChild(withText("On Air")))))
+                .check(matches(hasDescendant(withChild(withText("Later Today")))))
+                .perform(RecyclerViewActions.scrollToPosition(10))                  //FIXME: scroll so that week heading will show up
+                .check(matches(hasDescendant(withChild(withText("Full Schedule")))))
+                .perform(RecyclerViewActions.scrollToPosition(15))
+                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[0])))))
+                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[1])))))
+                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[2])))))
+                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[3])))))
+                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[4])))))
+                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[5])))))
+                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[6])))));
         return this;
-    }
-
-    public ArrayList<String> readShows() {
-        return null;
     }
 
     public ScheduleRobot favoriteShow(String title) {
         onView(withId(R.id.rv_schedule))
-                // check exists, unfavorited
                 .perform(RecyclerViewActions.actionOnHolderItem(Matchers.allOf(withType(ScheduleRecyclerViewAdapter.CARD), withTitle(title))
                         , clickFavorite())
                 );
@@ -60,14 +64,17 @@ public class ScheduleRobot {
 
     public ScheduleRobot unfavoriteShow(String title) {
         onView(withId(R.id.rv_schedule))
-                // check exists, favorited
                 .perform(RecyclerViewActions.actionOnHolderItem(Matchers.allOf(withType(ScheduleRecyclerViewAdapter.CARD), withTitle(title))
                         , clickFavorite())
                 );
         return this;
     }
 
-    public ScheduleRobot clickDay() {
+    public ScheduleRobot clickDay(String day) {
+        onView(withId(R.id.rv_schedule))
+                .perform(RecyclerViewActions.scrollToHolder(Matchers.allOf(withType(ScheduleRecyclerViewAdapter.DAY_SCHEDULE), withTitle(day))))
+                .perform(RecyclerViewActions.actionOnHolderItem(Matchers.allOf(withType(ScheduleRecyclerViewAdapter.DAY_SCHEDULE), withTitle(day))
+                        , click()));
         return this;
         // TODO: return DailyScheduleRobot
     }
