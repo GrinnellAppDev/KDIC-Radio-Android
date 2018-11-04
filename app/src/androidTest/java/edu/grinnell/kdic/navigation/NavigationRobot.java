@@ -43,11 +43,10 @@ public class NavigationRobot {
         return this;
     }
 
-    public NavigationRobot clickSchedule() {
+    public ScheduleRobot clickSchedule() {
         onView(withId(R.id.navigation_view))
                 .perform(NavigationViewActions.navigateTo(R.id.schedule));
-        //Todo: return SchedulePage robot
-        return this;
+        return new MainScheduleRobot();
     }
 
     public NavigationRobot clickBlogPage() {

@@ -12,53 +12,30 @@ import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
-import java.util.ArrayList;
-
 import edu.grinnell.kdic.Constants;
 import edu.grinnell.kdic.R;
+import edu.grinnell.kdic.schedule.Schedule;
 import edu.grinnell.kdic.schedule.ScheduleRecyclerViewAdapter;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
-import static android.support.test.espresso.assertion.ViewAssertions.selectedDescendantsMatch;
 import static android.support.test.espresso.matcher.ViewMatchers.hasDescendant;
-import static android.support.test.espresso.matcher.ViewMatchers.isAssignableFrom;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withEffectiveVisibility;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
-import static android.support.test.espresso.matcher.ViewMatchers.withResourceName;
+import static android.support.test.espresso.matcher.ViewMatchers.withTagValue;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.equalTo;
 
-public class ScheduleRobot {
+public abstract class ScheduleRobot {
 
     public ScheduleRobot() {
     }
 
+    public abstract ScheduleRobot checkHeaders();
 
-    public ScheduleRobot checkHeaders() {
-        onView(withId(R.id.rv_schedule))
-                .check(matches(isDisplayed()))
-                .check(matches(hasDescendant(withChild(withText("On Air")))))
-                .check(matches(hasDescendant(withChild(withText("Later Today")))))
-                .perform(RecyclerViewActions.scrollToPosition(10))                  //FIXME: scroll so that week heading will show up
-                .check(matches(hasDescendant(withChild(withText("Full Schedule")))));
-        return this;
-    }
-
-    public ScheduleRobot checkDays() {
-        onView(withId(R.id.rv_schedule))
-                .perform(RecyclerViewActions.scrollToPosition(15))
-                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[0])))))
-                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[1])))))
-                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[2])))))
-                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[3])))))
-                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[4])))))
-                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[5])))))
-                .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[6])))));
-        return this;
-    }
 
     public ScheduleRobot favoriteShow(String title) {
         onView(withId(R.id.rv_schedule))
@@ -76,13 +53,16 @@ public class ScheduleRobot {
         return this;
     }
 
-    public ScheduleRobot clickDay(String day) {
+    public ScheduleRobot checkFavorited(String title) {
         onView(withId(R.id.rv_schedule))
-                .perform(RecyclerViewActions.scrollToHolder(Matchers.allOf(withType(ScheduleRecyclerViewAdapter.DAY_SCHEDULE), withTitle(day))))
-                .perform(RecyclerViewActions.actionOnHolderItem(Matchers.allOf(withType(ScheduleRecyclerViewAdapter.DAY_SCHEDULE), withTitle(day))
-                        , click()));
+                .check(matches(hasDescendant(Matchers.allOf(withChild(withText(title)), withChild(withTagValue(Matchers.<Object>equalTo(R.drawable.ic_favorite_white_24dp)))))));
         return this;
-        // TODO: return DailyScheduleRobot
+    }
+
+    public ScheduleRobot checkUnfavorited(String title) {
+        onView(withId(R.id.rv_schedule))
+                .check(matches(hasDescendant(Matchers.allOf(withChild(withText(title)), withChild(withTagValue(Matchers.<Object>equalTo(R.drawable.ic_favorite_border_white_24dp)))))));
+        return this;
     }
 
     public static Matcher<RecyclerView.ViewHolder> withType(final int type)
