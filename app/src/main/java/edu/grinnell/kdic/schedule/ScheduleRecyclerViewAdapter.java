@@ -198,11 +198,11 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
   }
 
   public class ViewHolder extends RecyclerView.ViewHolder {
-    public int mViewType;
+    private int mViewType;
     private CardView mCardView;
-    public TextView mTitle;
+    private TextView mTitle;
     private TextView mSubtitle;
-    public ImageView mFavorite;
+    private ImageView mFavorite;
 
     //Constructor for the ViewHolder
     public ViewHolder(View itemView, int viewType) {
@@ -214,6 +214,14 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         mCardView = (CardView) itemView.findViewById(R.id.card_view_item);
         mFavorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
       }
+    }
+
+    public int getViewType() {
+        return this.mViewType;
+    }
+
+    public TextView getTitle() {
+        return this.mTitle;
     }
   }
 }

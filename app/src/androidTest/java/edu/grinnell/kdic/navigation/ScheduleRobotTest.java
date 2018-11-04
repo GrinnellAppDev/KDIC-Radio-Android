@@ -21,7 +21,6 @@ public class ScheduleRobotTest {
     public void checkItemsNoMock() {
         ScheduleRobot scheduleRobot = new ScheduleRobot();
         scheduleRobot
-                .checkHeaders()
-                .clickDay(Constants.DAYS_OF_WEEK[0]);
+                .checkHeaders();
     }
 }

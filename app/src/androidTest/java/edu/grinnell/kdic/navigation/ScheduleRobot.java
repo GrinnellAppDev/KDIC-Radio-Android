@@ -92,7 +92,7 @@ public class ScheduleRobot {
             @Override
             protected boolean matchesSafely(ScheduleRecyclerViewAdapter.ViewHolder item)
             {
-                return item.mViewType == type;
+                return item.getViewType() == type;
             }
 
             @Override
@@ -109,7 +109,7 @@ public class ScheduleRobot {
             @Override
             protected boolean matchesSafely(ScheduleRecyclerViewAdapter.ViewHolder item)
             {
-                return item.mTitle.getText().toString().equalsIgnoreCase(title);
+                return item.getTitle().getText().toString().equalsIgnoreCase(title);
             }
 
             @Override
