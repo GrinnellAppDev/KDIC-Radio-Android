@@ -35,14 +35,20 @@ public class ScheduleRobot {
 
     public ScheduleRobot() {
     }
-    // check if the recyclerview is there, visible
+
+
     public ScheduleRobot checkHeaders() {
         onView(withId(R.id.rv_schedule))
                 .check(matches(isDisplayed()))
                 .check(matches(hasDescendant(withChild(withText("On Air")))))
                 .check(matches(hasDescendant(withChild(withText("Later Today")))))
                 .perform(RecyclerViewActions.scrollToPosition(10))                  //FIXME: scroll so that week heading will show up
-                .check(matches(hasDescendant(withChild(withText("Full Schedule")))))
+                .check(matches(hasDescendant(withChild(withText("Full Schedule")))));
+        return this;
+    }
+
+    public ScheduleRobot checkDays() {
+        onView(withId(R.id.rv_schedule))
                 .perform(RecyclerViewActions.scrollToPosition(15))
                 .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[0])))))
                 .check(matches(hasDescendant(withChild(withText(Constants.DAYS_OF_WEEK[1])))))
