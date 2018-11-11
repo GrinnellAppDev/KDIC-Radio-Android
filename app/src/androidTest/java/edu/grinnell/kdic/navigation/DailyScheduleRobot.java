@@ -16,9 +16,6 @@ import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
-import static edu.grinnell.kdic.navigation.ScheduleRobot.clickFavorite;
-import static edu.grinnell.kdic.navigation.ScheduleRobot.withTitle;
-import static edu.grinnell.kdic.navigation.ScheduleRobot.withType;
 
 public class DailyScheduleRobot extends ScheduleRobot {
 
@@ -32,6 +29,12 @@ public class DailyScheduleRobot extends ScheduleRobot {
         onView(withId(R.id.toolbar_main))
                 .check(matches(isDisplayed()))
                 .check(matches(hasDescendant(withText("DailySchedule"))));
+        return this;
+    }
+
+    public DailyScheduleRobot checkIsDay(String day) {
+        onView(withId(R.id.rv_schedule))
+                .check(matches(hasDescendant(withText(day))));
         return this;
     }
 

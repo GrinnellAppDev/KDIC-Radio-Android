@@ -57,7 +57,7 @@ public class VisualizeFragment extends Fragment {
             if (currentShow == null) {
                 showName.setText("No show\nScheduled");
                 showTime.setText("The station is on Auto Play.");
-                fabFavorite.setVisibility(View.GONE);
+                fabFavorite.hide();
             } else {
                 SimpleDateFormat dayFormat = new SimpleDateFormat("EEEE");
                 SimpleDateFormat timeFormat = new SimpleDateFormat("h:mm a");
@@ -129,7 +129,7 @@ public class VisualizeFragment extends Fragment {
                 });
                 fabFavorite.setImageResource(favorites.isFavorite(currentShow.getTitle()) ?
                         R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
-                fabFavorite.setVisibility(View.VISIBLE);
+                fabFavorite.show();
             }
         } catch (ParseException e) {
             e.printStackTrace();

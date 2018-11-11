@@ -65,7 +65,7 @@ public class RadioService extends Service {
 
     @Override
     public void onCreate() {
-        wifiLock = ((WifiManager) getSystemService(WIFI_SERVICE))
+        wifiLock = ((WifiManager) getApplicationContext().getSystemService(WIFI_SERVICE))
                 .createWifiLock(WifiManager.WIFI_MODE_FULL, WIFI_TAG);
 
         setupMediaPlayer();

@@ -18,9 +18,18 @@ public class ScheduleRobotTest {
     @Rule public ActivityTestRule<MainActivity> mActivityRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void checkItemsNoMock() {
-        ScheduleRobot scheduleRobot = new ScheduleRobot();
-        scheduleRobot
-                .checkHeaders();
+    public void checkHeaders() {
+        MainScheduleRobot mainScheduleRobot = new MainScheduleRobot();
+        mainScheduleRobot
+                .checkHeaders()
+                .checkDays();
+    }
+
+    public void clickMonday() {
+        MainScheduleRobot mainScheduleRobot = new MainScheduleRobot();
+        mainScheduleRobot
+                .checkDays()
+                .clickDay("Monday")
+                .checkIsDay("Monday");
     }
 }
