@@ -112,16 +112,20 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     else {
       holder.mFavorite.setVisibility(View.VISIBLE);
       // add heart if show is a favorite
-      if (mFavorites.isFavorite(item.getS1()))
+      if (mFavorites.isFavorite(item.getS1())) {
         holder.mFavorite.setImageResource(R.drawable.ic_favorite_white_24dp);
-      else
+        holder.mFavorite.setTag(R.drawable.ic_favorite_white_24dp);
+      }
+      else {
         holder.mFavorite.setImageResource(R.drawable.ic_favorite_border_white_24dp);
-      holder.mFavorite.setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-          setFavoritesOnClick(v, item, holder);
-        }
-      });
+        holder.mFavorite.setTag(R.drawable.ic_favorite_border_white_24dp);
+        holder.mFavorite.setOnClickListener(new View.OnClickListener() {
+          @Override
+          public void onClick(View v) {
+            setFavoritesOnClick(v, item, holder);
+          }
+        });
+      }
     }
   }
 
@@ -160,6 +164,8 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
       public void onAnimationEnd(Animation animation) {
         holder.mFavorite.setImageResource(!wasFavorite ?
             R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
+        holder.mFavorite.setTag(!wasFavorite ?
+                R.drawable.ic_favorite_white_24dp : R.drawable.ic_favorite_border_white_24dp);
         holder.mFavorite.startAnimation(heartInAnim);
       }
 
@@ -197,7 +203,7 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
     return mContent.size();
   }
 
-  protected class ViewHolder extends RecyclerView.ViewHolder {
+  public class ViewHolder extends RecyclerView.ViewHolder {
     private int mViewType;
     private CardView mCardView;
     private TextView mTitle;
@@ -214,6 +220,14 @@ public class ScheduleRecyclerViewAdapter extends RecyclerView.Adapter<ScheduleRe
         mCardView = (CardView) itemView.findViewById(R.id.card_view_item);
         mFavorite = (ImageView) itemView.findViewById(R.id.iv_favorite);
       }
+    }
+
+    public int getViewType() {
+        return this.mViewType;
+    }
+
+    public TextView getTitle() {
+        return this.mTitle;
     }
   }
 }
