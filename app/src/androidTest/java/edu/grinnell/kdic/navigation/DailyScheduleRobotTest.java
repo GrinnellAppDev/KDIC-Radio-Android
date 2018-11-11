@@ -25,6 +25,7 @@ public class DailyScheduleRobotTest {
                 .checkHeaders();
     }
 
+    @Test
     public void clickBack() {
         MainScheduleRobot mainScheduleRobot = new MainScheduleRobot();
         mainScheduleRobot

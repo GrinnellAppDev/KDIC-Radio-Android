@@ -25,10 +25,11 @@ public class DailyScheduleRobot extends ScheduleRobot {
     public DailyScheduleRobot checkHeaders() {
         onView(withId(R.id.rv_schedule))
                 .check(matches(isDisplayed()))
+                .perform(RecyclerViewActions.scrollToPosition(0))
                 .check(matches(hasDescendant(withChild(withText("All Shows for the Day")))));
         onView(withId(R.id.toolbar_main))
                 .check(matches(isDisplayed()))
-                .check(matches(hasDescendant(withText("DailySchedule"))));
+                .check(matches(hasDescendant(withText("Daily Schedule"))));
         return this;
     }
 

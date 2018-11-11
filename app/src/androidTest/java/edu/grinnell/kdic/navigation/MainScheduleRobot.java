@@ -24,6 +24,7 @@ public class MainScheduleRobot extends ScheduleRobot {
     public MainScheduleRobot checkHeaders() {
         onView(withId(R.id.rv_schedule))
                 .check(matches(isDisplayed()))
+                .perform(RecyclerViewActions.scrollToPosition(0))
                 .check(matches(hasDescendant(withChild(withText("On Air")))))
                 .check(matches(hasDescendant(withChild(withText("Later Today")))))
                 .perform(RecyclerViewActions.scrollToPosition(10))                  //FIXME: scroll so that week heading will show up

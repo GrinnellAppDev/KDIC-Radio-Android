@@ -25,6 +25,7 @@ public class ScheduleRobotTest {
                 .checkDays();
     }
 
+    @Test
     public void clickMonday() {
         MainScheduleRobot mainScheduleRobot = new MainScheduleRobot();
         mainScheduleRobot
