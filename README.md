@@ -23,9 +23,9 @@ Homebrewed by [Grinnell AppDev](http://appdev.grinnell.edu/)!
 - [Prabir Pradhan](https://github.com/prabirmsp)
 
 ### Currently Maintained By:
-- [Tapiwa Zvidzwa](https://github.com/Tapszvidzwa)
-- [Shelby Frazier](https://github.com/sheltah22)
-- [Minh Tran](https://github.com/tranminh75)
+- [Nikunj Agrawal](https://github.com/nikagarwal98)
+- [Himanshu Bainwala](https://github.com/bainwala)
+- [Priyank Shah](https://github.com/shahpriy)
 
 ### Previous Builds
 
